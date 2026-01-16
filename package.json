@@ -3,13 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
-    "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,css,scss,md}\"",
-    "preview": "vite preview"
-  },
+"scripts": {
+  "dev": "vite",
+  "build": "tsc -b && vite build",
+  "test": "vitest run",
+  "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
+  "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,css,scss,md}\"",
+  "preview": "vite preview"
+},
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@reduxjs/toolkit": "^2.11.2",
