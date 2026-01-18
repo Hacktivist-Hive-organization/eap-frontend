@@ -1,21 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { ConfigProvider } from 'antd';
+import { BrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import { store } from '@/store';
-import { GlobalStyle } from '@/styles/global';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+import './index.css';
+import { QueryProvider } from '@/context/query-context';
+
+const root = document.getElementById('root') as HTMLElement;
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ConfigProvider>
-          <GlobalStyle />
+    <QueryProvider>
+      <Provider store={store}>
+        <BrowserRouter>
           <App />
-        </ConfigProvider>
-      </BrowserRouter>
-    </Provider>
+        </BrowserRouter>
+      </Provider>
+    </QueryProvider>
   </React.StrictMode>,
 );

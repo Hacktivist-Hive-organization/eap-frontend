@@ -17,9 +17,9 @@
     "jsx": "react-jsx",
 
     // absolute imports
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["./src/*"]
     },
 
     /* Linting */

@@ -165,17 +165,14 @@ npm run dev
   - Always work on a **feature branch**
   - All changes must go through **Pull Requests**
 
-- **Commit Message Format:**
-
-```text
-type(scope): description (EAP-XXX)
-```
-
-Example:
-
-```text
-feat(auth): add login page (EAP-123)
-```
+- **PR Title Convention:**
+  - Format: EAP-XXX: description
+  - The number XXX is the Jira user story number. This convention enables automatic linking between pull requests and Jira tickets for full traceability.
+  
+  Example:
+  ```
+    EAP-123: Add access request endpoint
+  ```
 
 ## Code Formatting & Linting
 

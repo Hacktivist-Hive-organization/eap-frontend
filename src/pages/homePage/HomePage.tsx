@@ -1,12 +1,13 @@
-import { Button } from 'antd';
+import { TrashIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-const HomePage = () => {
+export const HomePage = () => {
   return (
     <div>
-      <h1>Home</h1>
-      <Button type="primary">Ant Design Button</Button>
+      <Button type="submit">
+        <TrashIcon />
+        Submit
+      </Button>
     </div>
   );
 };
-
-export default HomePage;
