@@ -5,6 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 import importPlugin from "eslint-plugin-import";
+import prettierPlugin from "eslint-plugin-prettier"; // <- replace require
 
 export default defineConfig([
   // Ignore build folders
@@ -21,7 +22,7 @@ export default defineConfig([
       reactHooks,
       "react-refresh": reactRefresh,
       "@typescript-eslint": tseslint,
-      prettier: require("eslint-plugin-prettier"),
+      prettier: prettierPlugin,
       import: importPlugin,
     },
     extends: [
@@ -32,21 +33,14 @@ export default defineConfig([
       "plugin:prettier/recommended",
     ],
     rules: {
-      "prettier/prettier": "error", // enforce Prettier formatting
-      "react/react-in-jsx-scope": "off", // React 18+ JSX
+      "prettier/prettier": "error",
+      "react/react-in-jsx-scope": "off",
       "@typescript-eslint/explicit-function-return-type": "off",
-      "import/no-relative-parent-imports": "error", // ❌ prevent ../../ imports
+      "import/no-relative-parent-imports": "error",
       "import/order": [
         "warn",
         {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-          ],
+          groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
           pathGroups: [
             {
               pattern:
