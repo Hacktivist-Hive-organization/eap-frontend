@@ -22,7 +22,6 @@ export default defineConfig([
     plugins: {
       reactHooks,
       "react-refresh": reactRefresh,
-      "@typescript-eslint": tseslint,
       prettier: prettierPlugin,
       import: importPlugin,
     },
