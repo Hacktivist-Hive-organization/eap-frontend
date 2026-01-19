@@ -5,34 +5,29 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import { defineConfig, globalIgnores } from "eslint/config";
 import importPlugin from "eslint-plugin-import";
-import prettierPlugin from "eslint-plugin-prettier";
 
 export default defineConfig([
   globalIgnores(["dist", "node_modules"]),
-
   {
     files: ["**/*.{js,ts,jsx,tsx}"],
     languageOptions: {
       ecmaVersion: 2026,
       sourceType: "module",
-      globals: globals.browser,
+      globals: globals.browser
     },
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      import: importPlugin,
       "@typescript-eslint": tsPlugin,
-      prettier: prettierPlugin,
+      import: importPlugin
     },
     extends: [
       js.configs.recommended,
       "plugin:@typescript-eslint/recommended",
       reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-      "plugin:prettier/recommended", // use the plugin
+      reactRefresh.configs.vite
     ],
     rules: {
-      "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/explicit-function-return-type": "off",
       "import/no-relative-parent-imports": "error",
@@ -44,24 +39,24 @@ export default defineConfig([
             {
               pattern:
                 "{components,pages,services,store,styles,hooks,utils,App,assets}/**",
-              group: "internal",
-            },
+              group: "internal"
+            }
           ],
           pathGroupsExcludedImportTypes: ["builtin"],
           "newlines-between": "always",
-          alphabetize: { order: "asc", caseInsensitive: true },
-        },
+          alphabetize: { order: "asc", caseInsensitive: true }
+        }
       ],
       "padding-line-between-statements": [
         "error",
         { blankLine: "always", prev: "block", next: "*" },
         { blankLine: "always", prev: "class", next: "*" },
         { blankLine: "always", prev: "function", next: "*" },
-        { blankLine: "always", prev: "*", next: "return" },
-      ],
+        { blankLine: "always", prev: "*", next: "return" }
+      ]
     },
     settings: {
-      "import/resolver": { typescript: { project: "./tsconfig.json" } },
-    },
-  },
+      "import/resolver": { typescript: { project: "./tsconfig.json" } }
+    }
+  }
 ]);
