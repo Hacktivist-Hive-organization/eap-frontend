@@ -1,13 +1,18 @@
+// eslint.config.js
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import tsPlugin from "@typescript-eslint/eslint-plugin"; // correct plugin import
+import tsConfigs from "@typescript-eslint/eslint-plugin/dist/configs/recommended.js"; // recommended config object
 import { defineConfig, globalIgnores } from "eslint/config";
 import importPlugin from "eslint-plugin-import";
 import prettierPlugin from "eslint-plugin-prettier";
 
 export default defineConfig([
+  // Ignore build folders
   globalIgnores(["dist", "node_modules"]),
+
   {
     files: ["**/*.{js,ts,jsx,tsx}"],
     languageOptions: {
@@ -16,14 +21,15 @@ export default defineConfig([
       globals: globals.browser,
     },
     plugins: {
-      reactHooks,
+      "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       prettier: prettierPlugin,
       import: importPlugin,
+      "@typescript-eslint": tsPlugin, // correct ESM registration
     },
     extends: [
       js.configs.recommended,
-      "plugin:@typescript-eslint/recommended", // <-- string-style recommended config
+      tsConfigs, // <-- recommended TS rules
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
@@ -58,7 +64,9 @@ export default defineConfig([
     },
     settings: {
       "import/resolver": {
-        typescript: { project: "./tsconfig.json" },
+        typescript: {
+          project: "./tsconfig.json",
+        },
       },
     },
   },
