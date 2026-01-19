@@ -7,6 +7,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import importPlugin from "eslint-plugin-import";
 import prettierPlugin from "eslint-plugin-prettier"; // <- replace require
 
+
 export default defineConfig([
   // Ignore build folders
   globalIgnores(["dist", "node_modules"]),
@@ -30,7 +31,6 @@ export default defineConfig([
       tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
-      "plugin:prettier/recommended",
     ],
     rules: {
       "prettier/prettier": "error",
