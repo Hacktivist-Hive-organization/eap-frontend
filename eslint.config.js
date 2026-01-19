@@ -1,4 +1,3 @@
-// eslint.config.js
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
@@ -9,7 +8,6 @@ import importPlugin from "eslint-plugin-import";
 import prettierPlugin from "eslint-plugin-prettier";
 
 export default defineConfig([
-  // Ignore build folders
   globalIgnores(["dist", "node_modules"]),
 
   {
@@ -22,22 +20,21 @@ export default defineConfig([
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      prettier: prettierPlugin,
       import: importPlugin,
       "@typescript-eslint": tsPlugin,
+      prettier: prettierPlugin,
     },
+    extends: [
+      js.configs.recommended,
+      "plugin:@typescript-eslint/recommended",
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+      "plugin:prettier/recommended", // use the plugin
+    ],
     rules: {
-      // JS/React
-      "react/react-in-jsx-scope": "off",
-
-      // TypeScript rules you care about
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-
-      // Prettier formatting
       "prettier/prettier": "error",
-
-      // Import rules
+      "react/react-in-jsx-scope": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
       "import/no-relative-parent-imports": "error",
       "import/order": [
         "warn",
@@ -55,8 +52,6 @@ export default defineConfig([
           alphabetize: { order: "asc", caseInsensitive: true },
         },
       ],
-
-      // Padding lines
       "padding-line-between-statements": [
         "error",
         { blankLine: "always", prev: "block", next: "*" },
@@ -66,11 +61,7 @@ export default defineConfig([
       ],
     },
     settings: {
-      "import/resolver": {
-        typescript: {
-          project: "./tsconfig.json",
-        },
-      },
+      "import/resolver": { typescript: { project: "./tsconfig.json" } },
     },
   },
 ]);
