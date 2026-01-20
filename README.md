@@ -10,44 +10,150 @@ The EAP Frontend is a modern React application responsible for:
 - Client-side routing
 - API communication with the backend
 - Global state management
-- Design system integration (Ant Design + custom styles)
-  The project follows a scalable, modular architecture with clear separation of concerns and strict development conventions.
+- Design system integration (shadcn/ui + Tailwind CSS)
+
+The project follows a scalable, modular architecture with clear separation of concerns and strict development conventions.
 
 ## Tech Stack
 
-**Core:** React 19, TypeScript, Vite (rolldown-vite 7.2.5)  
-**UI & Styling:** Ant Design, styled-components  
-**State & Data:** Redux Toolkit, React Redux, Axios (REST)  
-**Routing:** React Router  
-**Code Quality:** ESLint, Prettier
+**Core:** React 19, TypeScript, Vite (rolldown-vite)
+**UI & Styling:** Tailwind CSS v4, shadcn/ui, Radix UI, Lucide React (icons)
+**State & Data:** Redux Toolkit, React Redux, TanStack React Query, Axios (REST)
+**Routing:** React Router
+**Testing:** Vitest, Testing Library
+**Code Quality:** Biome (linting + formatting)
 
 ## Project Structure
 
 ```
 src/
-├── components/ # Reusable UI components
-│ ├── common/ # Generic UI components
-│ └── features/ # Feature-specific components
-├── pages/ # Route-level pages/screens
-├── services/ # API clients and external services
-│ └── api/ # Axios setup and HTTP logic
-├── state/ # Redux slices (one per feature/domain)
-├── store/ # Redux store configuration
-├── hooks/ # Custom React hooks (typed)
-├── utils/ # Utility functions
-├── styles/ # Global styles and themes
-│ ├── GlobalStyle.ts
-│ ├── theme.ts
+├── components/          # Reusable UI components
+│   ├── common/          # Generic UI components
+│   ├── features/        # Feature-specific components
+│   └── ui/              # shadcn/ui components
+├── pages/               # Route-level pages/screens
+├── services/            # API clients and external services
+│   └── api/             # Axios setup and HTTP logic
+├── store/               # Redux store configuration
+│   └── slices/          # Redux slices (one per feature/domain)
+├── context/             # React context providers
+│   └── query-context/   # TanStack Query provider
+├── hooks/               # Custom React hooks (typed)
+├── lib/                 # Utility functions (cn, etc.)
+├── utils/               # Additional utilities
+├── assets/              # Static assets (images, icons)
+├── index.css            # Global styles and Tailwind imports
 ├── App.tsx
 └── main.tsx
 ```
+
+## Running the Application
+
+### Prerequisites
+
+- Node.js (LTS version recommended)
+- npm
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Access the app at http://localhost:5173
+
+### Production Build
+
+```bash
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+### Running Tests
+
+```bash
+npm run test
+```
+
+With coverage:
+
+```bash
+npm run test:coverage
+```
+
+## Pre-Push Checklist
+
+Before pushing your changes, ensure your code passes linting and formatting checks:
+
+### 1. Check for Linting and Formatting Errors
+
+```bash
+npm run lint
+```
+
+This runs Biome to check for code quality issues and formatting problems.
+
+### 2. Auto-Fix Issues
+
+To automatically fix linting and formatting issues:
+
+```bash
+npm run format
+```
+
+For fixes that require unsafe transformations:
+
+```bash
+npm run format:unsafe
+```
+
+### 3. Run Tests
+
+Ensure all tests pass:
+
+```bash
+npm run test
+```
+
+### Recommended Workflow Before Push
+
+```bash
+npm run format && npm run lint && npm run test
+```
+
+## Scripts
+
+| Command                | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `npm install`          | Install dependencies                             |
+| `npm run dev`          | Start development server                         |
+| `npm run build`        | Build for production                             |
+| `npm run preview`      | Preview production build                         |
+| `npm run lint`         | Check linting and formatting with Biome         |
+| `npm run format`       | Auto-fix linting and formatting issues           |
+| `npm run format:unsafe`| Auto-fix with unsafe transformations             |
+| `npm run test`         | Run tests with Vitest                            |
+| `npm run test:coverage`| Run tests with coverage report                   |
 
 ## Architecture & Guidelines
 
 - **Component-based architecture:** Build small, reusable components that focus on a single responsibility.
 - **Page structure:** Pages coordinate the UI, manage state, and handle data fetching.
 - **Separation of concerns:**
-  - **State logic:** lives in `state/`
+  - **State logic:** lives in `store/slices/`
   - **UI logic:** lives in `components/`
   - **API logic:** lives in `services/`
 - **Store configuration:** Set up in `store/` to combine reducers and middleware.
@@ -59,8 +165,14 @@ src/
 - **One slice per domain/feature:** Each feature or domain should have its own Redux slice.
 - **Store setup:** The store combines reducers and middleware only—no UI logic belongs here.
 - **Typed hooks:** Always use typed hooks (`useAppDispatch`, `useAppSelector`) for type safety.
-- **Data flow:**  
+- **Data flow:**
   `Page` → dispatch action → `Slice` → state update → component re-render
+
+## TanStack React Query
+
+- Used for server state management and data fetching
+- Query client is configured in `src/context/query-context/`
+- Use for API calls that benefit from caching, background refetching, and optimistic updates
 
 ## Absolute Imports
 
@@ -68,17 +180,24 @@ src/
 - **Example:**
 
 ```ts
-import Button from "@/components/common/Button";
-import HomePage from "@/pages/homePage/HomePage";
-import api from "@/services/api/axios";
+import { Button } from '@/components/ui/button';
+import { HomePage } from '@/pages/HomePage';
+import api from '@/services/api';
 ```
 
-- ❌ relative imports like ../../.. are not allowed.
+- Relative imports like `../../..` are not allowed.
 
 ## Styling & Theming
 
-- **Global Styles:** Defined in `src/styles/GlobalStyle.ts`. Includes CSS reset, base typography, and CSS variables. Applied once at the application root.
-- **Design Tokens:** Defined in `src/styles/theme.ts`. Shared across `styled-components` and Ant Design. Includes colors, spacing, and border-radius.
+- **Tailwind CSS v4:** Utility-first CSS framework configured via `index.css`
+- **shadcn/ui:** Pre-built accessible components using Radix UI primitives
+- **Utility functions:** Use `cn()` from `@/lib/utils` for conditional class merging
+
+### Adding shadcn/ui Components
+
+```bash
+npx shadcn@latest add <component-name>
+```
 
 ## State Management
 
@@ -89,26 +208,20 @@ import api from "@/services/api/axios";
 ### Example
 
 ```ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
-  name: "user slice",
+  name: 'user slice',
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {}, // Define actions here
 });
 
 export default userSlice.reducer;
 ```
-
-- This userSlice manages only user-related state.
-
-- Components can use this slice to read or update the user state.
-
-- No buttons, forms, or UI logic are inside the slice — just data.
 
 ## Routing
 
@@ -118,7 +231,7 @@ export default userSlice.reducer;
 
 ## Axios Setup
 
-- Axios is configured once in `src/services/api/axios.ts`.
+- Axios is configured in `src/services/api/api.ts`.
 - **All network requests** must use this Axios instance.
 
 ## Environment Configuration
@@ -133,26 +246,6 @@ export default userSlice.reducer;
 VITE_API_URL=http://localhost:8000
 ```
 
-## Development Workflow
-
-- **Install dependencies:**
-
-```bash
-npm install
-```
-
-- **Start the development server:**
-
-```bash
-npm run dev
-```
-
-- **Access the app:**
-
-```text
- Open http://localhost:5173 in your browser.
-```
-
 ## Git Workflow
 
 - **Branches:**
@@ -165,59 +258,29 @@ npm run dev
   - Always work on a **feature branch**
   - All changes must go through **Pull Requests**
 
-- **Commit Message Format:**
+- **PR Title Convention:**
+  - Format: `EAP-XXX: description`
+  - The number XXX is the Jira user story number. This convention enables automatic linking between pull requests and Jira tickets for full traceability.
 
-```text
-type(scope): description (EAP-XXX)
-```
+  Example:
+  ```
+  EAP-123: Add access request endpoint
+  ```
 
-Example:
+## VS Code Integration
 
-```text
-feat(auth): add login page (EAP-123)
-```
-
-## Code Formatting & Linting
-
-- **Prettier:** Automatically formats your code.
-- **ESLint:** Enforces code quality and best practices.
-- Fully integrated using `eslint-plugin-prettier`.
-
-### Commands
-
-- **Check for linting and formatting errors:**
-
-```bash
-npm run lint
-```
-
-- **Automatically format code:**
-
-```bash
-npm run format
-```
-
-- **VS Code Integration**
-
-Add the following to your VS Code settings to format on save:
+Add the following to your VS Code settings for the best development experience:
 
 ```json
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  }
 }
 ```
-
-## Scripts
-
-| Command         | Description               |
-| --------------- | ------------------------- |
-| npm install     | Install dependencies      |
-| npm run dev     | Start development server  |
-| npm run build   | Build for production      |
-| npm run preview | Preview production build  |
-| npm run lint    | ESLint check              |
-| npm run format  | Format code with Prettier |
 
 ## Data Flow
 
@@ -238,7 +301,7 @@ Add the following to your VS Code settings to format on save:
 │
 │ updates Redux state
 ▼
-[State / Redux Slices] ──> triggers re-render
+[Store / Redux Slices] ──> triggers re-render
 │
 └──> Components reflect updated state
 ```
