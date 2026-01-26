@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useLogin } from '@/hooks/useAuth';
 import { getErrorMessage } from '@/lib/errors';
-import { type LoginFormData, loginFormSchema } from '@/pages/HomePage/LoginPage/utils';
+import { type LoginFormData, loginFormSchema } from '@/pages/LoginPage/utils';
 export function useLoginForm() {
   const loginMutation = useLogin();
 
