@@ -1,12 +1,8 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { LockKeyholeIcon, MailIcon, UserRoundIcon } from 'lucide-react';
-import type * as React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
-import * as z from 'zod';
 import { Background } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +10,7 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
-  CardHeader
+  CardHeader,
 } from '@/components/ui/card';
 import {
   Field,
@@ -24,41 +20,10 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-
-const formSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string(),
-  password: z.string(),
-});
+import { useRegistrationForm } from './hooks';
 
 export function RegistrationPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    },
-  });
-
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast('You submitted the following values:', {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: 'bottom-right',
-      classNames: {
-        content: 'flex flex-col gap-2',
-      },
-      style: {
-        '--border-radius': 'calc(var(--radius)  + 4px)',
-      } as React.CSSProperties,
-    });
-  }
+  const { form, onSubmit, isPending } = useRegistrationForm();
 
   return (
     <Background>
@@ -177,8 +142,13 @@ export function RegistrationPage() {
                 )}
               />
               <Field orientation="horizontal">
-                <Button type="submit" form="form-rhf-demo" className="w-full">
-                  Sign Up
+                <Button
+                  type="submit"
+                  form="form-rhf-demo"
+                  className="w-full"
+                  disabled={isPending}
+                >
+                  {isPending ? 'Creating account...' : 'Sign Up'}
                 </Button>
               </Field>
             </FieldGroup>
