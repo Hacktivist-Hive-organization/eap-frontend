@@ -3,7 +3,10 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useRegister } from '@/hooks/useAuth';
 import { getErrorMessage } from '@/lib/errors';
-import { type RegistrationFormData, registrationFormSchema } from '@/pages/HomePage/RegistrationPage/utils';
+import {
+  type RegistrationFormData,
+  registrationFormSchema,
+} from '@/pages/RegistrationPage/utils';
 
 export function useRegistrationForm() {
   const registerMutation = useRegister();

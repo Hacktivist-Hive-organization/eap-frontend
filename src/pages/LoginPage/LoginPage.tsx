@@ -3,7 +3,7 @@
 import { LockKeyholeIcon, MailIcon } from 'lucide-react';
 import { Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { Background } from '@/components/common';
+import { Background } from '@/components/common/Background';
 import { Button } from '@/components/ui/button';
 import {
   Card,
