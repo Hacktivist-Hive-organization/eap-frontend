@@ -39,7 +39,7 @@ export function RegistrationPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+          <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Controller
@@ -47,14 +47,14 @@ export function RegistrationPage() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-rhf-demo-title">
+                      <FieldLabel htmlFor="register-first-name">
                         First Name
                       </FieldLabel>
                       <div className="relative">
                         <UserRoundIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           {...field}
-                          id="form-rhf-demo-title"
+                          id="register-first-name"
                           aria-invalid={fieldState.invalid}
                           className="pl-10"
                         />
@@ -70,14 +70,14 @@ export function RegistrationPage() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="form-rhf-demo-title">
+                      <FieldLabel htmlFor="register-last-name">
                         Last Name
                       </FieldLabel>
                       <div className="relative">
                         <UserRoundIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           {...field}
-                          id="form-rhf-demo-title"
+                          id="register-last-name"
                           aria-invalid={fieldState.invalid}
                           className="pl-10"
                         />
@@ -94,14 +94,14 @@ export function RegistrationPage() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-title">
+                    <FieldLabel htmlFor="register-email">
                       Email address
                     </FieldLabel>
                     <div className="relative">
                       <MailIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         {...field}
-                        id="form-rhf-demo-title"
+                        id="register-email"
                         aria-invalid={fieldState.invalid}
                         placeholder="name@company.com"
                         className="pl-10"
@@ -119,7 +119,7 @@ export function RegistrationPage() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <div className="flex justify-between">
-                      <FieldLabel htmlFor="form-rhf-demo-title">
+                      <FieldLabel htmlFor="register-password">
                         Password
                       </FieldLabel>
                     </div>
@@ -127,7 +127,7 @@ export function RegistrationPage() {
                       <LockKeyholeIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         {...field}
-                        id="form-rhf-demo-title"
+                        id="register-password"
                         type="password"
                         aria-invalid={fieldState.invalid}
                         placeholder="••••••••"
@@ -144,7 +144,7 @@ export function RegistrationPage() {
               <Field orientation="horizontal">
                 <Button
                   type="submit"
-                  form="form-rhf-demo"
+                  form="register-form"
                   className="w-full"
                   disabled={isPending}
                 >

@@ -39,21 +39,19 @@ export function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+          <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
               <Controller
                 name="email"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-title">
-                      Email address
-                    </FieldLabel>
+                    <FieldLabel htmlFor="login-email">Email address</FieldLabel>
                     <div className="relative">
                       <MailIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         {...field}
-                        id="form-rhf-demo-title"
+                        id="login-email"
                         aria-invalid={fieldState.invalid}
                         placeholder="name@company.com"
                         className="pl-10"
@@ -71,15 +69,13 @@ export function LoginPage() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <div className="flex justify-between">
-                      <FieldLabel htmlFor="form-rhf-demo-title">
-                        Password
-                      </FieldLabel>
+                      <FieldLabel htmlFor="login-password">Password</FieldLabel>
                     </div>
                     <div className="relative">
                       <LockKeyholeIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         {...field}
-                        id="form-rhf-demo-title"
+                        id="login-password"
                         type="password"
                         aria-invalid={fieldState.invalid}
                         placeholder="••••••••"
@@ -96,7 +92,7 @@ export function LoginPage() {
               <Field orientation="horizontal">
                 <Button
                   type="submit"
-                  form="form-rhf-demo"
+                  form="login-form"
                   className="w-full"
                   disabled={isPending}
                 >
