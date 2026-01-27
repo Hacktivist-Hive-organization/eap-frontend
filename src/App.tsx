@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { ProtectedRoute } from '@/components/common';
 import { RequesterDashboard } from '@/features/dashboard/RequesterDashboard';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
 import { RegistrationPage } from '@/pages/RegistrationPage/RegistrationPage';

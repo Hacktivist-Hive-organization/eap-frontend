@@ -1,7 +1,7 @@
 import { api } from '@/services/api';
 import type { AuthResponse, LoginRequest, RegisterRequest } from './types';
 
-const TOKEN_KEY = 'auth_token';
+const TOKEN_KEY = 'access_token';
 
 export const authService = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {

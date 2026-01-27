@@ -5,15 +5,10 @@ import {
   InboxIcon,
 } from 'lucide-react';
 import { useParams } from 'react-router-dom';
-import {
-  DashboardLayout,
-  type Request,
-  RequestsTable,
-  type SidebarItem,
-} from '@/components/common';
+import { PageLayout } from '@/components/common/PageLayout';
+import { type Request, RequestsTable } from '@/components/common/RequestsTable';
+import type { SidebarItem } from '@/components/common/Sidebar';
 import type { DashboardType } from './utils/types';
-
-
 
 const sidebarItems: SidebarItem[] = [
   {
@@ -87,10 +82,7 @@ export function RequesterDashboard() {
   const activeView = (view as DashboardType) || 'draft';
 
   return (
-    <DashboardLayout
-      sidebarItems={sidebarItems}
-      activeKey={activeView}
-    >
+    <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
       {activeView !== 'draft' && (
         <div className="flex items-center justify-center h-64">
           <p className="text-gray-500">Dashboard view coming soon</p>
@@ -105,6 +97,6 @@ export function RequesterDashboard() {
           <RequestsTable requests={requests} />
         </div>
       )}
-    </DashboardLayout>
+    </PageLayout>
   );
 }

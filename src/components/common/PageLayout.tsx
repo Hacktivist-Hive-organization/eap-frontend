@@ -21,7 +21,7 @@ export function PageLayout({
         <Sidebar items={sidebarItems} activeKey={activeKey} />
         <SidebarInset>
           <header className="sticky top-0 z-10 bg-white shadow-sm border-b">
-            <div className="flex items-center justify-between px-6 py-[14px]">
+            <div className="flex items-center justify-between px-6 py-3.5">
               <div className="flex items-center gap-4">
                 <img
                   src="/src/assets/Desk-X_tr.svg"

@@ -1,1 +1,4 @@
-export { registrationFormSchema, type RegistrationFormData } from './validation';
+export {
+  type RegistrationFormData,
+  registrationFormSchema,
+} from './validation';

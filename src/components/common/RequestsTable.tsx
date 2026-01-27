@@ -14,8 +14,12 @@ import {
   type ApiPriority,
   apiPriorityToUiPriority,
   priorityMap,
-} from './PriorityIcons';
-import { type ApiStatus, apiStatusToUiStatus, statusMap } from './StatusBadges';
+} from '@/types/PriorityIcons';
+import {
+  type ApiStatus,
+  apiStatusToUiStatus,
+  statusMap,
+} from '@/types/StatusBadges';
 
 export interface Request {
   id: string;
