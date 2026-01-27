@@ -12,7 +12,7 @@ describe('App test', () => {
         <MemoryRouter>
           <HomePage />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByText('Welcome to Desk-X')).toBeInTheDocument();
   });
