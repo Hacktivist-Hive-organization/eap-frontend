@@ -3,7 +3,13 @@ import { Button } from '@/components/ui/button';
 import { useLogout } from '@/hooks/useAuth';
 
 interface LogoutButtonProps {
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
   showIcon?: boolean;
   showText?: boolean;
 }
