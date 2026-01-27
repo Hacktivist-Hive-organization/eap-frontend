@@ -1,7 +1,7 @@
 import type { AxiosError } from 'axios';
 
 interface ApiErrorResponse {
-  message?: string;
+  detail?: string;
   error?: string;
   errors?: Record<string, string[]>;
 }
@@ -11,8 +11,8 @@ export function getErrorMessage(error: unknown): string {
     const data = error.response?.data as ApiErrorResponse | undefined;
 
     // Handle structured error response
-    if (data?.message) {
-      return data.message;
+    if (data?.detail) {
+      return data.detail;
     }
 
     if (data?.error) {

@@ -27,7 +27,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem(TOKEN_KEY);
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login')
+        window.location.href = '/login';
     }
     console.error('API error:', error);
     return Promise.reject(error);
