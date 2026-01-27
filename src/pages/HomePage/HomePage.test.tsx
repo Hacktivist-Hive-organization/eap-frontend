@@ -14,6 +14,6 @@ describe('App test', () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(screen.getByText('Submit')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to Desk-X')).toBeInTheDocument();
   });
 });
