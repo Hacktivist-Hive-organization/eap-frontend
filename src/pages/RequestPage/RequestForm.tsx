@@ -76,11 +76,11 @@ export const RequestForm = () => {
   const validate = () => {
     const newErrors: FormErrors = {};
 
-    if (!form.type_id) {
+    if (form.type_id === null) {
       newErrors.type_id = 'Type is required and must be valid';
     }
 
-    if (!form.subtype_id) {
+    if (form.subtype_id === null) {
       newErrors.subtype_id = 'Subtype is required and must match selected type';
     }
 
@@ -128,6 +128,9 @@ export const RequestForm = () => {
     e.preventDefault();
     console.log('form', form);
     if (!validate()) return;
+    if (form.type_id === null || form.subtype_id === null) {
+      return;
+    }
     try {
       await requestService.createRequest({
         type_id: form.type_id,
