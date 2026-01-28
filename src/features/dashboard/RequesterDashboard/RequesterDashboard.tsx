@@ -1,49 +1,18 @@
-import {
-  CircleCheckIcon,
-  CircleDotIcon,
-  FileIcon,
-  InboxIcon,
-  PlusIcon,
-} from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { PageLayout } from '@/components/common/PageLayout';
 import { RequestsTable } from '@/components/common/RequestsTable';
-import type { SidebarItem } from '@/components/common/Sidebar';
 import { Button } from '@/components/ui/button';
-import { useDraftRequests } from './hooks';
-import type { DashboardType } from './utils/types';
-
-const sidebarItems: SidebarItem[] = [
-  {
-    key: 'all',
-    label: 'All',
-    icon: <InboxIcon className="h-5 w-5" />,
-    path: '/dashboard/all',
-  },
-  {
-    key: 'active',
-    label: 'Active',
-    icon: <CircleDotIcon className="h-5 w-5" />,
-    path: '/dashboard/active',
-  },
-  {
-    key: 'closed',
-    label: 'Closed',
-    icon: <CircleCheckIcon className="h-5 w-5" />,
-    path: '/dashboard/closed',
-  },
-  {
-    key: 'draft',
-    label: 'Draft',
-    icon: <FileIcon className="h-5 w-5" />,
-    path: '/dashboard/draft',
-  },
-];
+import type { Status } from '@/types/Status';
+import { useDraftRequests as useRequestsByStatus } from './hooks';
+import { type DashboardType, sidebarItems } from './utils/types';
 
 export function RequesterDashboard() {
   const { view } = useParams<{ view: DashboardType }>();
   const activeView = (view as DashboardType) || 'draft';
-  const { data: draftRequests = [], isLoading } = useDraftRequests('draft');
+  const { data: requests = [], isLoading } = useRequestsByStatus(
+    activeView as Status,
+  );
 
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
@@ -55,7 +24,7 @@ export function RequesterDashboard() {
 
       {activeView === 'draft' && (
         <div>
-          <div className="flex items-center justify-between p-4">
+          <div className="flex items-center justify-between p-2">
             <span className="capitalize text-2xl font-bold">
               {activeView} Requests Dashboard
             </span>
@@ -71,7 +40,7 @@ export function RequesterDashboard() {
               <p className="text-gray-500">Loading...</p>
             </div>
           ) : (
-            <RequestsTable requests={draftRequests} />
+            <RequestsTable requests={requests} />
           )}
         </div>
       )}
