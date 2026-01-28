@@ -18,6 +18,7 @@ export type CreateRequestPayload = {
   description: string;
   business_justification: string;
   priority: string;
+  requester_id: number;
 };
 
 export const requestService = {
