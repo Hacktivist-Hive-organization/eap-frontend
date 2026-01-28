@@ -1,1 +1,1 @@
-export { useDraftRequests } from '@/features/dashboard/RequesterDashboard/hooks/hook';
+export { useRequestsByStatus } from '@/features/dashboard/RequesterDashboard/hooks/hook';

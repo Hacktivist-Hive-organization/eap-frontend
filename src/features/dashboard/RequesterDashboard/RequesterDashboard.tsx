@@ -4,7 +4,7 @@ import { PageLayout } from '@/components/common/PageLayout';
 import { RequestsTable } from '@/components/common/RequestsTable';
 import { Button } from '@/components/ui/button';
 import type { Status } from '@/types/Status';
-import { useDraftRequests as useRequestsByStatus } from './hooks';
+import { useRequestsByStatus } from './hooks';
 import { type DashboardType, sidebarItems } from './utils/types';
 
 export function RequesterDashboard() {

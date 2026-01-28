@@ -4,7 +4,7 @@ import { mapRequestResponsesToRequests } from '@/features/dashboard/RequesterDas
 import { requestService } from '@/services/api/requests/request';
 import type { Status } from '@/types/Status';
 
-export function useDraftRequests(status: Status) {
+export function useRequestsByStatus(status: Status) {
   return useQuery({
     queryKey: ['requests', status],
     queryFn: () => requestService.getRequestsByStatus(status),
