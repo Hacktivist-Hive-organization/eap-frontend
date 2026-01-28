@@ -26,9 +26,7 @@ export const requestService = {
     const { data } = await api.get('api/v1/types');
     return data;
   },
-  createRequest: async (
-    payload: CreateRequestPayload
-  ): Promise<void> => {
+  createRequest: async (payload: CreateRequestPayload): Promise<void> => {
     await api.post('/api/v1/requests', payload);
   },
 };
