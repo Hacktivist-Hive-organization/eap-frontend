@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { Info, FileText, Settings, UploadCloud } from "lucide-react";
+import { useEffect, useState  } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import {  FileText, Settings, UploadCloud , ArrowRight } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea }  from '@/components/ui/textarea';
@@ -8,7 +9,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
   FormControl,
 } from "@/components/ui/form";
 import {
@@ -21,7 +21,7 @@ import {
 
 
 import { requestService }  from '@/services/api/request.service';
-import type { RequestType, RequestSubtype } from '@/services/api/request.service';
+import type { RequestType } from '@/services/api/request.service';
 
 type FormState = {
   type_id: number | null;
@@ -31,6 +31,8 @@ type FormState = {
   justification: string;
   priority: string;
 };
+type FormErrors = Partial<Record<keyof FormState | 'attachments', string>>;
+
 const INITIAL_FORM_STATE: FormState = {
   type_id:  null,
   subtype_id: null,
@@ -45,7 +47,7 @@ const PRIORITIES = ["low", "medium", "high"];
 export const  RequestForm = () => {
     const [form, setForm] = useState<FormState>(INITIAL_FORM_STATE);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<FormErrors>({});
     const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
     const [loadingTypes, setLoadingTypes] = useState(true);
     const [typesError, setTypesError] = useState<string | null>(null);
@@ -78,12 +80,12 @@ export const  RequestForm = () => {
       const selectedType = requestTypes.find(t => t.id === form.type_id);
 
       if (!selectedType) {
-        newErrors.type = "Type is required and must be valid";
+        newErrors.type_id = "Type is required and must be valid";
       }
 
       const selectedSubtype = selectedType?.subtypes.find(st => st.id === form.subtype_id);
       if (!selectedSubtype) {
-        newErrors.subtype = "Subtype is required and must match selected type";
+        newErrors.subtype_id = "Subtype is required and must match selected type";
       }
 
       if (form.title.length < 5 || form.title.length > 200) {
@@ -105,7 +107,7 @@ export const  RequestForm = () => {
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
-    const handleChange = (e) => {
+    const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({
           ...prev,
@@ -122,7 +124,7 @@ export const  RequestForm = () => {
       setSuccessMessage(null); // also clear any existing success message
     };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("form",form);
     if (!validate()) return;
@@ -171,13 +173,13 @@ return (
 
    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
     <div className="md:col-span-2 space-y-4" >
-            <div className="flex items-center gap-2 text-gray-700 font-bold mb-2">
-            <FileText className="h-5 w-5" /> <span>REQUEST CONTENT</span>
+          <div className="flex items-center gap-2 text-gray-700 font-bold mb-2">
+            <FileText className="h-5 w-5 text-orange-500" /> <span>REQUEST CONTENT</span>
           </div>
           {/* Request Title */}
           <FormField>
             <FormItem>
-              <FormLabel className="text-xs text-gray-700 dark:text-gray-300 mb-1">Request Title</FormLabel>
+              <FormLabel>Request Title</FormLabel>
               <FormControl>
             <Input
               type="text"
@@ -188,14 +190,14 @@ return (
               className="text-xs border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm transition duration-150"
             />
           </FormControl>
-             <FormMessage className="text-red-600 mt-1">{errors.title}</FormMessage>
+             {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
              </FormItem>
              </FormField>
 
            {/* Detailed Description */}
               <FormField>
                 <FormItem>
-                  <FormLabel className="flex items-center gap-1 text-gray-600 text-xs mb-1">Detailed Description</FormLabel>
+                  <FormLabel>Detailed Description</FormLabel>
                   <FormControl>
                 <Textarea
                   name="description"
@@ -206,13 +208,13 @@ return (
                   className="text-xs h-16 resize-none border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm transition duration-150"
                 />
             </FormControl>
-                  <FormMessage className="text-red-600 mt-1">{errors.description}</FormMessage>
+                   {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
                 </FormItem>
               </FormField>
         {/* Business Justification */}
           <FormField>
             <FormItem>
-              <FormLabel className="flex items-center gap-1 text-gray-600 text-xs mb-1">
+              <FormLabel>
                 Business Justification
               </FormLabel>
               <FormControl>
@@ -225,19 +227,19 @@ return (
               className="text-xs h-16 resize-none  border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm transition duration-150"
             />
              </FormControl>
-              <FormMessage className="text-red-600 mt-1">{errors.justification}</FormMessage>
+              {errors.justification && <p className="text-red-500 text-xs mt-1">{errors.justification}</p>}
             </FormItem>
           </FormField>
 
         </div>
         <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-xl space-y-4">
             <div className="flex items-center gap-2 text-gray-700 font-bold mb-2">
-                <Settings className="h-5 w-5" /> <span>METADATA</span>
+                <Settings className="h-5 w-5 text-orange-500" /> <span>METADATA</span>
             </div>
 
             {/* Request Type */}
             <FormField>
-            <FormLabel className="text-gray-600 text-xs mb-1">Request Type</FormLabel>
+            <FormLabel >Request Type</FormLabel>
             <FormItem>
               <Select
                   value={form.type_id?.toString() ?? ""}
@@ -261,13 +263,13 @@ return (
                 ))}
               </SelectContent>
             </Select>
+              {errors.type_id  && <p className="text-red-500 text-xs mt-1">{errors.type_id }</p>}
 
-              <FormMessage className="text-red-600 mt-1">{errors.type}</FormMessage>
             </FormItem>
           </FormField>
         {/* Request Subtype */}
           <FormField>
-            <FormLabel className="text-gray-600 text-xs mb-1">Request Subtype</FormLabel>
+            <FormLabel>Request Subtype</FormLabel>
             <FormItem>
 
             <Select
@@ -294,12 +296,12 @@ return (
                 ))}
             </SelectContent>
             </Select>
-              <FormMessage className="text-red-600 mt-1">{errors.subtype}</FormMessage>
+              {errors.subtype_id  && <p className="text-red-500 text-xs mt-1">{errors.subtype_id }</p>}
             </FormItem>
           </FormField>
         {/* Priority */}
           <FormField>
-            <FormLabel className="text-gray-600 text-xs mb-1">Priority</FormLabel>
+            <FormLabel >Priority</FormLabel>
             <FormItem>
             <Select
               value={form.priority}
@@ -329,11 +331,11 @@ return (
                 ))}
               </SelectContent>
             </Select>
-              <FormMessage className="text-red-600 mt-1">{errors.priority}</FormMessage>
+              {errors.priority && <p className="text-red-500 text-xs mt-1">{errors.priority}</p>}
             </FormItem>
           </FormField>
            <div className="flex items-center gap-2 text-gray-700 font-bold mt-4 mb-2">
-            <UploadCloud className="h-5 w-5" /> <span>ATTACHMENTS</span>
+            <UploadCloud className="h-5 w-5 text-orange-500" /> <span>ATTACHMENTS</span>
           </div>
         {/* Drag & Drop Upload */}
         <FormField>
@@ -342,7 +344,6 @@ return (
                 Click or drag files <br /> <span className="text-xs text-gray-400">Max 10MB per file</span>
               </div>
             </FormControl>
-            <FormMessage className="text-red-600 mt-1">{errors.attachments}</FormMessage>
           </FormField>
     </div>
 
@@ -352,7 +353,8 @@ return (
         <Button variant="link" size="lg" onClick={handleCancel} className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Cancel</Button>
         <div className="flex gap-3">
           <Button type="button" variant="secondary" size="lg">Save as Draft</Button>
-          <Button type="submit" variant="default" size="lg">Submit Request</Button>
+          <Button type="submit" variant="default" size="lg">
+          <ArrowRight className="h-4 w-4" /> Submit Request</Button>
         </div>
       </div>
     </Form>
