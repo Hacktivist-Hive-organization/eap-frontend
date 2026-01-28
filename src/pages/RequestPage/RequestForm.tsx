@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Info } from "lucide-react";
+import { Info, FileText, Settings, UploadCloud } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea }  from '@/components/ui/textarea';
@@ -148,14 +148,12 @@ export const  RequestForm = () => {
 
 return (
 
-    <Form className="max-w-3xl mx-auto space-y-6 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl"
-                 onSubmit={handleSubmit} >
+    <Form className="max-w-4xl mx-auto space-y-6 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl" onSubmit={handleSubmit} >
 
-     <div className="space-y-1">
-        <h2 className="text-xl font-bold">Create New Request</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          Submit a detailed administrative ticket.
-        </p>
+     {/* Header */}
+      <div className="space-y-1">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Create New Request</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Submit a detailed administrative ticket.</p>
       </div>
       {successMessage && (
           <div className="flex items-center justify-between bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-md mb-4">
@@ -171,10 +169,12 @@ return (
         )}
 
 
-   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-    <div className="md:col-span-2 space-y-4 sticky top-6" >
-        <p className="text-sm font-bold">REQUEST CONTENT</p>
-         {/* Request Title */}
+   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="md:col-span-2 space-y-4" >
+            <div className="flex items-center gap-2 text-gray-700 font-bold mb-2">
+            <FileText className="h-5 w-5" /> <span>REQUEST CONTENT</span>
+          </div>
+          {/* Request Title */}
           <FormField>
             <FormItem>
               <FormLabel className="text-xs text-gray-700 dark:text-gray-300 mb-1">Request Title</FormLabel>
@@ -195,7 +195,7 @@ return (
            {/* Detailed Description */}
               <FormField>
                 <FormItem>
-                  <FormLabel className="text-xs text-gray-700 dark:text-gray-300 mb-1">Detailed Description</FormLabel>
+                  <FormLabel className="flex items-center gap-1 text-gray-600 text-xs mb-1">Detailed Description</FormLabel>
                   <FormControl>
                 <Textarea
                   name="description"
@@ -212,7 +212,9 @@ return (
         {/* Business Justification */}
           <FormField>
             <FormItem>
-              <FormLabel className="text-xs text-gray-700 dark:text-gray-300 mb-1">Business Justification</FormLabel>
+              <FormLabel className="flex items-center gap-1 text-gray-600 text-xs mb-1">
+                Business Justification
+              </FormLabel>
               <FormControl>
             <Textarea
               name="justification"
@@ -228,11 +230,14 @@ return (
           </FormField>
 
         </div>
-        <div className="md:col-span-1 bg-gray-50 dark:bg-gray-900 p-6 rounded-xl space-y-4">
-           <p className="text-sm font-bold">METADATA</p>
+        <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-xl space-y-4">
+            <div className="flex items-center gap-2 text-gray-700 font-bold mb-2">
+                <Settings className="h-5 w-5" /> <span>METADATA</span>
+            </div>
+
             {/* Request Type */}
             <FormField>
-            <FormLabel className="text-xs text-gray-700 dark:text-gray-300 mb-1">Request Type</FormLabel>
+            <FormLabel className="text-gray-600 text-xs mb-1">Request Type</FormLabel>
             <FormItem>
               <Select
                   value={form.type_id?.toString() ?? ""}
@@ -262,7 +267,7 @@ return (
           </FormField>
         {/* Request Subtype */}
           <FormField>
-            <FormLabel className="text-xs text-gray-700 dark:text-gray-300 mb-1">Request Subtype</FormLabel>
+            <FormLabel className="text-gray-600 text-xs mb-1">Request Subtype</FormLabel>
             <FormItem>
 
             <Select
@@ -294,7 +299,7 @@ return (
           </FormField>
         {/* Priority */}
           <FormField>
-            <FormLabel className="text-xs text-gray-700 dark:text-gray-300 mb-1">Priority</FormLabel>
+            <FormLabel className="text-gray-600 text-xs mb-1">Priority</FormLabel>
             <FormItem>
             <Select
               value={form.priority}
@@ -327,44 +332,28 @@ return (
               <FormMessage className="text-red-600 mt-1">{errors.priority}</FormMessage>
             </FormItem>
           </FormField>
-        <p className="text-sm font-bold">ATTACHMENTS</p>
-
+           <div className="flex items-center gap-2 text-gray-700 font-bold mt-4 mb-2">
+            <UploadCloud className="h-5 w-5" /> <span>ATTACHMENTS</span>
+          </div>
         {/* Drag & Drop Upload */}
-<FormField>
-  <FormControl>
-
-  </FormControl>
-  <FormMessage className="text-red-600 mt-1">{errors.attachments}</FormMessage>
-</FormField>
+        <FormField>
+            <FormControl>
+              <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-blue-400 hover:text-blue-500 transition">
+                Click or drag files <br /> <span className="text-xs text-gray-400">Max 10MB per file</span>
+              </div>
+            </FormControl>
+            <FormMessage className="text-red-600 mt-1">{errors.attachments}</FormMessage>
+          </FormField>
     </div>
 
     </div>
-     <div className="flex justify-between items-center mt-4">
-
-        <Button
-            variant="link"
-            size="lg"
-            onClick={handleCancel}
-            className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-          >
-            Cancel
-          </Button>
-         <div className="flex gap-4">
-        <Button
-          type="button"
-          variant="secondary"
-          size="lg"
-        >
-          Save as Draft
-        </Button>
-        <Button
-          type="submit"
-          variant="default"
-          size="lg"
-        >
-          Submit Request
-        </Button>
-      </div>
+           {/* Footer Buttons */}
+      <div className="flex justify-between items-center mt-4">
+        <Button variant="link" size="lg" onClick={handleCancel} className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Cancel</Button>
+        <div className="flex gap-3">
+          <Button type="button" variant="secondary" size="lg">Save as Draft</Button>
+          <Button type="submit" variant="default" size="lg">Submit Request</Button>
+        </div>
       </div>
     </Form>
     );
