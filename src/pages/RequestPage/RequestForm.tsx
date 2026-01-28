@@ -130,8 +130,8 @@ export const RequestForm = () => {
     if (!validate()) return;
     try {
       await requestService.createRequest({
-        type_id: form.type_id!,
-        subtype_id: form.subtype_id!,
+        type_id: form.type_id,
+        subtype_id: form.subtype_id,
         title: form.title,
         description: form.description,
         business_justification: form.justification,
@@ -140,7 +140,7 @@ export const RequestForm = () => {
       });
       setSuccessMessage('Request saved successfully!');
       resetForm();
-    } catch (error) {
+    } catch (_error) {
       alert('Failed to create request. Please try again.');
     }
   };
