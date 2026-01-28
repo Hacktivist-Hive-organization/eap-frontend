@@ -8,7 +8,6 @@ import type { ReactNode } from 'react';
 
 /* ================= TYPES ================= */
 
-// TODO: Move to types.ts
 export type ApiPriority = 'Urgent' | 'High' | 'Medium' | 'Low';
 
 export type Priority = 'urgent' | 'high' | 'medium' | 'low';

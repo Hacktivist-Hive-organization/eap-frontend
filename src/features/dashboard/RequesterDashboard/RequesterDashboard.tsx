@@ -3,11 +3,14 @@ import {
   CircleDotIcon,
   FileIcon,
   InboxIcon,
+  PlusIcon,
 } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { PageLayout } from '@/components/common/PageLayout';
-import { type Request, RequestsTable } from '@/components/common/RequestsTable';
+import { RequestsTable } from '@/components/common/RequestsTable';
 import type { SidebarItem } from '@/components/common/Sidebar';
+import { Button } from '@/components/ui/button';
+import { useDraftRequests } from './hooks';
 import type { DashboardType } from './utils/types';
 
 const sidebarItems: SidebarItem[] = [
@@ -36,50 +39,11 @@ const sidebarItems: SidebarItem[] = [
     path: '/dashboard/draft',
   },
 ];
-// TODO: Replace with actual data from API
-const requests: Request[] = [
-  {
-    id: '1',
-    title: 'New laptop request',
-    type: 'Hardware',
-    subtype: 'Laptop',
-    status: 'Draft',
-    lastUpdate: '2024-01-15',
-    priority: 'High',
-  },
-  {
-    id: '2',
-    title: 'Software license renewal',
-    type: 'Software',
-    subtype: 'License',
-    status: 'Draft',
-    lastUpdate: '2026-01-14',
-    priority: 'Medium',
-  },
-  {
-    id: '3',
-    title: 'Office supplies',
-    type: 'Supplies',
-    subtype: 'General',
-    status: 'Draft',
-    lastUpdate: '2026-01-26T10:00:00Z',
-    priority: 'Low',
-  },
-  {
-    id: '4',
-    title: 'Access card replacement',
-    type: 'Security',
-    subtype: 'Access',
-    status: 'Draft',
-    lastUpdate: '2024-01-12',
-    priority: 'High',
-    assignee: 'Joe Doe',
-  },
-];
 
 export function RequesterDashboard() {
   const { view } = useParams<{ view: DashboardType }>();
   const activeView = (view as DashboardType) || 'draft';
+  const { data: draftRequests = [], isLoading } = useDraftRequests('draft');
 
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
@@ -91,10 +55,24 @@ export function RequesterDashboard() {
 
       {activeView === 'draft' && (
         <div>
-          <span className="capitalize text-2xl font-bold p-4">
-            {activeView} Requests Dashboard
-          </span>
-          <RequestsTable requests={requests} />
+          <div className="flex items-center justify-between p-4">
+            <span className="capitalize text-2xl font-bold">
+              {activeView} Requests Dashboard
+            </span>
+            <Button asChild>
+              <Link to="/request/new">
+                <PlusIcon className="h-4 w-4" />
+                New Request
+              </Link>
+            </Button>
+          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-gray-500">Loading...</p>
+            </div>
+          ) : (
+            <RequestsTable requests={draftRequests} />
+          )}
         </div>
       )}
     </PageLayout>

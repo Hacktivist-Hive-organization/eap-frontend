@@ -1,4 +1,4 @@
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { MinusIcon } from 'lucide-react';
 import Avatar from 'react-avatar';
 import { Badge } from '@/components/ui/badge';
@@ -10,25 +10,28 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  type ApiPriority,
-  apiPriorityToUiPriority,
-  priorityMap,
-} from '@/types/PriorityIcons';
-import {
-  type ApiStatus,
-  apiStatusToUiStatus,
-  statusMap,
-} from '@/types/StatusBadges';
+import { type Priority, priorityMap } from '@/types/Priority';
+import { type Status, statusMap } from '@/types/Status';
+
+function formatLastUpdate(dateString: string | null | undefined): string {
+  if (!dateString) return '-';
+  try {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return '-';
+    return formatDistanceToNow(date, { addSuffix: true });
+  } catch {
+    return '-';
+  }
+}
 
 export interface Request {
-  id: string;
+  id: number;
   title: string;
   type: string;
   subtype: string;
-  status: ApiStatus;
-  lastUpdate: string;
-  priority: ApiPriority;
+  status: Status;
+  lastUpdate?: string;
+  priority: Priority;
   assignee?: string;
 }
 
@@ -65,19 +68,10 @@ export function RequestsTable({ requests }: RequestsTableProps) {
               <TableRow key={request.id}>
                 <TableCell>
                   <span
-                    className={
-                      priorityMap[apiPriorityToUiPriority[request.priority]]
-                        .className
-                    }
-                    title={
-                      priorityMap[apiPriorityToUiPriority[request.priority]]
-                        .label
-                    }
+                    className={priorityMap[request.priority].className}
+                    title={priorityMap[request.priority].label}
                   >
-                    {
-                      priorityMap[apiPriorityToUiPriority[request.priority]]
-                        .icon
-                    }
+                    {priorityMap[request.priority].icon}
                   </span>
                 </TableCell>
                 <TableCell>#{request.id}</TableCell>
@@ -88,18 +82,12 @@ export function RequestsTable({ requests }: RequestsTableProps) {
                 <TableCell>
                   <Badge
                     variant="outline"
-                    className={
-                      statusMap[apiStatusToUiStatus[request.status]].className
-                    }
+                    className={statusMap[request.status].className}
                   >
-                    {statusMap[apiStatusToUiStatus[request.status]].label}
+                    {statusMap[request.status].label}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  {formatDistanceToNow(parseISO(request.lastUpdate), {
-                    addSuffix: true,
-                  })}
-                </TableCell>
+                <TableCell>{formatLastUpdate(request.lastUpdate)}</TableCell>
                 <TableCell>
                   {request.assignee !== undefined && (
                     <Avatar name={request.assignee} size="30" round={true} />

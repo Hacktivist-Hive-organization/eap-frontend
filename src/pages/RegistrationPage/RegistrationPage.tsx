@@ -43,7 +43,7 @@ export function RegistrationPage() {
             <FieldGroup>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Controller
-                  name="firstName"
+                  name="first_name"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
@@ -66,7 +66,7 @@ export function RegistrationPage() {
                   )}
                 />
                 <Controller
-                  name="lastName"
+                  name="last_name"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
