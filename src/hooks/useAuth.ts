@@ -5,7 +5,7 @@ import { authService } from '@/services/auth';
 import { clearUser, setUser } from '@/store/slices/userSlice';
 import { useAppDispatch } from './useRedux';
 
-export function useLogin() {
+export function useLogin(redirectTo: string = '/') {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ export function useLogin() {
     onSuccess: (response) => {
       authService.setToken(response.access_token);
       dispatch(setUser(response.user));
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     },
   });
 }
