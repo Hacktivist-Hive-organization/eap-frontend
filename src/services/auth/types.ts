@@ -14,7 +14,8 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse {
-  token: string;
+  token_type: string;
+  access_token: string;
   user: {
     id: string;
     email: string;

@@ -1,9 +1,8 @@
 'use client';
 
 import { LockKeyholeIcon, MailIcon } from 'lucide-react';
-import { Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { Background } from '@/components/common/Background';
+import { Background, FormField } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,13 +11,7 @@ import {
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
+import { Field, FieldGroup } from '@/components/ui/field';
 import { Separator } from '@/components/ui/separator';
 import { useLoginForm } from './hooks';
 
@@ -39,64 +32,29 @@ export function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+          <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Controller
+              <FormField
+                form={form}
                 name="email"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-title">
-                      Email address
-                    </FieldLabel>
-                    <div className="relative">
-                      <MailIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        {...field}
-                        id="form-rhf-demo-title"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="name@company.com"
-                        className="pl-10"
-                      />
-                    </div>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
+                label="Email address"
+                id="login-email"
+                icon={MailIcon}
+                placeholder="name@company.com"
               />
-              <Controller
+              <FormField
+                form={form}
                 name="password"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <div className="flex justify-between">
-                      <FieldLabel htmlFor="form-rhf-demo-title">
-                        Password
-                      </FieldLabel>
-                    </div>
-                    <div className="relative">
-                      <LockKeyholeIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        {...field}
-                        id="form-rhf-demo-title"
-                        type="password"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="••••••••"
-                        className="pl-10"
-                      />
-                    </div>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
+                label="Password"
+                id="login-password"
+                type="password"
+                icon={LockKeyholeIcon}
+                placeholder="••••••••"
               />
               <Field orientation="horizontal">
                 <Button
                   type="submit"
-                  form="form-rhf-demo"
+                  form="login-form"
                   className="w-full"
                   disabled={isPending}
                 >

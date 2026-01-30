@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { RequesterDashboard } from '@/features/dashboard/RequesterDashboard';
-import { LoginPage } from '@/pages/LoginPage/LoginPage';
-import { RegistrationPage } from '@/pages/RegistrationPage/RegistrationPage';
+import { RequesterDashboard } from './features/dashboard/RequesterDashboard';
+import { LoginPage } from './pages/LoginPage/LoginPage';
+import { RegistrationPage } from './pages/RegistrationPage/RegistrationPage';
 
 function App() {
   return (

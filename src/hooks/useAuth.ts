@@ -5,16 +5,16 @@ import { authService } from '@/services/auth';
 import { clearUser, setUser } from '@/store/slices/userSlice';
 import { useAppDispatch } from './useRedux';
 
-export function useLogin() {
+export function useLogin(redirectTo: string = '/') {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
     onSuccess: (response) => {
-      authService.setToken(response.token);
+      authService.setToken(response.access_token);
       dispatch(setUser(response.user));
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     },
   });
 }
@@ -26,7 +26,7 @@ export function useRegister() {
   return useMutation({
     mutationFn: (data: RegisterRequest) => authService.register(data),
     onSuccess: (response) => {
-      authService.setToken(response.token);
+      authService.setToken(response.access_token);
       dispatch(setUser(response.user));
       navigate('/');
     },

@@ -2,11 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import App from '@/App';
+import { QueryProvider } from '@/context/query-context';
 import { store } from '@/store';
 
 import './index.css';
-import { QueryProvider } from '@/context/query-context';
 
 const root = document.getElementById('root') as HTMLElement;
 
@@ -16,6 +17,7 @@ ReactDOM.createRoot(root).render(
       <Provider store={store}>
         <BrowserRouter>
           <App />
+          <Toaster richColors position="top-right" />
         </BrowserRouter>
       </Provider>
     </QueryProvider>

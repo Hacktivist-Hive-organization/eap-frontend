@@ -1,20 +1,9 @@
 import * as z from 'zod';
+import { emailString, trimmedString } from '@/lib/validation';
 
 export const loginFormSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
-  password: z
-    .string()
-    .min(1, 'Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(
-      /[^A-Za-z0-9]/,
-      'Password must contain at least one special character',
-    ),
+  email: emailString().min(1, 'Email is required'),
+  password: trimmedString().min(1, 'Password is required'),
 });
 
 export type LoginFormData = z.infer<typeof loginFormSchema>;
