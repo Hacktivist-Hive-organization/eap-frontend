@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { MinusIcon } from 'lucide-react';
 import Avatar from 'react-avatar';
+import { EmptyState } from '@/components/common/StateMessage';
 import { Badge } from '@/components/ui/badge';
 import {
   Table,
@@ -41,11 +42,7 @@ interface RequestsTableProps {
 
 export function RequestsTable({ requests }: RequestsTableProps) {
   if (requests.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-gray-500">No created requests yet</p>
-      </div>
-    );
+    return <EmptyState message="No created requests yet" />;
   }
 
   return (

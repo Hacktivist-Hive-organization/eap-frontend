@@ -2,6 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import type { DashboardType } from '@/features/dashboard/RequesterDashboard/utils/types';
+import { Logo } from './Logo';
 import { LogoutButton } from './LogoutButton';
 import { Sidebar, type SidebarItem } from './Sidebar';
 
@@ -23,11 +24,7 @@ export function PageLayout({
           <header className="sticky top-0 z-10 bg-white shadow-sm border-b">
             <div className="flex items-center justify-between px-6 py-3.5">
               <div className="flex items-center gap-4">
-                <img
-                  src="/src/assets/Desk-X_tr.svg"
-                  alt="Desk-X logo"
-                  className="h-6 w-auto object-contain"
-                />
+                <Logo className="h-6 w-auto" />
               </div>
               <div className="flex items-center gap-4">
                 <LogoutButton />

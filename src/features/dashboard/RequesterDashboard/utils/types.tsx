@@ -5,8 +5,19 @@ import {
   InboxIcon,
 } from 'lucide-react';
 import type { SidebarItem } from '@/components/common/Sidebar';
+import type { Status } from '@/types/Status';
 
 export type DashboardType = 'all' | 'active' | 'closed' | 'draft';
+
+export const dashboardTypeToStatuses: Record<DashboardType, Status[]> = {
+  all: [
+    'draft',
+    'submitted' /*, 'under_review', 'in_progress', 'approved', 'rejected', 'completed'*/,
+  ],
+  active: ['submitted', 'under_review', 'in_progress', 'approved'],
+  closed: ['completed', 'rejected'],
+  draft: ['draft'],
+};
 
 export const sidebarItems: SidebarItem[] = [
   {

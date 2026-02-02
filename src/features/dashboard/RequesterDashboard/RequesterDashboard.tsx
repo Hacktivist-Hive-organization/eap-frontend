@@ -1,47 +1,40 @@
-import { PlusIcon } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { NewRequestButton } from '@/components/common/NewRequestButton';
 import { PageLayout } from '@/components/common/PageLayout';
 import { RequestsTable } from '@/components/common/RequestsTable';
-import { Button } from '@/components/ui/button';
-import type { Status } from '@/types/Status';
+import {
+  ComingSoonState,
+  LoadingState,
+} from '@/components/common/StateMessage';
 import { useRequestsByStatus } from './hooks';
-import { type DashboardType, sidebarItems } from './utils/types';
+import {
+  type DashboardType,
+  dashboardTypeToStatuses,
+  sidebarItems,
+} from './utils/types';
 
 export function RequesterDashboard() {
-  const { view } = useParams<{ view: DashboardType }>();
-  const activeView = (view as DashboardType) || 'draft';
+  const { view = 'all' } = useParams<{ view: DashboardType }>();
+  const activeView = view in dashboardTypeToStatuses ? view : 'all';
   const { data: requests = [], isLoading } = useRequestsByStatus(
-    activeView as Status,
+    dashboardTypeToStatuses[activeView],
   );
+
+  const isImplemented = activeView === 'all' || activeView === 'draft';
 
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
-      {activeView !== 'draft' && (
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-500">Dashboard view coming soon</p>
-        </div>
-      )}
-
-      {activeView === 'draft' && (
+      {!isImplemented ? (
+        <ComingSoonState />
+      ) : (
         <div>
           <div className="flex items-center justify-between p-2">
             <span className="capitalize text-2xl font-bold">
               {activeView} Requests Dashboard
             </span>
-            <Button asChild>
-              <Link to="/request/new">
-                <PlusIcon className="h-4 w-4" />
-                New Request
-              </Link>
-            </Button>
+            <NewRequestButton />
           </div>
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500">Loading...</p>
-            </div>
-          ) : (
-            <RequestsTable requests={requests} />
-          )}
+          {isLoading ? <LoadingState /> : <RequestsTable requests={requests} />}
         </div>
       )}
     </PageLayout>

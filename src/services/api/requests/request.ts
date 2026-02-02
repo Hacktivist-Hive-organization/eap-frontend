@@ -1,13 +1,18 @@
 import { api } from '@/services/api';
-import type { RequestResponse } from '@/services/auth/types';
+import type { RequestAllResponse } from '@/services/auth/types';
 import type { Status } from '@/types/Status';
 
 export const requestService = {
-  getRequestsByStatus: async (status: Status): Promise<RequestResponse[]> => {
-    const response = await api.get<RequestResponse[]>(
+  getRequestsByStatus: async (
+    statuses: Status[],
+  ): Promise<RequestAllResponse[]> => {
+    const response = await api.get<RequestAllResponse[]>(
       '/api/v1/requests/my-requests',
       {
-        params: { status },
+        params: { statuses },
+        paramsSerializer: {
+          indexes: null,
+        },
       },
     );
     return response.data;

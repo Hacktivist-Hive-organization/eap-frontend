@@ -1,35 +1,40 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import type { LoginRequest, RegisterRequest } from '@/services/auth';
+import type {
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+} from '@/services/auth';
 import { authService } from '@/services/auth';
 import { clearUser, setUser } from '@/store/slices/userSlice';
 import { useAppDispatch } from './useRedux';
 
-export function useLogin(redirectTo: string = '/') {
+function useAuthSuccess(redirectTo: string) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  return (response: AuthResponse) => {
+    authService.setToken(response.access_token);
+    dispatch(setUser(response.user));
+    navigate(redirectTo, { replace: true });
+  };
+}
+
+export function useLogin(redirectTo: string = '/') {
+  const onSuccess = useAuthSuccess(redirectTo);
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
-    onSuccess: (response) => {
-      authService.setToken(response.access_token);
-      dispatch(setUser(response.user));
-      navigate(redirectTo, { replace: true });
-    },
+    onSuccess,
   });
 }
 
-export function useRegister() {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+export function useRegister(redirectTo: string = '/') {
+  const onSuccess = useAuthSuccess(redirectTo);
 
   return useMutation({
     mutationFn: (data: RegisterRequest) => authService.register(data),
-    onSuccess: (response) => {
-      authService.setToken(response.access_token);
-      dispatch(setUser(response.user));
-      navigate('/');
-    },
+    onSuccess,
   });
 }
 

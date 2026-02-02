@@ -29,11 +29,9 @@ export interface RequestType {
   name: string;
 }
 
-export interface RequestResponse {
+export interface RequestAllResponse {
   id: number;
   title: string;
-  description: string;
-  business_justification: string;
   priority: Priority;
   status: Status;
   type: RequestType;

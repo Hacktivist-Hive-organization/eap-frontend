@@ -1,8 +1,8 @@
 import type { Request } from '@/components/common/RequestsTable';
-import type { RequestResponse } from '@/services/auth/types';
+import type { RequestAllResponse } from '@/services/auth/types';
 
 export function mapRequestResponseToRequest(
-  response: RequestResponse,
+  response: RequestAllResponse,
 ): Request {
   return {
     id: response.id,
@@ -16,7 +16,7 @@ export function mapRequestResponseToRequest(
 }
 
 export function mapRequestResponsesToRequests(
-  responses: RequestResponse[],
+  responses: RequestAllResponse[],
 ): Request[] {
   return responses.map(mapRequestResponseToRequest);
 }
