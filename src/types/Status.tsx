@@ -1,5 +1,3 @@
-/* ================= TYPES ================= */
-
 export type ApiStatus =
   | 'Draft'
   | 'Submitted'
@@ -23,9 +21,6 @@ interface StatusConfig {
   className: string;
 }
 
-/* ================= MAPPERS ================= */
-
-// backend → ui
 export const apiStatusToUiStatus: Record<ApiStatus, Status> = {
   Draft: 'draft',
   Submitted: 'submitted',
@@ -35,8 +30,6 @@ export const apiStatusToUiStatus: Record<ApiStatus, Status> = {
   'In progress': 'in_progress',
   Completed: 'completed',
 };
-
-/* ================= UI CONFIG ================= */
 
 export const statusMap: Record<Status, StatusConfig> = {
   draft: {

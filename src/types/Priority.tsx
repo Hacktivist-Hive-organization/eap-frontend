@@ -6,8 +6,6 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-/* ================= TYPES ================= */
-
 export type ApiPriority = 'Urgent' | 'High' | 'Medium' | 'Low';
 
 export type Priority = 'urgent' | 'high' | 'medium' | 'low';
@@ -18,16 +16,12 @@ interface PriorityConfig {
   label: string;
 }
 
-/* ================= MAPPERS ================= */
-
 export const apiPriorityToUiPriority: Record<ApiPriority, Priority> = {
   Urgent: 'urgent',
   High: 'high',
   Medium: 'medium',
   Low: 'low',
 };
-
-/* ================= UI CONFIG ================= */
 
 export const priorityMap: Record<Priority, PriorityConfig> = {
   urgent: {
