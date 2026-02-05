@@ -1,5 +1,8 @@
 import { api } from '@/services/api';
-import type { RequestAllResponse } from '@/services/auth/types';
+import type {
+  RequestAllResponse,
+  RequestDetailResponse,
+} from '@/services/auth/types';
 import type { Status } from '@/types/Status';
 
 export const requestService = {
@@ -14,6 +17,13 @@ export const requestService = {
           indexes: null,
         },
       },
+    );
+    return response.data;
+  },
+
+  getRequestById: async (id: number): Promise<RequestDetailResponse> => {
+    const response = await api.get<RequestDetailResponse>(
+      `/api/v1/requests/${id}`,
     );
     return response.data;
   },

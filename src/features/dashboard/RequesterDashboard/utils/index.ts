@@ -1,5 +1,8 @@
 import type { Request } from '@/components/common/RequestsTable';
-import type { RequestAllResponse } from '@/services/auth/types';
+import type {
+  RequestAllResponse,
+  RequestDetailResponse,
+} from '@/services/auth/types';
 
 export function mapRequestResponseToRequest(
   response: RequestAllResponse,
@@ -19,4 +22,22 @@ export function mapRequestResponsesToRequests(
   responses: RequestAllResponse[],
 ): Request[] {
   return responses.map(mapRequestResponseToRequest);
+}
+
+export function formatUserName(user: { first_name: string; last_name: string }): string {
+  return `${user.first_name} ${user.last_name}`;
+}
+
+export function mapRequestDetailResponseToRequest(
+  response: RequestDetailResponse,
+): Request {
+  return {
+    id: response.id,
+    title: response.title,
+    type: response.type.name,
+    subtype: response.subtype.name,
+    status: response.status,
+    lastUpdate: response.updated_at || response.created_at,
+    priority: response.priority
+  };
 }

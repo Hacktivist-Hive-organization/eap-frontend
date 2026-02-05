@@ -1,11 +1,12 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { NewRequestButton } from '@/components/common/NewRequestButton';
 import { PageLayout } from '@/components/common/PageLayout';
-import { RequestsTable } from '@/components/common/RequestsTable';
+import { type Request, RequestsTable } from '@/components/common/RequestsTable';
 import {
   ComingSoonState,
   LoadingState,
 } from '@/components/common/StateMessage';
+import { RequestDetailModal } from './components';
 import { useRequestsByStatus } from './hooks';
 import {
   type DashboardType,
@@ -19,8 +20,20 @@ export function RequesterDashboard() {
   const { data: requests = [], isLoading } = useRequestsByStatus(
     dashboardTypeToStatuses[activeView],
   );
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedRequestId = searchParams.get('requestId');
 
   const isImplemented = activeView === 'all' || activeView === 'draft';
+
+  const handleRowClick = (request: Request) => {
+    setSearchParams({ requestId: String(request.id) });
+  };
+
+  const handleModalClose = (open: boolean) => {
+    if (!open) {
+      setSearchParams({});
+    }
+  };
 
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
@@ -34,8 +47,19 @@ export function RequesterDashboard() {
             </span>
             <NewRequestButton />
           </div>
-          {isLoading ? <LoadingState /> : <RequestsTable requests={requests} />}
+          {isLoading ? (
+            <LoadingState />
+          ) : (
+            <RequestsTable requests={requests} onRowClick={handleRowClick} />
+          )}
         </div>
+      )}
+      {selectedRequestId && (
+        <RequestDetailModal
+          requestId={Number(selectedRequestId)}
+          open={true}
+          onOpenChange={handleModalClose}
+        />
       )}
     </PageLayout>
   );
