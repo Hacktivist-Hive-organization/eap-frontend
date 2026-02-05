@@ -1,6 +1,7 @@
 # EAP Frontend
 
-Frontend application for the EAP platform, built with React, TypeScript, and Vite. This repository contains all frontend code, UI logic, client-side integrations, and design system configuration.
+Frontend application for the EAP platform, built with React, TypeScript, and Vite. This repository contains all frontend
+code, UI logic, client-side integrations, and design system configuration.
 
 ## Overview
 
@@ -12,7 +13,8 @@ The EAP Frontend is a modern React application responsible for:
 - Global state management
 - Design system integration (shadcn/ui + Tailwind CSS)
 
-The project follows a scalable, modular architecture with clear separation of concerns and strict development conventions.
+The project follows a scalable, modular architecture with clear separation of concerns and strict development
+conventions.
 
 ## Tech Stack
 
@@ -136,29 +138,30 @@ npm run format && npm run lint && npm run test
 
 ## Scripts
 
-| Command                | Description                                      |
-| ---------------------- | ------------------------------------------------ |
-| `npm install`          | Install dependencies                             |
-| `npm run dev`          | Start development server                         |
-| `npm run build`        | Build for production                             |
-| `npm run preview`      | Preview production build                         |
-| `npm run lint`         | Check linting and formatting with Biome         |
-| `npm run format`       | Auto-fix linting and formatting issues           |
-| `npm run format:unsafe`| Auto-fix with unsafe transformations             |
-| `npm run test`         | Run tests with Vitest                            |
-| `npm run test:coverage`| Run tests with coverage report                   |
+| Command                 | Description                             |
+|-------------------------|-----------------------------------------|
+| `npm install`           | Install dependencies                    |
+| `npm run dev`           | Start development server                |
+| `npm run build`         | Build for production                    |
+| `npm run preview`       | Preview production build                |
+| `npm run lint`          | Check linting and formatting with Biome |
+| `npm run format`        | Auto-fix linting and formatting issues  |
+| `npm run format:unsafe` | Auto-fix with unsafe transformations    |
+| `npm run test`          | Run tests with Vitest                   |
+| `npm run test:coverage` | Run tests with coverage report          |
 
 ## Architecture & Guidelines
 
 - **Component-based architecture:** Build small, reusable components that focus on a single responsibility.
 - **Page structure:** Pages coordinate the UI, manage state, and handle data fetching.
 - **Separation of concerns:**
-  - **State logic:** lives in `store/slices/`
-  - **UI logic:** lives in `components/`
-  - **API logic:** lives in `services/`
+    - **State logic:** lives in `store/slices/`
+    - **UI logic:** lives in `components/`
+    - **API logic:** lives in `services/`
 - **Store configuration:** Set up in `store/` to combine reducers and middleware.
 - **Design principle:** Prefer **composition over inheritance** for flexibility and maintainability.
-- **Documentation:** Record major architectural decisions in the `eap-architecture` repository (ADRs – Architecture Decision Records).
+- **Documentation:** Record major architectural decisions in the `eap-architecture` repository (ADRs – Architecture
+  Decision Records).
 
 ## Redux Overview
 
@@ -249,18 +252,19 @@ VITE_API_URL=http://localhost:8000
 ## Git Workflow
 
 - **Branches:**
-  - `main` — production-ready code
-  - `dev` — integration branch
-  - `feature/EAP-XXX-description` — feature development
+    - `main` — production-ready code
+    - `dev` — integration branch
+    - `feature/EAP-XXX-description` — feature development
 
 - **Rules:**
-  - Never commit directly to `main` or `dev`
-  - Always work on a **feature branch**
-  - All changes must go through **Pull Requests**
+    - Never commit directly to `main` or `dev`
+    - Always work on a **feature branch**
+    - All changes must go through **Pull Requests**
 
 - **PR Title Convention:**
-  - Format: `EAP-XXX: description`
-  - The number XXX is the Jira user story number. This convention enables automatic linking between pull requests and Jira tickets for full traceability.
+    - Format: `EAP-XXX: description`
+    - The number XXX is the Jira user story number. This convention enables automatic linking between pull requests and
+      Jira tickets for full traceability.
 
   Example:
   ```
@@ -319,3 +323,57 @@ Add the following to your VS Code settings for the best development experience:
 - **[eap-architecture](https://github.com/anastasiiaryzh/eap-architecture):** Platform decisions and API specifications.
 - **[eap-backend](https://github.com/AbeerAlkhouri/eap-backend):** Backend services.
 - **[eap-qa](https://github.com/funda-it31/eap-qa):** Test automation and QA.
+
+## Running in container
+
+The following instructions are for running the frontend in a container while
+fastapi runs directly on the same host without a container.
+
+### 1. Change Vite to run on 0.0.0.0 instead of on localhost
+
+In the "dev" script in package.JSON, add the --host flag to the vite command:
+
+```bash
+"vite --host"
+```
+
+This way, later when Vite will run inside a container, it'll make vite listen not only
+to the container's localhost, but to all interfaces. Thus, Vite will listen to messages coming from the host.
+
+---
+
+### 2. Configure CORS in FastAPI
+
+In FastAPI, make sure localhost:5173 is in the allowed CORS origins. This works for both running Vite in a
+container and running Vite directly on the machine.
+
+```python
+CORS_ALLOWED_ORIGINS: list[str] = [
+    "http://localhost:5173",
+]
+```
+
+Explanation:  
+The browser sends a request to localhost:5173 and since the machine's port 5173 will be mapped to a port in the frontend container, the request will reach the container. But the browser is not aware that this is what happens behind the scenes, and so, it also doesn't know that the response came from a container. As far as it's concerned, it got the frontend from the machine's localhost and this is the page's origin. Result: Any API requests from this JS will have origin http://localhost:5173.
+
+---
+
+### 3. Create the image
+
+```bash
+docker build --no-cache -t my_frontend_image .
+```
+
+---
+
+### 4. Run a container
+
+```bash
+docker run -p 5173:5173 --name frontend_container my_frontend_image
+```
+
+Explanation:
+
+- Inside the container, Vite will run on its default port of 5173.
+- In step 1 we already set Vite to listen to all network interfaces and not just the container's localhost.
+- That took care of the IP level, but we will also need the correct port. The browser will send messages to localhost:5173, and since we mapped the ports, Docker will be forward it to the container's eth0 (the container's virtual Ethernet interface) on port 5173. Since Vite is listening to all interfaces (0.0.0.0) on port 5173, the request will reach it.
