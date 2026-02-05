@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { NewRequestButton } from '@/components/common/NewRequestButton';
 import { PageLayout } from '@/components/common/PageLayout';
@@ -6,6 +7,7 @@ import {
   ComingSoonState,
   LoadingState,
 } from '@/components/common/StateMessage';
+import { RequestModal } from '@/features/RequestForm/RequestModal';
 import { useRequestsByStatus } from './hooks';
 import {
   type DashboardType,
@@ -21,7 +23,8 @@ export function RequesterDashboard() {
   );
 
   const isImplemented = activeView === 'all' || activeView === 'draft';
-
+  //const [isOpen, setIsOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
       {!isImplemented ? (
@@ -32,9 +35,10 @@ export function RequesterDashboard() {
             <span className="capitalize text-2xl font-bold">
               {activeView} Requests Dashboard
             </span>
-            <NewRequestButton />
+            <NewRequestButton onClick={() => setShowForm(true)} />
           </div>
           {isLoading ? <LoadingState /> : <RequestsTable requests={requests} />}
+          <RequestModal open={showForm} onClose={() => setShowForm(false)} />
         </div>
       )}
     </PageLayout>
