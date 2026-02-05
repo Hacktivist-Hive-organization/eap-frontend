@@ -47,7 +47,6 @@ export interface CreateRequestPayload {
   description: string;
   business_justification: string;
   priority: string;
-  requester_id: number;
 }
 
 export interface RequestSubtype {

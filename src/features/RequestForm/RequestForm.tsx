@@ -170,7 +170,6 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
         description: form.description,
         business_justification: form.justification,
         priority: form.priority.toLowerCase(),
-        requester_id: 1,
       });
       resetForm();
       onSuccess?.();

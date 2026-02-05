@@ -13,10 +13,8 @@ export const RequestModal = ({ open, onClose }: Props) => {
     // Overlay + modal box
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 transition-opacity duration-200"
-      //onClick={onClose} // click outside closes
     >
       <div
-        //onClick={(e) => e.stopPropagation()}
         className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-5xl max-h-[97vh] overflow-y-auto relative p-6"
       >
         {/* Close button */}

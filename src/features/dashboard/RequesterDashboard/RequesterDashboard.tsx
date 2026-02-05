@@ -23,8 +23,8 @@ export function RequesterDashboard() {
   );
 
   const isImplemented = activeView === 'all' || activeView === 'draft';
-  //const [isOpen, setIsOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
       {!isImplemented ? (
