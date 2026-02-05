@@ -18,5 +18,8 @@ export function useRequestById(id: number) {
     queryKey: ['request', id],
     queryFn: () => requestService.getRequestById(id),
     select: (data): RequestDetailResponse => data,
+    enabled: id > 0,
+    staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh, no refetch on reopen
+    refetchOnWindowFocus: false,
   });
 }
