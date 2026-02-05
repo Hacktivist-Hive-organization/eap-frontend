@@ -51,7 +51,6 @@ const PRIORITIES = ['low', 'medium', 'high'];
 export const RequestForm = ({ onCancel, onSuccess }: Props) => {
   const [form, setForm] = useState<FormState>(INITIAL_FORM_STATE);
   const [errors, setErrors] = useState<FormErrors>({});
-  //const [typesError, setTypesError] = useState<string | null>(null);
   const { types, loading, error } = useRequestTypes();
 
   const validate = (data: FormState) => {
@@ -62,19 +61,19 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
     }
 
     if (data.subtype_id === null) {
-      newErrors.subtype_id = 'Subtype is required and must match selected type';
+      newErrors.subtype_id = 'Subtype is required';
     }
 
-    if (data.title.length < 5 || form.title.length > 200) {
+    if (data.title.length < 5 || data.title.length > 200) {
       newErrors.title = 'Title must be between 5 and 200 characters';
     }
 
-    if (data.description.length < 20 || form.description.length > 2000) {
+    if (data.description.length < 20 || data.description.length > 2000) {
       newErrors.description =
         'Description must be between 20 and 2000 characters';
     }
 
-    if (data.justification.length < 20 || form.justification.length > 1000) {
+    if (data.justification.length < 20 || data.justification.length > 1000) {
       newErrors.justification =
         'Business justification must be between 20 and 1000 characters';
     }
@@ -87,21 +86,65 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  //useEffect(() => {
-  //validate();
-  //}, [form]);
+  const validateField = (
+    name: keyof FormState,
+    value: string | number | null,
+  ) => {
+    switch (name) {
+      case 'type_id':
+        return value === null
+          ? 'Type is required and must be valid'
+          : undefined;
+
+      case 'subtype_id':
+        return value === null ? 'Subtype is required' : undefined;
+
+      case 'title':
+        return typeof value === 'string' &&
+          (value.length < 5 || value.length > 200)
+          ? 'Title must be between 5 and 200 characters'
+          : undefined;
+
+      case 'description':
+        return typeof value === 'string' &&
+          (value.length < 20 || value.length > 2000)
+          ? 'Description must be between 20 and 2000 characters'
+          : undefined;
+
+      case 'justification':
+        return typeof value === 'string' &&
+          (value.length < 20 || value.length > 1000)
+          ? 'Business justification must be between 20 and 1000 characters'
+          : undefined;
+
+      case 'priority':
+        return typeof value === 'string' && !PRIORITIES.includes(value)
+          ? 'Priority is required and must be valid'
+          : undefined;
+    }
+  };
+
+  const updateFieldError = (
+    name: keyof FormState,
+    value: string | number | null,
+  ) => {
+    const fieldError = validateField(name, value);
+
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (fieldError) next[name] = fieldError;
+      else delete next[name];
+      return next;
+    });
+  };
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    const nextForm = {
-      ...form,
-      [name]: value,
-    };
 
-    setForm(nextForm);
-    validate(nextForm);
+    setForm((prev) => ({ ...prev, [name]: value }));
+    updateFieldError(name as keyof FormState, value);
   };
 
   const resetForm = () => {
@@ -109,13 +152,12 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
     setErrors({});
   };
   const handleCancel = () => {
-    setForm(INITIAL_FORM_STATE);
+    resetForm();
     onCancel?.();
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('form', form);
     if (!validate(form)) return;
     if (form.type_id === null || form.subtype_id === null) {
       return;
@@ -240,13 +282,13 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
               <Select
                 value={form.type_id?.toString() ?? ''}
                 onValueChange={(value) => {
-                  const nextForm = {
-                    ...form,
-                    type_id: Number(value),
+                  const numeric = Number(value);
+                  setForm((prev) => ({
+                    ...prev,
+                    type_id: numeric,
                     subtype_id: null,
-                  };
-                  setForm(nextForm);
-                  validate(nextForm);
+                  }));
+                  updateFieldError('type_id', numeric);
                 }}
               >
                 <SelectTrigger className="w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
@@ -277,13 +319,9 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
               <Select
                 value={form.subtype_id?.toString() ?? ''}
                 onValueChange={(value) => {
-                  const nextForm = {
-                    ...form,
-                    subtype_id: Number(value),
-                  };
-
-                  setForm(nextForm);
-                  validate(nextForm);
+                  const numeric = Number(value);
+                  setForm((prev) => ({ ...prev, subtype_id: numeric }));
+                  updateFieldError('subtype_id', numeric);
                 }}
               >
                 <SelectTrigger className="w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
@@ -316,13 +354,8 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
               <Select
                 value={form.priority}
                 onValueChange={(value) => {
-                  const nextForm = {
-                    ...form,
-                    priority: value,
-                  };
-
-                  setForm(nextForm);
-                  validate(nextForm);
+                  setForm((prev) => ({ ...prev, priority: value }));
+                  updateFieldError('priority', value);
                 }}
               >
                 <SelectTrigger className="w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
