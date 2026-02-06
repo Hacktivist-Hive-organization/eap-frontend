@@ -1,12 +1,12 @@
 import { useParams, useSearchParams } from 'react-router-dom';
 import { NewRequestButton } from '@/components/common/NewRequestButton';
 import { PageLayout } from '@/components/common/PageLayout';
+import { RequestDetailModal } from '@/components/common/RequestDetailModal';
 import { type Request, RequestsTable } from '@/components/common/RequestsTable';
 import {
   ComingSoonState,
   LoadingState,
 } from '@/components/common/StateMessage';
-import { RequestDetailModal } from './components';
 import { useRequestsByStatus } from './hooks';
 import {
   type DashboardType,
