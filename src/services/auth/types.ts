@@ -1,4 +1,5 @@
 import type { Priority } from '@/types/Priority';
+import type { Role } from '@/types/Role';
 import type { Status } from '@/types/Status';
 
 export interface LoginRequest {
@@ -17,10 +18,11 @@ export interface AuthResponse {
   token_type: string;
   access_token: string;
   user: {
-    id: string;
+    id: number;
     email: string;
     first_name: string;
     last_name: string;
+    role: Role;
   };
 }
 

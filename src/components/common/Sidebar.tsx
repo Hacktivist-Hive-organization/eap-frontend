@@ -10,10 +10,9 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import type { DashboardType } from '@/features/dashboard/RequesterDashboard/utils/types';
 
 export interface SidebarItem {
-  key: DashboardType;
+  key: string;
   label: string;
   icon: ReactNode;
   path: string;
@@ -21,7 +20,7 @@ export interface SidebarItem {
 
 interface SidebarProps {
   items: SidebarItem[];
-  activeKey: DashboardType;
+  activeKey: string;
 }
 
 export function Sidebar({ items, activeKey }: SidebarProps) {

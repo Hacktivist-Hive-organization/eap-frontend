@@ -1,14 +1,13 @@
 import type { PropsWithChildren } from 'react';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import type { DashboardType } from '@/features/dashboard/RequesterDashboard/utils/types';
 import { Logo } from './Logo';
 import { LogoutButton } from './LogoutButton';
 import { Sidebar, type SidebarItem } from './Sidebar';
 
 interface Props {
   sidebarItems: SidebarItem[];
-  activeKey: DashboardType;
+  activeKey: string;
 }
 
 export function PageLayout({
