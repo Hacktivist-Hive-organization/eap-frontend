@@ -39,3 +39,23 @@ export interface RequestAllResponse {
   created_at: string;
   updated_at: string | null;
 }
+
+export interface CreateRequestPayload {
+  type_id: number;
+  subtype_id: number;
+  title: string;
+  description: string;
+  business_justification: string;
+  priority: string;
+}
+
+export interface RequestSubtype {
+  id: number;
+  name: string;
+}
+
+export interface RequestTypeSubTypes {
+  id: number;
+  name: string;
+  subtypes: RequestSubtype[];
+}
