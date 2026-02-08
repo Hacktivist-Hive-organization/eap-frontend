@@ -124,7 +124,8 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
           : undefined;
 
       case 'priority':
-        return typeof value === 'string' && !PRIORITIES.includes(value as Priority)
+        return typeof value === 'string' &&
+          !PRIORITIES.includes(value as Priority)
           ? 'Priority is required and must be valid'
           : undefined;
     }
@@ -367,13 +368,11 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                   {PRIORITIES.map((p) => {
                     const config = priorityMap[p];
                     return (
-                      <SelectItem
-                        key={p}
-                        value={p}
-                        className="hover:bg-gray-100 rounded-md px-2 py-1"
-                      >
+                      <SelectItem key={p} value={p}>
                         <span className="flex items-center gap-2">
-                          <span className={config.className}>{config.icon}</span>
+                          <span className={config.className}>
+                            {config.icon}
+                          </span>
                           {config.label}
                         </span>
                       </SelectItem>
