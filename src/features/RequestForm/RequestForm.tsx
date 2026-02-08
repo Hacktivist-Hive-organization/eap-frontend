@@ -386,7 +386,8 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
               )}
             </FormItem>
           </FormField>
-          {/* <div className="flex items-center gap-2 text-gray-700 font-bold mt-4 mb-2">
+          {/* //Not in use for now, keep it simple 
+          <div className="flex items-center gap-2 text-gray-700 font-bold mt-4 mb-2">
             <UploadCloud className="h-5 w-5 text-primary" />{' '}
             <span>ATTACHMENTS</span>
           </div>
