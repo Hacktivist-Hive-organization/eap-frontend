@@ -1,11 +1,14 @@
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { NewRequestButton } from '@/components/common/NewRequestButton';
 import { PageLayout } from '@/components/common/PageLayout';
-import { RequestsTable } from '@/components/common/RequestsTable';
+import { RequestDetailModal } from '@/components/common/RequestDetailModal';
+import { type Request, RequestsTable } from '@/components/common/RequestsTable';
 import {
   ComingSoonState,
   LoadingState,
 } from '@/components/common/StateMessage';
+import { RequestModal } from '@/features/RequestForm/RequestModal';
 import { useRequestsByStatus } from './hooks';
 import {
   type DashboardType,
@@ -19,8 +22,21 @@ export function RequesterDashboard() {
   const { data: requests = [], isLoading } = useRequestsByStatus(
     dashboardTypeToStatuses[activeView],
   );
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedRequestId = searchParams.get('requestId');
 
   const isImplemented = activeView === 'all' || activeView === 'draft';
+  const [showForm, setShowForm] = useState(false);
+
+  const handleRowClick = (request: Request) => {
+    setSearchParams({ requestId: String(request.id) });
+  };
+
+  const handleModalClose = (open: boolean) => {
+    if (!open) {
+      setSearchParams({});
+    }
+  };
 
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
@@ -32,10 +48,22 @@ export function RequesterDashboard() {
             <span className="capitalize text-2xl font-bold">
               {activeView} Requests Dashboard
             </span>
-            <NewRequestButton />
+            <NewRequestButton onClick={() => setShowForm(true)} />
           </div>
-          {isLoading ? <LoadingState /> : <RequestsTable requests={requests} />}
+          {isLoading ? (
+            <LoadingState />
+          ) : (
+            <RequestsTable requests={requests} onRowClick={handleRowClick} />
+          )}
+          <RequestModal open={showForm} onClose={() => setShowForm(false)} />
         </div>
+      )}
+      {selectedRequestId && (
+        <RequestDetailModal
+          requestId={Number(selectedRequestId)}
+          open={true}
+          onOpenChange={handleModalClose}
+        />
       )}
     </PageLayout>
   );

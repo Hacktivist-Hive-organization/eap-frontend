@@ -14,7 +14,9 @@ import {
 import { type Priority, priorityMap } from '@/types/Priority';
 import { type Status, statusMap } from '@/types/Status';
 
-function formatLastUpdate(dateString: string | null | undefined): string {
+export function formatLastUpdate(
+  dateString: string | null | undefined,
+): string {
   if (!dateString) return '-';
   try {
     const date = new Date(dateString);
@@ -38,9 +40,10 @@ export interface Request {
 
 interface RequestsTableProps {
   requests: Request[];
+  onRowClick?: (request: Request) => void;
 }
 
-export function RequestsTable({ requests }: RequestsTableProps) {
+export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
   if (requests.length === 0) {
     return <EmptyState message="No created requests yet" />;
   }
@@ -62,7 +65,11 @@ export function RequestsTable({ requests }: RequestsTableProps) {
           </TableHeader>
           <TableBody>
             {requests.map((request) => (
-              <TableRow key={request.id}>
+              <TableRow
+                key={request.id}
+                className={onRowClick ? 'cursor-pointer' : undefined}
+                onClick={() => onRowClick?.(request)}
+              >
                 <TableCell>
                   <span
                     className={priorityMap[request.priority].className}
@@ -72,10 +79,15 @@ export function RequestsTable({ requests }: RequestsTableProps) {
                   </span>
                 </TableCell>
                 <TableCell>#{request.id}</TableCell>
-                <TableCell>{request.title}</TableCell>
                 <TableCell>
-                  {request.type} / {request.subtype}
+                  <span
+                    className="block max-w-lg truncate"
+                    title={request.title}
+                  >
+                    {request.title}
+                  </span>
                 </TableCell>
+                <TableCell>{request.subtype}</TableCell>
                 <TableCell>
                   <Badge
                     variant="outline"
