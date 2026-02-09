@@ -24,9 +24,9 @@ export function RequesterDashboard() {
   );
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
+  const [newRequestOpen, setNewRequestOpen] = useState(false);
 
   const isImplemented = activeView === 'all' || activeView === 'draft';
-  const [showForm, setShowForm] = useState(false);
 
   const handleRowClick = (request: Request) => {
     setSearchParams({ requestId: String(request.id) });
@@ -48,16 +48,19 @@ export function RequesterDashboard() {
             <span className="capitalize text-2xl font-bold">
               {activeView} Requests Dashboard
             </span>
-            <NewRequestButton onClick={() => setShowForm(true)} />
+            <NewRequestButton onClick={() => setNewRequestOpen(true)} />
           </div>
           {isLoading ? (
             <LoadingState />
           ) : (
             <RequestsTable requests={requests} onRowClick={handleRowClick} />
           )}
-          <RequestModal open={showForm} onClose={() => setShowForm(false)} />
         </div>
       )}
+      <RequestModal
+        open={newRequestOpen}
+        onClose={() => setNewRequestOpen(false)}
+      />
       {selectedRequestId && (
         <RequestDetailModal
           requestId={Number(selectedRequestId)}

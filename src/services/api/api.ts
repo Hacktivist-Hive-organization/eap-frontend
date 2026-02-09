@@ -25,11 +25,18 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+
+    if (status === 401) {
       localStorage.removeItem(TOKEN_KEY);
       if (window.location.pathname !== '/login')
         window.location.href = '/login';
     }
+
+    if (status === 403) {
+      window.location.href = '/unauthorized';
+    }
+
     console.error('API error:', error);
     return Promise.reject(error);
   },

@@ -12,8 +12,8 @@ import {
 } from 'lucide-react';
 import { VisuallyHidden } from 'radix-ui';
 import { useState } from 'react';
-import Avatar from 'react-avatar';
 import { formatLastUpdate } from '@/components/common/RequestsTable';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -28,6 +28,7 @@ import { useRequestById } from '@/hooks/useRequestById';
 import { priorityMap } from '@/types/Priority';
 import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';
+import { getInitials } from '@/utils';
 
 interface RequestDetailModalProps {
   requestId: number;
@@ -91,7 +92,9 @@ function ParticipantInfo({
 
   return (
     <div className="flex items-center gap-3">
-      <Avatar name={name} size="36" round />
+      <Avatar className="h-9 w-9">
+        <AvatarFallback>{getInitials(name)}</AvatarFallback>
+      </Avatar>
       <div className="min-w-0">
         {user.role && (
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground py-1">
