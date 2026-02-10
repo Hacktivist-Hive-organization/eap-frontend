@@ -1,42 +1,18 @@
-import { cva, type VariantProps } from 'class-variance-authority';
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from "react"
 
-const textareaVariants = cva(
-  'w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:pointer-events-none resize-none',
-  {
-    variants: {
-      variant: {
-        default: '',
-        destructive:
-          'border-destructive text-destructive focus:ring-destructive',
-      },
-      size: {
-        default: 'h-24',
-        sm: 'h-16',
-        lg: 'h-32',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
-);
+import { cn } from "@/lib/utils"
 
-const Textarea = React.forwardRef<
-  HTMLTextAreaElement,
-  React.ComponentProps<'textarea'> & VariantProps<typeof textareaVariants>
->(({ className, variant, size, ...props }, ref) => {
+function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
     <textarea
-      ref={ref}
-      className={cn(textareaVariants({ variant, size, className }))}
+      data-slot="textarea"
+      className={cn(
+        "border-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-md border bg-transparent px-2.5 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-3 aria-invalid:ring-3 md:text-sm placeholder:text-muted-foreground flex field-sizing-content min-h-16 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50",
+        className
+      )}
       {...props}
     />
-  );
-});
+  )
+}
 
-Textarea.displayName = 'Textarea';
-
-export { Textarea, textareaVariants };
+export { Textarea }

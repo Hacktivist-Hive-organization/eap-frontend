@@ -37,7 +37,29 @@ export interface RequestAllResponse {
   type: RequestType;
   subtype: RequestType;
   created_at: string;
-  updated_at: string | null;
+  updated_at?: string;
+}
+
+export interface UserResponse {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email?: string;
+  role?: string;
+}
+
+export interface RequestDetailResponse {
+  id: number;
+  title: string;
+  priority: Priority;
+  status: Status;
+  description?: string;
+  business_justification?: string;
+  type: RequestType;
+  subtype: RequestType;
+  requester: UserResponse;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateRequestPayload {

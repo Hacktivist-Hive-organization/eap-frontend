@@ -1,4 +1,9 @@
-import { ArrowRight, FileText, Settings, UploadCloud } from 'lucide-react';
+import {
+  FileIcon,
+  FileTextIcon,
+  SendHorizonalIcon,
+  Settings,
+} from 'lucide-react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { createRequestService } from '@/services/api/requests/request';
+import { type Priority, priorityMap } from '@/types/Priority';
 import { useRequestTypes } from './hooks/useRequestTypes';
 
 type Props = {
@@ -43,10 +49,10 @@ const INITIAL_FORM_STATE: FormState = {
   title: '',
   description: '',
   justification: '',
-  priority: '',
+  priority: 'medium',
 };
 
-const PRIORITIES = ['low', 'medium', 'high'];
+const PRIORITIES = Object.keys(priorityMap) as Priority[];
 
 export const RequestForm = ({ onCancel, onSuccess }: Props) => {
   const [form, setForm] = useState<FormState>(INITIAL_FORM_STATE);
@@ -78,7 +84,7 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
         'Business justification must be between 20 and 1000 characters';
     }
 
-    if (!PRIORITIES.includes(data.priority)) {
+    if (!PRIORITIES.includes(data.priority as Priority)) {
       newErrors.priority = 'Priority is required and must be valid';
     }
 
@@ -118,7 +124,8 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
           : undefined;
 
       case 'priority':
-        return typeof value === 'string' && !PRIORITIES.includes(value)
+        return typeof value === 'string' &&
+          !PRIORITIES.includes(value as Priority)
           ? 'Priority is required and must be valid'
           : undefined;
     }
@@ -200,7 +207,7 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-4">
           <div className="flex items-center gap-2 text-gray-700 font-bold mb-2">
-            <FileText className="h-5 w-5 text-orange-500" />{' '}
+            <FileTextIcon className="h-4 w-4 text-primary" />{' '}
             <span>REQUEST CONTENT</span>
           </div>
           {/* Request Title */}
@@ -214,7 +221,6 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                   value={form.title}
                   onChange={handleChange}
                   placeholder="e.g., Annual Marketing Budget Review"
-                  className="text-xs border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm transition duration-150"
                 />
               </FormControl>
               {errors.title && (
@@ -234,7 +240,6 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                   value={form.description}
                   onChange={handleChange}
                   placeholder="Explain the scope and requirements of this request..."
-                  className="text-xs h-16 resize-none border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm transition duration-150"
                 />
               </FormControl>
               {errors.description && (
@@ -257,7 +262,6 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                   value={form.justification}
                   onChange={handleChange}
                   placeholder="Why is this request necessary for the business?"
-                  className="text-xs h-16 resize-none  border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm transition duration-150"
                 />
               </FormControl>
               {errors.justification && (
@@ -270,8 +274,7 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
         </div>
         <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-xl space-y-4">
           <div className="flex items-center gap-2 text-gray-700 font-bold mb-2">
-            <Settings className="h-5 w-5 text-orange-500" />{' '}
-            <span>METADATA</span>
+            <Settings className="h-5 w-5 text-primary" /> <span>METADATA</span>
           </div>
 
           {/* Request Type */}
@@ -290,7 +293,7 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                   updateFieldError('type_id', numeric);
                 }}
               >
-                <SelectTrigger className="w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
 
@@ -323,7 +326,7 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                   updateFieldError('subtype_id', numeric);
                 }}
               >
-                <SelectTrigger className="w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select subtype" />
                 </SelectTrigger>
 
@@ -357,26 +360,24 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                   updateFieldError('priority', value);
                 }}
               >
-                <SelectTrigger className="w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select priority" />
                 </SelectTrigger>
 
                 <SelectContent>
-                  {PRIORITIES.map((p) => (
-                    <SelectItem
-                      key={p}
-                      value={p}
-                      className={`${
-                        p === 'high'
-                          ? 'text-red-600 font-semibold'
-                          : p === 'medium'
-                            ? 'text-yellow-600 font-medium'
-                            : 'text-green-600 font-medium'
-                      } hover:bg-gray-100 rounded-md px-2 py-1`}
-                    >
-                      {p.toUpperCase()}
-                    </SelectItem>
-                  ))}
+                  {PRIORITIES.map((p) => {
+                    const config = priorityMap[p];
+                    return (
+                      <SelectItem key={p} value={p}>
+                        <span className="flex items-center gap-2">
+                          <span className={config.className}>
+                            {config.icon}
+                          </span>
+                          {config.label}
+                        </span>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
               {errors.priority && (
@@ -384,11 +385,11 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
               )}
             </FormItem>
           </FormField>
+          {/* //Not in use for now, keep it simple 
           <div className="flex items-center gap-2 text-gray-700 font-bold mt-4 mb-2">
-            <UploadCloud className="h-5 w-5 text-orange-500" />{' '}
+            <UploadCloud className="h-5 w-5 text-primary" />{' '}
             <span>ATTACHMENTS</span>
           </div>
-          {/* Drag & Drop Upload */}
           <FormField>
             <FormControl>
               <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-blue-400 hover:text-blue-500 transition">
@@ -396,7 +397,7 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                 <span className="text-xs text-gray-400">Max 10MB per file</span>
               </div>
             </FormControl>
-          </FormField>
+          </FormField> */}
         </div>
       </div>
       {/* Footer Buttons */}
@@ -410,11 +411,12 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
           Cancel
         </Button>
         <div className="flex gap-3">
-          <Button type="submit" variant="secondary" size="lg">
+          <Button variant="secondary" size="lg">
+            <FileIcon />
             Save as Draft
           </Button>
           <Button disabled type="submit" variant="default" size="lg">
-            <ArrowRight className="h-4 w-4" /> Submit Request
+            <SendHorizonalIcon /> Submit Request
           </Button>
         </div>
       </div>

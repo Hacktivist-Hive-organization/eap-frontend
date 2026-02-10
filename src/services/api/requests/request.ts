@@ -2,6 +2,7 @@ import { api } from '@/services/api';
 import type {
   CreateRequestPayload,
   RequestAllResponse,
+  RequestDetailResponse,
   RequestTypeSubTypes,
 } from '@/services/auth/types';
 import type { Status } from '@/types/Status';
@@ -18,6 +19,13 @@ export const requestService = {
           indexes: null,
         },
       },
+    );
+    return response.data;
+  },
+
+  getRequestById: async (id: number): Promise<RequestDetailResponse> => {
+    const response = await api.get<RequestDetailResponse>(
+      `/api/v1/requests/${id}`,
     );
     return response.data;
   },
