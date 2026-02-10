@@ -20,7 +20,7 @@ export function PageLayout({
       <SidebarProvider>
         <Sidebar items={sidebarItems} activeKey={activeKey} />
         <SidebarInset>
-          <header className="sticky top-0 bg-white border-b">
+          <header className="sticky top-0 z-10 bg-white border-b">
             <div className="flex items-center justify-between pl-6 pr-13 py-2.5">
               <div className="flex items-center gap-4">
                 <Logo className="h-6 w-auto" />

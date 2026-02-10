@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { NewRequestButton } from '@/components/common/NewRequestButton';
 import { PageLayout } from '@/components/common/PageLayout';
+import { RequestDetailModal } from '@/components/common/RequestDetailModal';
 import {
   RequestsTable,
   type Request as TableRequest,
@@ -10,9 +11,8 @@ import {
   ComingSoonState,
   LoadingState,
 } from '@/components/common/StateMessage';
-import { RequestModal } from '@/features/RequestForm/RequestModal';
+import { RequestModal } from '@/features/dashboard/RequesterDashboard/RequestForm/RequestModal';
 import { useRequestsByStatus } from './hooks';
-import { RequestDetailModal } from './RequestDetailModal';
 import {
   type DashboardType,
   dashboardTypeToStatuses,

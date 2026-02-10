@@ -40,6 +40,9 @@ export interface RequestAllResponse {
   subtype: RequestType;
   created_at: string;
   updated_at?: string;
+  admin?: UserResponse;
+  approver?: UserResponse;
+  requester: UserResponse;
 }
 
 export interface UserResponse {
