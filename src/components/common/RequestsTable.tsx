@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatLastUpdate } from '@/features/dashboard/RequesterDashboard/utils';
+import { formatLastUpdate } from '@/features/dashboard/utils';
 import { type Priority, priorityMap } from '@/types/Priority';
 import { type Status, statusMap } from '@/types/Status';
 import { getInitials } from '@/utils';

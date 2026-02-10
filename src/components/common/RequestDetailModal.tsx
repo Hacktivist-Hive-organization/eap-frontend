@@ -23,10 +23,7 @@ import {
 } from '@/components/ui/modal';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRequestById } from '@/features/dashboard/RequesterDashboard/hooks/useRequestById';
-import {
-  formatLastUpdate,
-  formatUserName,
-} from '@/features/dashboard/RequesterDashboard/utils';
+import { formatLastUpdate, formatUserName } from '@/features/dashboard/utils';
 import { priorityMap } from '@/types/Priority';
 import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';
