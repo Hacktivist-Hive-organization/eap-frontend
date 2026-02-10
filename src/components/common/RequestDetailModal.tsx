@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { VisuallyHidden } from 'radix-ui';
 import { useState } from 'react';
-import { formatLastUpdate } from '@/components/common/RequestsTable';
+import { formatLastUpdate } from '@/features/dashboard/RequesterDashboard/utils';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';

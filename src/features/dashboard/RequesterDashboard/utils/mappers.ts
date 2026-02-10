@@ -1,4 +1,4 @@
-import type { Request } from '@/features/dashboard/RequesterDashboard/RequestsTable';
+import type { Request } from '@/components/common/RequestsTable';
 import type { RequestAllResponse } from '@/services/auth/types';
 
 export function mapRequestResponseToRequest(

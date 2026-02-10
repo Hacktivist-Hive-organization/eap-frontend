@@ -3,13 +3,16 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { NewRequestButton } from '@/components/common/NewRequestButton';
 import { PageLayout } from '@/components/common/PageLayout';
 import {
+  RequestsTable,
+  type Request as TableRequest,
+} from '@/components/common/RequestsTable';
+import {
   ComingSoonState,
   LoadingState,
 } from '@/components/common/StateMessage';
 import { RequestModal } from '@/features/RequestForm/RequestModal';
 import { useRequestsByStatus } from './hooks';
 import { RequestDetailModal } from './RequestDetailModal';
-import { type Request, RequestsTable } from './RequestsTable';
 import {
   type DashboardType,
   dashboardTypeToStatuses,
@@ -28,7 +31,7 @@ export function RequesterDashboard() {
 
   const isImplemented = activeView === 'all' || activeView === 'draft';
 
-  const handleRowClick = (request: Request) => {
+  const handleRowClick = (request: TableRequest) => {
     setSearchParams({ requestId: String(request.id) });
   };
 
