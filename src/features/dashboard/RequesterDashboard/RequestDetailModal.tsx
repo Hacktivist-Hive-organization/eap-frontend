@@ -13,7 +13,6 @@ import {
 import { VisuallyHidden } from 'radix-ui';
 import { useState } from 'react';
 import Avatar from 'react-avatar';
-import { formatLastUpdate } from '@/components/common/RequestsTable';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -23,8 +22,11 @@ import {
   ModalTitle,
 } from '@/components/ui/modal';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { formatUserName } from '@/features/dashboard/RequesterDashboard/utils';
-import { useRequestById } from '@/hooks/useRequestById';
+import { useRequestById } from '@/features/dashboard/RequesterDashboard/hooks/useRequestById';
+import {
+  formatLastUpdate,
+  formatUserName,
+} from '@/features/dashboard/RequesterDashboard/utils';
 import { priorityMap } from '@/types/Priority';
 import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';

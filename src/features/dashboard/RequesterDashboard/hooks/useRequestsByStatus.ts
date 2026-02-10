@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Request } from '@/components/common/RequestsTable';
+import type { Request } from '@/features/dashboard/RequesterDashboard/RequestsTable';
 import { mapRequestResponsesToRequests } from '@/features/dashboard/RequesterDashboard/utils';
 import { requestService } from '@/services/api/requests/request';
 import type { Status } from '@/types/Status';
