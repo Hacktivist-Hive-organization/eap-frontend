@@ -1,4 +1,3 @@
-import { formatDistanceToNow } from 'date-fns';
 import { MinusIcon } from 'lucide-react';
 import { EmptyState } from '@/components/common/StateMessage';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -11,22 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { formatLastUpdate } from '@/features/dashboard/RequesterDashboard/utils';
 import { type Priority, priorityMap } from '@/types/Priority';
 import { type Status, statusMap } from '@/types/Status';
 import { getInitials } from '@/utils';
-
-export function formatLastUpdate(
-  dateString: string | null | undefined,
-): string {
-  if (!dateString) return '-';
-  try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return '-';
-    return formatDistanceToNow(date, { addSuffix: true });
-  } catch {
-    return '-';
-  }
-}
 
 export interface Request {
   id: number;

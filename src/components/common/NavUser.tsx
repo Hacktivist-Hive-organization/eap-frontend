@@ -55,7 +55,7 @@ export function NavUser() {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>
           <LogOutIcon />
-          Log out
+          Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

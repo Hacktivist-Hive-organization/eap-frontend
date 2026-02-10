@@ -2,14 +2,15 @@
 ## Setup overview:
 
 Containers:  
-- FastAPI directly on host
+- Container for Postgres (official image)
+- Container for FastAPI
 - Container for React (vite)
-- Postgres - Not a concern of the frontend, choose a deployment option from the backend repo and just make sure that
-  FastAPI can talk to it.
+
 
 Communication:
 - Browser communicates with React with port mapping of localhost.
 - Communication between React and FastAPI containers is done with a port mapping of localhost.
+- Communication between FastAPI and Postgres containers is done with a docker network
 
 ## Running in container
 
