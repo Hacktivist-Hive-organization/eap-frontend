@@ -60,10 +60,7 @@ export function RequesterDashboard() {
           )}
         </div>
       )}
-      <RequestModal
-        open={newRequestOpen}
-        onOpenChange={setNewRequestOpen}
-      />
+      <RequestModal open={newRequestOpen} onOpenChange={setNewRequestOpen} />
       {selectedRequestId && (
         <RequestDetailModal
           requestId={Number(selectedRequestId)}

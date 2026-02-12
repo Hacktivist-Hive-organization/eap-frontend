@@ -16,11 +16,13 @@ export function useRequestForm({ onSuccess }: UseRequestFormOptions = {}) {
   const mutation = useCreateRequest();
 
   const form = useForm<RequestFormData>({
-    // biome-ignore lint/suspicious/noExplicitAny: Zod 4 types incompatible with zodResolver
+    // TODO: Remove casts when @hookform/resolvers supports Zod v4 natively
     resolver: zodResolver(
       requestFormSchema as any,
     ) as Resolver<RequestFormData>,
     defaultValues: {
+      type_id: undefined,
+      subtype_id: undefined,
       title: '',
       description: '',
       justification: '',
@@ -41,6 +43,7 @@ export function useRequestForm({ onSuccess }: UseRequestFormOptions = {}) {
       {
         onSuccess: () => {
           form.reset();
+          toast.success('Request created successfully');
           onSuccess?.();
         },
         onError: (error) => {

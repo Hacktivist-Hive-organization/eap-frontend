@@ -29,13 +29,12 @@ import { useRequestForm } from './hooks/useRequestForm';
 import { useRequestTypes } from './hooks/useRequestTypes';
 
 type Props = {
-  onCancel?: () => void;
   onSuccess?: () => void;
 };
 
 const PRIORITIES = Object.keys(priorityMap) as Priority[];
 
-export const RequestForm = ({ onCancel, onSuccess }: Props) => {
+export const RequestForm = ({ onSuccess }: Props) => {
   const { data: types = [], isLoading, isError } = useRequestTypes();
   const { form, onSubmit, isPending } = useRequestForm({ onSuccess });
 
@@ -45,26 +44,23 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
     name: 'type_id',
   });
 
-  const selectedType = types.find((t) => t.id.toString() === selectedTypeId);
+  const selectedType = types.find((t) => t.id === selectedTypeId);
 
   const subtypes = selectedType?.subtypes ?? [];
 
-  /**
-   * When type changes:
-   * - Automatically select first subtype
-   * - Trigger validation
-   */
+  // When type changes, auto-select first subtype
   useEffect(() => {
-    if (!selectedType) return;
+    const type = types.find((t) => t.id === selectedTypeId);
+    if (!type) return;
 
-    const firstSubtype = selectedType.subtypes?.[0];
+    const firstSubtype = type.subtypes?.[0];
 
-    form.setValue(
-      'subtype_id',
-      firstSubtype ? firstSubtype.id.toString() : undefined,
-      { shouldValidate: true },
-    );
-  }, [selectedTypeId]);
+    if (firstSubtype) {
+      form.setValue('subtype_id', firstSubtype.id, { shouldValidate: true });
+    } else {
+      form.resetField('subtype_id');
+    }
+  }, [selectedTypeId, types, form]);
 
   if (isError)
     return <p className="text-red-500">Failed to load request types</p>;
@@ -72,16 +68,7 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
   if (isLoading) return <p>Loading form...</p>;
 
   return (
-    <Form
-      onSubmit={form.handleSubmit((data) => {
-        // Convert IDs to numbers before sending to backend
-        onSubmit({
-          ...data,
-          type_id: Number(data.type_id),
-          subtype_id: Number(data.subtype_id),
-        });
-      })}
-    >
+    <Form onSubmit={form.handleSubmit(onSubmit)}>
       {/* Header */}
       <div className="space-y-1">
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
@@ -178,7 +165,10 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
               <FormField>
                 <FormLabel>Request Type</FormLabel>
                 <FormItem>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={String(field.value ?? '')}
+                    onValueChange={(val) => field.onChange(Number(val))}
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
@@ -206,8 +196,8 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
                 <FormItem>
                   <Select
                     disabled={!subtypes.length}
-                    value={field.value}
-                    onValueChange={field.onChange}
+                    value={String(field.value ?? '')}
+                    onValueChange={(val) => field.onChange(Number(val))}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select subtype" />
@@ -266,28 +256,16 @@ export const RequestForm = ({ onCancel, onSuccess }: Props) => {
       </div>
 
       {/* Footer */}
-      <div className="flex justify-between items-center mt-4">
-        <Button
-          variant="link"
-          size="lg"
-          type="button"
-          onClick={() => {
-            form.reset();
-            onCancel?.();
-          }}
-        >
-          Cancel
-        </Button>
-
+      <div className="flex justify-end mt-4">
         <div className="flex gap-3">
           <Button disabled={isPending} type="submit" variant="secondary">
             <FileIcon />
             {isPending ? 'Saving...' : 'Save as Draft'}
           </Button>
 
-          <Button disabled={isPending} type="submit">
+          <Button disabled={true} type="button">
             <SendHorizonalIcon />
-            {isPending ? 'Submitting...' : 'Submit Request'}
+            Submit Request
           </Button>
         </div>
       </div>

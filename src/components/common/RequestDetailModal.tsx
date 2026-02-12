@@ -72,7 +72,11 @@ function InfoField({
         className={`text-sm text-foreground/80 ${isBlock ? 'leading-relaxed text-justify max-h-40 overflow-y-auto' : 'font-semibold'}`}
         style={
           isBlock
-            ? { overflowWrap: 'break-word', hyphens: 'auto', wordBreak: 'break-word' }
+            ? {
+                overflowWrap: 'break-word',
+                hyphens: 'auto',
+                wordBreak: 'break-word',
+              }
             : undefined
         }
       >

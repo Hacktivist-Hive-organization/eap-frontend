@@ -15,10 +15,7 @@ export const RequestModal = ({ open, onOpenChange }: Props) => {
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
       <ModalContent className="max-w-5xl">
-        <RequestForm
-          onCancel={() => onOpenChange(false)}
-          onSuccess={() => onOpenChange(false)}
-        />
+        <RequestForm onSuccess={() => onOpenChange(false)} />
       </ModalContent>
     </Modal>
   );
