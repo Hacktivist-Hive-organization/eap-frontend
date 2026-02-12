@@ -62,7 +62,7 @@ export function RequesterDashboard() {
       )}
       <RequestModal
         open={newRequestOpen}
-        onClose={() => setNewRequestOpen(false)}
+        onOpenChange={setNewRequestOpen}
       />
       {selectedRequestId && (
         <RequestDetailModal
