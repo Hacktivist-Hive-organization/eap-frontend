@@ -33,10 +33,16 @@ export const requestService = {
 
 export const createRequestService = {
   getRequestTypes: async (): Promise<RequestTypeSubTypes[]> => {
-    const { data } = await api.get('api/v1/types');
+    const { data } = await api.get('/api/v1/types');
     return data;
   },
-  createRequest: async (payload: CreateRequestPayload): Promise<void> => {
-    await api.post('/api/v1/requests', payload);
+  createRequest: async (
+    payload: CreateRequestPayload,
+  ): Promise<RequestAllResponse> => {
+    const { data } = await api.post<RequestAllResponse>(
+      '/api/v1/requests',
+      payload,
+    );
+    return data;
   },
 };

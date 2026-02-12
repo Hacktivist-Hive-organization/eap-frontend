@@ -69,7 +69,16 @@ function InfoField({
     <div>
       <SectionLabel icon={icon} label={label} />
       <p
-        className={`text-sm text-foreground/80 ${isBlock ? 'leading-relaxed text-justify' : 'font-semibold'}`}
+        className={`text-sm text-foreground/80 ${isBlock ? 'leading-relaxed text-justify max-h-40 overflow-y-auto' : 'font-semibold'}`}
+        style={
+          isBlock
+            ? {
+                overflowWrap: 'break-word',
+                hyphens: 'auto',
+                wordBreak: 'break-word',
+              }
+            : undefined
+        }
       >
         {value || '-'}
       </p>
@@ -255,7 +264,7 @@ export function RequestDetailModal({
           >
             <div className="flex">
               {/* Main Content */}
-              <div className="flex-1 p-6">
+              <div className="flex-1 min-w-0 p-6">
                 <Card size="sm">
                   <CardContent className="space-y-6 mx-3">
                     <div className="grid grid-cols-2 gap-8">
