@@ -3,10 +3,13 @@ import { trimmedString } from '@/lib/validation';
 
 export const requestFormSchema = z.object({
   type_id: z.coerce
-    .number()
+    .number({ message: 'Type is required' })
     .int()
-    .positive('Type is required and must be valid'),
-  subtype_id: z.number().int().positive('Subtype is required'),
+    .positive('Type is required'),
+  subtype_id: z
+    .number({ message: 'Subtype is required' })
+    .int()
+    .positive('Subtype is required'),
   title: trimmedString()
     .min(5, 'Title must be more than 5 characters')
     .max(200, 'Title must be less than 200 characters'),
