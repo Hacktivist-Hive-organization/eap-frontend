@@ -1,5 +1,12 @@
-import type { Request } from '@/features/dashboard/RequesterDashboard/RequestsTable';
+import type { Request } from '@/components/common/RequestsTable';
 import type { RequestAllResponse } from '@/services/auth/types';
+import { formatUserName } from './formatters';
+
+function resolveAssignee(response: RequestAllResponse): string {
+  if (response.admin) return formatUserName(response.admin);
+  if (response.approver) return formatUserName(response.approver);
+  return formatUserName(response.requester);
+}
 
 export function mapRequestResponseToRequest(
   response: RequestAllResponse,
@@ -12,6 +19,7 @@ export function mapRequestResponseToRequest(
     status: response.status,
     lastUpdate: response.updated_at || response.created_at,
     priority: response.priority,
+    assignee: resolveAssignee(response),
   };
 }
 

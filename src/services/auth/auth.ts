@@ -1,5 +1,10 @@
 import { api } from '@/services/api';
-import type { AuthResponse, LoginRequest, RegisterRequest } from './types';
+import type {
+  AuthResponse,
+  LoginRequest,
+  MeResponse,
+  RegisterRequest,
+} from './types';
 
 const TOKEN_KEY = 'access_token';
 
@@ -23,6 +28,11 @@ export const authService = {
 
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>('api/v1/auth/register', data);
+    return response.data;
+  },
+
+  getMe: async (): Promise<MeResponse> => {
+    const response = await api.get<MeResponse>('api/v1/users/me');
     return response.data;
   },
 

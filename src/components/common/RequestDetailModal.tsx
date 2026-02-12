@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { VisuallyHidden } from 'radix-ui';
 import { useState } from 'react';
-import Avatar from 'react-avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -23,13 +23,11 @@ import {
 } from '@/components/ui/modal';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRequestById } from '@/features/dashboard/RequesterDashboard/hooks/useRequestById';
-import {
-  formatLastUpdate,
-  formatUserName,
-} from '@/features/dashboard/RequesterDashboard/utils';
+import { formatLastUpdate, formatUserName } from '@/features/dashboard/utils';
 import { priorityMap } from '@/types/Priority';
 import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';
+import { getInitials } from '@/utils';
 
 interface RequestDetailModalProps {
   requestId: number;
@@ -93,7 +91,9 @@ function ParticipantInfo({
 
   return (
     <div className="flex items-center gap-3">
-      <Avatar name={name} size="36" round />
+      <Avatar className="h-7 w-7">
+        <AvatarFallback className="text-xs">{getInitials(name)}</AvatarFallback>
+      </Avatar>
       <div className="min-w-0">
         {user.role && (
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground py-1">

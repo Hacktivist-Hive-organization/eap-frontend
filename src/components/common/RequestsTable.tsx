@@ -1,6 +1,6 @@
 import { MinusIcon } from 'lucide-react';
-import Avatar from 'react-avatar';
 import { EmptyState } from '@/components/common/StateMessage';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
   Table,
@@ -10,9 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatLastUpdate } from '@/features/dashboard/RequesterDashboard/utils';
+import { formatLastUpdate } from '@/features/dashboard/utils';
 import { type Priority, priorityMap } from '@/types/Priority';
 import { type Status, statusMap } from '@/types/Status';
+import { getInitials } from '@/utils';
 
 export interface Request {
   id: number;
@@ -86,7 +87,11 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
                 <TableCell>{formatLastUpdate(request.lastUpdate)}</TableCell>
                 <TableCell>
                   {request.assignee !== undefined && (
-                    <Avatar name={request.assignee} size="30" round={true} />
+                    <Avatar className="h-7 w-7">
+                      <AvatarFallback className="text-xs">
+                        {getInitials(request.assignee)}
+                      </AvatarFallback>
+                    </Avatar>
                   )}
                   {request.assignee === undefined && (
                     <MinusIcon className="text-gray-500/50" />

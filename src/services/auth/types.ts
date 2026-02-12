@@ -1,4 +1,5 @@
 import type { Priority } from '@/types/Priority';
+import type { Role } from '@/types/Role';
 import type { Status } from '@/types/Status';
 
 export interface LoginRequest {
@@ -17,10 +18,11 @@ export interface AuthResponse {
   token_type: string;
   access_token: string;
   user: {
-    id: string;
+    id: number;
     email: string;
     first_name: string;
     last_name: string;
+    role: Role;
   };
 }
 
@@ -38,6 +40,9 @@ export interface RequestAllResponse {
   subtype: RequestType;
   created_at: string;
   updated_at?: string;
+  admin?: UserResponse;
+  approver?: UserResponse;
+  requester: UserResponse;
 }
 
 export interface UserResponse {
@@ -46,6 +51,14 @@ export interface UserResponse {
   last_name: string;
   email?: string;
   role?: string;
+}
+
+export interface MeResponse {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: Role;
 }
 
 export interface RequestDetailResponse {

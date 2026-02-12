@@ -1,10 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { Role } from '@/types/Role';
 
 interface User {
-  id: string;
+  id: number;
   email: string;
   first_name: string;
   last_name: string;
+  role: Role;
 }
 
 interface UserState {

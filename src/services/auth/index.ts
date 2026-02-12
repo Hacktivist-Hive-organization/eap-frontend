@@ -1,2 +1,7 @@
 export { authService } from './auth';
-export type { AuthResponse, LoginRequest, RegisterRequest } from './types';
+export type {
+  AuthResponse,
+  LoginRequest,
+  MeResponse,
+  RegisterRequest,
+} from './types';

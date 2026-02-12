@@ -4,9 +4,9 @@ import { mapRequestResponsesToRequests } from '@/features/dashboard/utils';
 import { requestService } from '@/services/api/requests/request';
 import type { Status } from '@/types/Status';
 
-export function useRequestsByStatus(statuses: Status[]) {
+export function useAdminRequestsByStatus(statuses: Status[]) {
   return useQuery({
-    queryKey: ['requests', statuses],
+    queryKey: ['admin-requests', statuses],
     queryFn: () => requestService.getRequestsByStatus(statuses),
     select: (data): Request[] => mapRequestResponsesToRequests(data),
   });
