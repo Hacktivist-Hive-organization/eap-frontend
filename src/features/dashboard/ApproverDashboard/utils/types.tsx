@@ -9,7 +9,7 @@ export const approverDashboardTypeToStatuses: Record<
   Status[]
 > = {
   all: [],
-  pending: ['submitted', 'under_review'],
+  pending: ['submitted'],
   history: ['approved', 'rejected', 'completed'],
 };
 
