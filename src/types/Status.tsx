@@ -3,7 +3,7 @@ export type ApiStatus =
   | 'Submitted'
   | 'Approved'
   | 'Rejected'
-  | 'Under review'
+  | 'Cancelled'
   | 'In progress'
   | 'Completed';
 
@@ -12,7 +12,7 @@ export type Status =
   | 'submitted'
   | 'approved'
   | 'rejected'
-  | 'under_review'
+  | 'cancelled'
   | 'in_progress'
   | 'completed';
 
@@ -26,7 +26,7 @@ export const apiStatusToUiStatus: Record<ApiStatus, Status> = {
   Submitted: 'submitted',
   Approved: 'approved',
   Rejected: 'rejected',
-  'Under review': 'under_review',
+  Cancelled: 'cancelled',
   'In progress': 'in_progress',
   Completed: 'completed',
 };
@@ -34,15 +34,16 @@ export const apiStatusToUiStatus: Record<ApiStatus, Status> = {
 export const statusMap: Record<Status, StatusConfig> = {
   draft: {
     label: 'Draft',
-    className: 'bg-gray-200/30 text-gray-800 border-gray-200/50',
+    className:
+      'bg-gray-200/30 text-gray-800 border-2 border-dashed border-gray-400/50',
   },
   submitted: {
     label: 'Submitted',
     className: 'bg-sky-200/30 text-sky-800 border-sky-200/50',
   },
-  under_review: {
-    label: 'Under review',
-    className: 'bg-amber-200/30 text-amber-800 border-amber-200/50',
+  cancelled: {
+    label: 'Cancelled',
+    className: 'bg-gray-200/30 text-gray-800 border-gray-200/50',
   },
   in_progress: {
     label: 'In progress',
