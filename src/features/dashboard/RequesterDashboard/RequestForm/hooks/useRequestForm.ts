@@ -5,6 +5,7 @@ import {
   type RequestFormData,
   requestFormSchema,
 } from '@/features/dashboard/RequesterDashboard/RequestForm/utils';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/errors';
 import { useCreateRequest } from './useCreateRequest';
 
@@ -47,10 +48,12 @@ export function useRequestForm({ onSuccess }: UseRequestFormOptions = {}) {
           onSuccess?.();
         },
         onError: (error) => {
-          toast.error('Failed to create request', {
-            id: 'create-request-error',
-            description: getErrorMessage(error),
-          });
+          if (axios.isAxiosError(error) && error.response) {
+            toast.error('Failed to create request', {
+              id: 'create-request-error',
+              description: getErrorMessage(error),
+            });
+          }
         },
       },
     );

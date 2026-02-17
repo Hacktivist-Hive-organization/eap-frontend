@@ -8,6 +8,7 @@ import {
 } from 'react-hook-form';
 import { toast } from 'sonner';
 import type { z } from 'zod';
+import axios from 'axios';
 import { getErrorMessage } from '@/lib/errors';
 
 interface UseAuthFormOptions<
@@ -43,10 +44,12 @@ export function useAuthForm<
   function onSubmit(data: TFormData) {
     mutation.mutate(data as TMutationData, {
       onError: (error) => {
-        toast.error(errorToast.title, {
-          id: errorToast.id,
-          description: getErrorMessage(error),
-        });
+        if (axios.isAxiosError(error) && error.response) {
+          toast.error(errorToast.title, {
+            id: errorToast.id,
+            description: getErrorMessage(error),
+          });
+        }
       },
     });
   }

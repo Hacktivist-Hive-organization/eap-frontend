@@ -7,11 +7,7 @@ import {
   RequestsTable,
   type Request as TableRequest,
 } from '@/components/common/RequestsTable';
-import {
-  ComingSoonState,
-  ErrorState,
-  LoadingState,
-} from '@/components/common/StateMessage';
+import { ErrorState, LoadingState } from '@/components/common/StateMessage';
 import { RequestModal } from '@/features/dashboard/RequesterDashboard/RequestForm/RequestModal';
 import { useRequestsByStatus } from './hooks';
 import {
@@ -33,8 +29,6 @@ export function RequesterDashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
 
-  const isImplemented = activeView === 'all' || activeView === 'draft';
-
   const handleRowClick = (request: TableRequest) => {
     setSearchParams({ requestId: String(request.id) });
   };
@@ -47,25 +41,21 @@ export function RequesterDashboard() {
 
   return (
     <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
-      {!isImplemented ? (
-        <ComingSoonState />
-      ) : (
-        <div>
-          <div className="flex items-center justify-between p-2">
-            <span className="capitalize text-2xl font-bold">
-              {activeView} Requests Dashboard
-            </span>
-            <NewRequestButton onClick={() => setNewRequestOpen(true)} />
-          </div>
-          {isLoading ? (
-            <LoadingState />
-          ) : isError ? (
-            <ErrorState onRetry={() => refetch()} />
-          ) : (
-            <RequestsTable requests={requests} onRowClick={handleRowClick} />
-          )}
+      <div>
+        <div className="flex items-center justify-between p-2">
+          <span className="capitalize text-2xl font-bold">
+            {activeView} Requests Dashboard
+          </span>
+          <NewRequestButton onClick={() => setNewRequestOpen(true)} />
         </div>
-      )}
+        {isLoading ? (
+          <LoadingState />
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
+        ) : (
+          <RequestsTable requests={requests} onRowClick={handleRowClick} />
+        )}
+      </div>
       <RequestModal open={newRequestOpen} onOpenChange={setNewRequestOpen} />
       {selectedRequestId && (
         <RequestDetailModal

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'sonner';
 
 const TOKEN_KEY = 'access_token';
 
@@ -35,6 +36,14 @@ api.interceptors.response.use(
 
     if (status === 403) {
       window.location.href = '/unauthorized';
+    }
+
+    if (error.code === 'ERR_NETWORK') {
+      toast.error('Unable to connect to server', {
+        id: 'network-error',
+        description:
+          'Please check your internet connection or try again later.',
+      });
     }
 
     console.error('API error:', error);
