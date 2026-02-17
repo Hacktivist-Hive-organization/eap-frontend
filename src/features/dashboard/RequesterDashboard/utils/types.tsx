@@ -12,7 +12,7 @@ export type DashboardType = 'all' | 'active' | 'closed' | 'draft';
 export const dashboardTypeToStatuses: Record<DashboardType, Status[]> = {
   all: [],
   active: ['submitted', 'in_progress', 'approved'],
-  closed: ['completed', 'rejected'],
+  closed: ['completed', 'rejected', 'cancelled'],
   draft: ['draft'],
 };
 

@@ -8,8 +8,8 @@ export const adminDashboardTypeToStatuses: Record<
   AdminDashboardType,
   Status[]
 > = {
-  backlog: ['draft', 'submitted', 'under_review'],
-  'in-progress': ['approved', 'in_progress'],
+  backlog: ['approved'],
+  'in-progress': ['in_progress'],
   closed: ['completed', 'rejected'],
 };
 
