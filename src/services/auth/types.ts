@@ -35,7 +35,7 @@ export interface RequestAllResponse {
   id: number;
   title: string;
   priority: Priority;
-  status: Status;
+  current_status: Status;
   type: RequestType;
   subtype: RequestType;
   created_at: string;
@@ -65,7 +65,7 @@ export interface RequestDetailResponse {
   id: number;
   title: string;
   priority: Priority;
-  status: Status;
+  current_status: Status;
   description?: string;
   business_justification?: string;
   type: RequestType;

@@ -246,9 +246,9 @@ export function RequestDetailModal({
           <div className="flex px-3">
             <Badge
               variant="outline"
-              className={statusMap[request.status].className}
+              className={statusMap[request.current_status].className}
             >
-              {statusMap[request.status].label}
+              {statusMap[request.current_status].label}
             </Badge>
           </div>
         </ModalHeader>
@@ -306,7 +306,7 @@ export function RequestDetailModal({
                 <SidebarCard icon={HistoryIcon} title="Status History">
                   {request.requester && (
                     <StatusHistoryItem
-                      status={request.status}
+                      status={request.current_status}
                       timestamp={request.updated_at ?? request.created_at}
                       userName={formatUserName(request.requester)}
                     />
