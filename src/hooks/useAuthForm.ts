@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { UseMutationResult } from '@tanstack/react-query';
+import axios from 'axios';
 import {
   type DefaultValues,
   type FieldValues,
@@ -8,7 +9,6 @@ import {
 } from 'react-hook-form';
 import { toast } from 'sonner';
 import type { z } from 'zod';
-import axios from 'axios';
 import { getErrorMessage } from '@/lib/errors';
 
 interface UseAuthFormOptions<
