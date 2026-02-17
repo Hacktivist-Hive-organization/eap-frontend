@@ -33,5 +33,5 @@ export function useAuthInit() {
     }
   }, [isError, dispatch]);
 
-  return { isLoading: hasToken && isLoading };
+  return { isLoading: hasToken && isLoading, isError: hasToken && isError };
 }

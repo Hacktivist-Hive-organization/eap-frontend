@@ -12,7 +12,7 @@ import { RegistrationPage } from '@/pages/RegistrationPage/RegistrationPage';
 import { UnauthorizedPage } from '@/pages/UnauthorizedPage/UnauthorizedPage';
 
 function App() {
-  const { isLoading } = useAuthInit();
+  const { isLoading, isError } = useAuthInit();
 
   if (isLoading)
     return (
@@ -20,6 +20,14 @@ function App() {
         <img src={logo} alt="Desk-X" className="h-16" />
         <Spinner className="size-6 text-primary" />
       </div>
+    );
+
+  if (isError)
+    return (
+      <ErrorPage
+        error={new Error('Failed to load user session')}
+        resetErrorBoundary={() => window.location.reload()}
+      />
     );
 
   return (
