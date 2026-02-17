@@ -6,7 +6,14 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
-        if (isAxiosError(error) && error.code === 'ERR_NETWORK') return false;
+        if (!isAxiosError(error)) return false;
+
+        const status = error.response?.status;
+
+        if (error.code === 'ERR_NETWORK') return false;
+        if (error.code === 'ERR_CANCELED') return false;
+        if (status && status >= 400 && status < 500) return false;
+
         return failureCount < 3;
       },
     },
