@@ -21,16 +21,6 @@ interface StatusConfig {
   className: string;
 }
 
-export const apiStatusToUiStatus: Record<ApiStatus, Status> = {
-  Draft: 'draft',
-  Submitted: 'submitted',
-  Approved: 'approved',
-  Rejected: 'rejected',
-  'Under review': 'under_review',
-  'In progress': 'in_progress',
-  Completed: 'completed',
-};
-
 export const statusMap: Record<Status, StatusConfig> = {
   draft: {
     label: 'Draft',

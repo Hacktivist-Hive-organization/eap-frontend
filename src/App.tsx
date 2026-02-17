@@ -5,7 +5,9 @@ import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuthInit } from '@/hooks/useAuthInit';
 import { DashboardPage } from '@/pages/DashboardPage/DashboardPage';
+import { ErrorPage } from '@/pages/ErrorPage/ErrorPage';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
+import { NotFoundPage } from '@/pages/NotFoundPage/NotFoundPage';
 import { RegistrationPage } from '@/pages/RegistrationPage/RegistrationPage';
 import { UnauthorizedPage } from '@/pages/UnauthorizedPage/UnauthorizedPage';
 
@@ -34,6 +36,8 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      <Route path="/error" element={<ErrorPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
