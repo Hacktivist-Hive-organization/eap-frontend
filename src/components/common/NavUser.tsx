@@ -1,4 +1,9 @@
-import { ArrowLeftToLineIcon, LogOutIcon, UserRoundIcon, XIcon } from 'lucide-react';
+import {
+  ArrowLeftToLineIcon,
+  LogOutIcon,
+  UserRoundIcon,
+  XIcon,
+} from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,

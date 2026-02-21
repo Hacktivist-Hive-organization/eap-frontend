@@ -42,7 +42,9 @@ function App() {
       <ErrorPage
         title="Session could not be loaded"
         description="We had trouble loading your account. Please try again or sign in."
-        resetErrorBoundary={() => queryClient.resetQueries({ queryKey: ['auth', 'me'] })}
+        resetErrorBoundary={() =>
+          queryClient.resetQueries({ queryKey: ['auth', 'me'] })
+        }
       />
     );
 
@@ -58,7 +60,10 @@ function App() {
         }
       />
       <Route path="/login" element={withRouteErrorBoundary(<LoginPage />)} />
-      <Route path="/register" element={withRouteErrorBoundary(<RegistrationPage />)} />
+      <Route
+        path="/register"
+        element={withRouteErrorBoundary(<RegistrationPage />)}
+      />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="/error" element={<ErrorPage />} />
       <Route path="*" element={<NotFoundPage />} />

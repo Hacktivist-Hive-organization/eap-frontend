@@ -5,7 +5,10 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 
-function getErrorMessage(error: unknown): { title: string; description: string } {
+function getErrorMessage(error: unknown): {
+  title: string;
+  description: string;
+} {
   if (isAxiosError(error)) {
     if (!error.response || error.code === 'ERR_NETWORK') {
       return {
@@ -18,13 +21,15 @@ function getErrorMessage(error: unknown): { title: string; description: string }
     if (status >= 500) {
       return {
         title: 'Server error',
-        description: 'Something went wrong on our end. Please try again in a moment.',
+        description:
+          'Something went wrong on our end. Please try again in a moment.',
       };
     }
     if (status === 404) {
       return {
         title: 'Resource not found',
-        description: 'The page or resource you were looking for could not be found.',
+        description:
+          'The page or resource you were looking for could not be found.',
       };
     }
   }
@@ -35,7 +40,10 @@ function getErrorMessage(error: unknown): { title: string; description: string }
   };
 }
 
-export function RouteErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+export function RouteErrorFallback({
+  error,
+  resetErrorBoundary,
+}: FallbackProps) {
   const { title, description } = getErrorMessage(error);
 
   return (
