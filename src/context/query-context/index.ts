@@ -1,1 +1,1 @@
-export { QueryProvider } from './query-context';
+export { QueryProvider, queryClient } from './query-context';

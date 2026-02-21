@@ -16,7 +16,7 @@ export function mapRequestResponseToRequest(
     title: response.title,
     type: response.type.name,
     subtype: response.subtype.name,
-    status: response.status,
+    status: response.current_status,
     lastUpdate: response.updated_at || response.created_at,
     priority: response.priority,
     assignee: resolveAssignee(response),

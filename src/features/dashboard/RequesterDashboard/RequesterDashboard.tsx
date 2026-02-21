@@ -7,7 +7,7 @@ import {
   RequestsTable,
   type Request as TableRequest,
 } from '@/components/common/RequestsTable';
-import { LoadingState } from '@/components/common/StateMessage';
+import { ErrorState, LoadingState } from '@/components/common/StateMessage';
 import { RequestModal } from '@/features/dashboard/RequesterDashboard/RequestForm/RequestModal';
 import { useRequestsByStatus } from './hooks';
 import {
@@ -19,9 +19,12 @@ import {
 export function RequesterDashboard() {
   const { view = 'all' } = useParams<{ view: DashboardType }>();
   const activeView = view in dashboardTypeToStatuses ? view : 'all';
-  const { data: requests = [], isLoading } = useRequestsByStatus(
-    dashboardTypeToStatuses[activeView],
-  );
+  const {
+    data: requests = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useRequestsByStatus(dashboardTypeToStatuses[activeView]);
   const [newRequestOpen, setNewRequestOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
@@ -47,11 +50,12 @@ export function RequesterDashboard() {
         </div>
         {isLoading ? (
           <LoadingState />
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
         ) : (
           <RequestsTable requests={requests} onRowClick={handleRowClick} />
         )}
       </div>
-
       <RequestModal open={newRequestOpen} onOpenChange={setNewRequestOpen} />
       {selectedRequestId && (
         <RequestDetailModal
