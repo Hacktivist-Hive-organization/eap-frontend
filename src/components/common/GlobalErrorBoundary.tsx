@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { queryClient } from '@/context/query-context';
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage';
 
 interface GlobalErrorBoundaryProps {
@@ -11,7 +12,7 @@ export function GlobalErrorBoundary({ children }: GlobalErrorBoundaryProps) {
   return (
     <ErrorBoundary
       FallbackComponent={ErrorPage}
-      onReset={() => window.location.replace('/')}
+      onReset={() => queryClient.resetQueries()}
     >
       {children}
     </ErrorBoundary>

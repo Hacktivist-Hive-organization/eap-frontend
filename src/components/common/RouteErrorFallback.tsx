@@ -1,8 +1,8 @@
 import { isAxiosError } from 'axios';
 import { AlertTriangleIcon } from 'lucide-react';
+import type { FallbackProps } from 'react-error-boundary';
 import { Link } from 'react-router-dom';
 
-import { Background } from '@/components/common/Background';
 import { Button } from '@/components/ui/button';
 
 function getErrorMessage(error: unknown): { title: string; description: string } {
@@ -35,35 +35,22 @@ function getErrorMessage(error: unknown): { title: string; description: string }
   };
 }
 
-interface ErrorPageProps {
-  error?: unknown;
-  title?: string;
-  description?: string;
-  resetErrorBoundary?: () => void;
-}
-
-export function ErrorPage({ error, title, description, resetErrorBoundary }: ErrorPageProps) {
-  const derived = getErrorMessage(error);
-  const displayTitle = title ?? derived.title;
-  const displayDescription = description ?? derived.description;
+export function RouteErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+  const { title, description } = getErrorMessage(error);
 
   return (
-    <Background>
-      <div className="flex flex-col items-center gap-4 text-center">
-        <AlertTriangleIcon className="h-16 w-16 text-red-500" />
-        <h1 className="text-2xl font-semibold text-gray-900">{displayTitle}</h1>
-        <p className="max-w-md text-gray-600">{displayDescription}</p>
-        <div className="flex gap-2">
-          {resetErrorBoundary && (
-            <Button variant="outline" onClick={resetErrorBoundary}>
-              Try Again
-            </Button>
-          )}
-          <Button variant="outline" asChild>
-            <Link to="/dashboard/all">Back to Dashboard</Link>
-          </Button>
-        </div>
+    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 p-6 text-center">
+      <AlertTriangleIcon className="h-12 w-12 text-red-500" />
+      <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+      <p className="max-w-md text-gray-600">{description}</p>
+      <div className="flex gap-2">
+        <Button variant="outline" onClick={resetErrorBoundary}>
+          Try Again
+        </Button>
+        <Button variant="outline" asChild>
+          <Link to="/dashboard/all">Go to Dashboard</Link>
+        </Button>
       </div>
-    </Background>
+    </div>
   );
 }
