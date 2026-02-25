@@ -23,6 +23,7 @@ export interface AuthResponse {
     first_name: string;
     last_name: string;
     role: Role;
+    is_out_of_office: boolean;
   };
 }
 
@@ -59,6 +60,7 @@ export interface MeResponse {
   last_name: string;
   email: string;
   role: Role;
+  is_out_of_office: boolean;
 }
 
 export interface RequestDetailResponse {

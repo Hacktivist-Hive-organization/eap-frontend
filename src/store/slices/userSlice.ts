@@ -7,6 +7,7 @@ interface User {
   first_name: string;
   last_name: string;
   role: Role;
+  is_out_of_office: boolean;
 }
 
 interface UserState {
@@ -31,8 +32,13 @@ const userSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
+    setOutOfOffice: (state, action: PayloadAction<boolean>) => {
+      if (state.user) {
+        state.user.is_out_of_office = action.payload;
+      }
+    },
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser, setOutOfOffice } = userSlice.actions;
 export default userSlice.reducer;
