@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { type Resolver, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
@@ -47,10 +48,12 @@ export function useRequestForm({ onSuccess }: UseRequestFormOptions = {}) {
           onSuccess?.();
         },
         onError: (error) => {
-          toast.error('Failed to create request', {
-            id: 'create-request-error',
-            description: getErrorMessage(error),
-          });
+          if (axios.isAxiosError(error) && error.response) {
+            toast.error('Failed to create request', {
+              id: 'create-request-error',
+              description: getErrorMessage(error),
+            });
+          }
         },
       },
     );

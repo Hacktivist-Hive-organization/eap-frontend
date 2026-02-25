@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { UseMutationResult } from '@tanstack/react-query';
+import axios from 'axios';
 import {
   type DefaultValues,
   type FieldValues,
@@ -43,10 +44,12 @@ export function useAuthForm<
   function onSubmit(data: TFormData) {
     mutation.mutate(data as TMutationData, {
       onError: (error) => {
-        toast.error(errorToast.title, {
-          id: errorToast.id,
-          description: getErrorMessage(error),
-        });
+        if (axios.isAxiosError(error) && error.response) {
+          toast.error(errorToast.title, {
+            id: errorToast.id,
+            description: getErrorMessage(error),
+          });
+        }
       },
     });
   }

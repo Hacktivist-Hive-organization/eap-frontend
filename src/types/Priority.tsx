@@ -11,12 +11,6 @@ interface PriorityConfig {
   label: string;
 }
 
-export const apiPriorityToUiPriority: Record<ApiPriority, Priority> = {
-  High: 'high',
-  Medium: 'medium',
-  Low: 'low',
-};
-
 export const priorityMap: Record<Priority, PriorityConfig> = {
   high: {
     icon: <ChevronUpIcon className="h-5 w-5" />,
