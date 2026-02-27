@@ -4,6 +4,7 @@ import type {
   RequestAllResponse,
   RequestDetailResponse,
   RequestTypeSubTypes,
+  TrackingEntry,
 } from '@/services/auth/types';
 import type { Status } from '@/types/Status';
 
@@ -29,6 +30,31 @@ export const requestService = {
     );
     return response.data;
   },
+
+  getTrackingById: async (id: number): Promise<TrackingEntry[]> => {
+    const response = await api.get<TrackingEntry[]>(`/api/v1/tracking/${id}`);
+    return response.data;
+  },
+
+  submitDraft: async (id: number): Promise<RequestAllResponse> => {
+    const response = await api.patch<RequestAllResponse>(
+      `/api/v1/requests/${id}/submit`,
+    );
+    return response.data;
+  },
+
+  processRequest: async (
+    id: number,
+    status: Status,
+    comment?: string,
+  ): Promise<RequestAllResponse> => {
+    const response = await api.post<RequestAllResponse>(
+      `/api/v1/requests/${id}/process`,
+      null,
+      { params: { status, ...(comment ? { comment } : {}) } },
+    );
+    return response.data;
+  },
 };
 
 export const createRequestService = {
@@ -41,6 +67,16 @@ export const createRequestService = {
   ): Promise<RequestAllResponse> => {
     const { data } = await api.post<RequestAllResponse>(
       '/api/v1/requests',
+      payload,
+    );
+    return data;
+  },
+
+  submitRequest: async (
+    payload: CreateRequestPayload,
+  ): Promise<RequestAllResponse> => {
+    const { data } = await api.post<RequestAllResponse>(
+      '/api/v1/requests/submit',
       payload,
     );
     return data;

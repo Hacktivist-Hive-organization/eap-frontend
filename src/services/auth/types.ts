@@ -77,6 +77,20 @@ export interface RequestDetailResponse {
   updated_at: string;
 }
 
+export interface TrackingEntry {
+  id: number;
+  user: {
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+    is_out_of_office: boolean;
+  };
+  comment: string;
+  status: Status;
+}
+
 export interface CreateRequestPayload {
   type_id: number;
   subtype_id: number;
