@@ -25,7 +25,7 @@ In the "dev" script in package.JSON, add the --host flag to the vite command:
 ```
 
 This way, later when Vite will run inside a container, it'll make vite listen not only
-to the container's localhost, but to all interfaces. Thus, Vite will listen to messages coming from the host.
+to the container's localhost, but to all interfaces (0.0.0.0). Thus, Vite will listen to messages coming from the host.
 
 ---
 
