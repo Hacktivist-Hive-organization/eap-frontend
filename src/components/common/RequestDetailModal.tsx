@@ -2,6 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
   AlertCircleIcon,
   BriefcaseIcon,
+  CheckCircle2Icon,
   CircleIcon,
   EraserIcon,
   FileTextIcon,
@@ -11,6 +12,7 @@ import {
   SendHorizonalIcon,
   TagIcon,
   UsersIcon,
+  XCircleIcon,
 } from 'lucide-react';
 import { VisuallyHidden } from 'radix-ui';
 import { useState } from 'react';
@@ -26,11 +28,13 @@ import {
   ModalTitle,
 } from '@/components/ui/modal';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
 import { useProcessRequest } from '@/features/dashboard/RequesterDashboard/hooks/useProcessRequest';
 import { useRequestById } from '@/features/dashboard/RequesterDashboard/hooks/useRequestById';
 import { useRequestTracking } from '@/features/dashboard/RequesterDashboard/hooks/useRequestTracking';
 import { useSubmitDraft } from '@/features/dashboard/RequesterDashboard/hooks/useSubmitDraft';
 import { formatUserName } from '@/features/dashboard/utils';
+import { useAppSelector } from '@/hooks/useRedux';
 import { priorityMap } from '@/types/Priority';
 import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';
@@ -214,6 +218,9 @@ export function RequestDetailModal({
   const submitDraft = useSubmitDraft();
   const processRequest = useProcessRequest();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'approved' | 'rejected' | null>(null);
+  const [comment, setComment] = useState('');
+  const role = useAppSelector((state) => state.userState.user?.role);
 
   const handleSubmitDraft = () => {
     submitDraft.mutate(requestId, {
@@ -240,6 +247,27 @@ export function RequestDetailModal({
         },
       },
     );
+  };
+
+  const handleConfirmAction = () => {
+    if (!pendingAction) return;
+    processRequest.mutate(
+      { id: requestId, status: pendingAction, comment: comment.trim() || undefined },
+      {
+        onSuccess: () => {
+          toast.success(pendingAction === 'approved' ? 'Request approved' : 'Request rejected');
+          onOpenChange(false);
+        },
+        onError: () => {
+          toast.error(pendingAction === 'approved' ? 'Failed to approve request' : 'Failed to reject request');
+        },
+      },
+    );
+  };
+
+  const handleCancelAction = () => {
+    setPendingAction(null);
+    setComment('');
   };
 
   const participants = tracking.reduce(
@@ -385,27 +413,90 @@ export function RequestDetailModal({
           <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent" />
         </div>
 
-        {(request.current_status === 'draft' ||
-          request.current_status === 'submitted') && (
-          <div className="flex justify-end px-6 py-4 border-t">
-            {request.current_status === 'draft' && (
-              <Button
-                onClick={handleSubmitDraft}
-                disabled={submitDraft.isPending}
-              >
-                <SendHorizonalIcon />
-                {submitDraft.isPending ? 'Submitting...' : 'Submit Request'}
-              </Button>
-            )}
-            {request.current_status === 'submitted' && (
-              <Button
-                variant="secondary"
-                onClick={handleCancel}
-                disabled={processRequest.isPending}
-              >
-                <EraserIcon />
-                {processRequest.isPending ? 'Cancelling...' : 'Cancel Request'}
-              </Button>
+        {role === 'requester' &&
+          (request.current_status === 'draft' ||
+            request.current_status === 'submitted') && (
+            <div className="flex justify-end px-6 py-4 border-t">
+              {request.current_status === 'draft' && (
+                <Button
+                  onClick={handleSubmitDraft}
+                  disabled={submitDraft.isPending}
+                >
+                  <SendHorizonalIcon />
+                  {submitDraft.isPending ? 'Submitting...' : 'Submit Request'}
+                </Button>
+              )}
+              {request.current_status === 'submitted' && (
+                <Button
+                  variant="secondary"
+                  onClick={handleCancel}
+                  disabled={processRequest.isPending}
+                >
+                  <EraserIcon />
+                  {processRequest.isPending ? 'Cancelling...' : 'Cancel Request'}
+                </Button>
+              )}
+            </div>
+          )}
+
+        {role === 'approver' && request.current_status === 'submitted' && (
+          <div className="flex flex-col gap-3 px-6 py-4 border-t">
+            {pendingAction ? (
+              <>
+                <Textarea
+                  placeholder={
+                    pendingAction === 'rejected'
+                      ? 'Comment is required'
+                      : 'Add a comment (optional)'
+                  }
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="resize-none"
+                  rows={3}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    onClick={handleCancelAction}
+                    disabled={processRequest.isPending}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant={pendingAction === 'rejected' ? 'destructive' : 'default'}
+                    onClick={handleConfirmAction}
+                    disabled={
+                      processRequest.isPending ||
+                      (pendingAction === 'rejected' && !comment.trim())
+                    }
+                  >
+                    {pendingAction === 'rejected' ? <XCircleIcon /> : <CheckCircle2Icon />}
+                    {processRequest.isPending
+                      ? 'Processing...'
+                      : pendingAction === 'rejected'
+                        ? 'Confirm Reject'
+                        : 'Confirm Approve'}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => setPendingAction('rejected')}
+                  disabled={processRequest.isPending}
+                >
+                  <XCircleIcon />
+                  Reject
+                </Button>
+                <Button
+                  onClick={() => setPendingAction('approved')}
+                  disabled={processRequest.isPending}
+                >
+                  <CheckCircle2Icon />
+                  Approve
+                </Button>
+              </div>
             )}
           </div>
         )}

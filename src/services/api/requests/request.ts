@@ -24,6 +24,21 @@ export const requestService = {
     return response.data;
   },
 
+  getApproverRequests: async (
+    statuses: Status[],
+  ): Promise<RequestAllResponse[]> => {
+    const response = await api.get<RequestAllResponse[]>(
+      '/api/v1/approver/requests',
+      {
+        params: { statuses },
+        paramsSerializer: {
+          indexes: null,
+        },
+      },
+    );
+    return response.data;
+  },
+
   getRequestById: async (id: number): Promise<RequestDetailResponse> => {
     const response = await api.get<RequestDetailResponse>(
       `/api/v1/requests/${id}`,

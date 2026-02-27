@@ -18,6 +18,7 @@ export function useProcessRequest() {
       queryClient.invalidateQueries({ queryKey: ['request', updatedRequest.id] });
       queryClient.invalidateQueries({ queryKey: ['tracking', updatedRequest.id] });
       queryClient.invalidateQueries({ queryKey: ['requests'] });
+      queryClient.invalidateQueries({ queryKey: ['approver-requests'] });
     },
   });
 }
