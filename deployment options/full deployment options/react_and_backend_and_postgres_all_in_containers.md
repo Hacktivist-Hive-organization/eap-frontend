@@ -37,7 +37,7 @@ VITE_API_URL=http://127.0.0.1:8000/
 
 ### 3. Configure CORS in FastAPI
 
-In FastAPI, make sure localhost:5173 is in the allowed CORS origins. This works for both running Vite in a
+In FastAPI (different repo), make sure localhost:5173 is in the allowed CORS origins. This works for both running Vite in a
 container and running Vite directly on the machine.
 
 ```python
@@ -58,7 +58,7 @@ origin http://localhost:5173.
 ### 4. Create the image
 
 ```bash
-docker build --no-cache -t my-frontend-image .
+docker build --no-cache -t eap-frontend-image .
 ```
 
 ---
@@ -66,7 +66,7 @@ docker build --no-cache -t my-frontend-image .
 ### 5. Run a container
 
 ```bash
-docker run -p 5173:5173 --name frontend_container my-frontend-image
+docker run -p 5173:5173 --name eap-frontend-container eap-frontend-image
 ```
 
 Explanation:
