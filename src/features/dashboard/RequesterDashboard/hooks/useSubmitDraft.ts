@@ -7,8 +7,12 @@ export function useSubmitDraft() {
   return useMutation({
     mutationFn: (id: number) => requestService.submitDraft(id),
     onSuccess: (updatedRequest) => {
-      queryClient.invalidateQueries({ queryKey: ['request', updatedRequest.id] });
-      queryClient.invalidateQueries({ queryKey: ['tracking', updatedRequest.id] });
+      queryClient.invalidateQueries({
+        queryKey: ['request', updatedRequest.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['tracking', updatedRequest.id],
+      });
       queryClient.invalidateQueries({ queryKey: ['requests'] });
     },
   });

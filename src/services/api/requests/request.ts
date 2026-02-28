@@ -46,7 +46,9 @@ export const requestService = {
     return response.data;
   },
 
-  getApproverRequestById: async (id: number): Promise<RequestDetailResponse> => {
+  getApproverRequestById: async (
+    id: number,
+  ): Promise<RequestDetailResponse> => {
     const response = await api.get<RequestDetailResponse>(
       `/api/v1/approver/requests/${id}`,
     );

@@ -216,8 +216,16 @@ export function RequestDetailModal({
 }: RequestDetailModalProps) {
   const role = useAppSelector((state) => state.userState.user?.role);
   const isApprover = role === 'approver';
-  const { data: requesterData, isLoading: isLoadingRequester, isError: isErrorRequester } = useRequestById(isApprover ? 0 : requestId);
-  const { data: approverData, isLoading: isLoadingApprover, isError: isErrorApprover } = useApproverRequestById(isApprover ? requestId : 0);
+  const {
+    data: requesterData,
+    isLoading: isLoadingRequester,
+    isError: isErrorRequester,
+  } = useRequestById(isApprover ? 0 : requestId);
+  const {
+    data: approverData,
+    isLoading: isLoadingApprover,
+    isError: isErrorApprover,
+  } = useApproverRequestById(isApprover ? requestId : 0);
   const request = approverData ?? requesterData;
   const isLoading = isApprover ? isLoadingApprover : isLoadingRequester;
   const isError = isApprover ? isErrorApprover : isErrorRequester;
@@ -225,7 +233,9 @@ export function RequestDetailModal({
   const submitDraft = useSubmitDraft();
   const processRequest = useProcessRequest();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [pendingAction, setPendingAction] = useState<'approved' | 'rejected' | null>(null);
+  const [pendingAction, setPendingAction] = useState<
+    'approved' | 'rejected' | null
+  >(null);
   const [comment, setComment] = useState('');
 
   const handleSubmitDraft = () => {
@@ -258,14 +268,26 @@ export function RequestDetailModal({
   const handleConfirmAction = () => {
     if (!pendingAction) return;
     processRequest.mutate(
-      { id: requestId, status: pendingAction, comment: comment.trim() || undefined },
+      {
+        id: requestId,
+        status: pendingAction,
+        comment: comment.trim() || undefined,
+      },
       {
         onSuccess: () => {
-          toast.success(pendingAction === 'approved' ? 'Request approved' : 'Request rejected');
+          toast.success(
+            pendingAction === 'approved'
+              ? 'Request approved'
+              : 'Request rejected',
+          );
           onOpenChange(false);
         },
         onError: () => {
-          toast.error(pendingAction === 'approved' ? 'Failed to approve request' : 'Failed to reject request');
+          toast.error(
+            pendingAction === 'approved'
+              ? 'Failed to approve request'
+              : 'Failed to reject request',
+          );
         },
       },
     );
@@ -415,7 +437,9 @@ export function RequestDetailModal({
                     ) : (
                       <StatusHistoryItem
                         status={request.current_status}
-                        userName={formatUserName(request.assignee ?? request.requester)}
+                        userName={formatUserName(
+                          request.assignee ?? request.requester,
+                        )}
                       />
                     )}
                   </div>
@@ -447,7 +471,9 @@ export function RequestDetailModal({
                   disabled={processRequest.isPending}
                 >
                   <EraserIcon />
-                  {processRequest.isPending ? 'Cancelling...' : 'Cancel Request'}
+                  {processRequest.isPending
+                    ? 'Cancelling...'
+                    : 'Cancel Request'}
                 </Button>
               )}
             </div>
@@ -477,14 +503,20 @@ export function RequestDetailModal({
                     Cancel
                   </Button>
                   <Button
-                    variant={pendingAction === 'rejected' ? 'destructive' : 'default'}
+                    variant={
+                      pendingAction === 'rejected' ? 'destructive' : 'default'
+                    }
                     onClick={handleConfirmAction}
                     disabled={
                       processRequest.isPending ||
                       (pendingAction === 'rejected' && !comment.trim())
                     }
                   >
-                    {pendingAction === 'rejected' ? <XCircleIcon /> : <CheckCircle2Icon />}
+                    {pendingAction === 'rejected' ? (
+                      <XCircleIcon />
+                    ) : (
+                      <CheckCircle2Icon />
+                    )}
                     {processRequest.isPending
                       ? 'Processing...'
                       : pendingAction === 'rejected'
