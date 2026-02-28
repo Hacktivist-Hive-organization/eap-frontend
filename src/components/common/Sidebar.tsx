@@ -16,6 +16,7 @@ export interface SidebarItem {
   label: string;
   icon: ReactNode;
   path: string;
+  badge?: number;
 }
 
 interface SidebarProps {
@@ -50,6 +51,11 @@ export function Sidebar({ items, activeKey }: SidebarProps) {
                 <Link to={item.path}>
                   {item.icon}
                   <span>{item.label}</span>
+                  {item.badge !== undefined && (
+                    <span className="ml-auto text-xs font-semibold tabular-nums bg-muted text-muted-foreground rounded-full min-w-5 h-5 flex items-center justify-center px-1 group-data-[collapsible=icon]:hidden">
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -22,8 +22,24 @@ export function ApproverDashboard() {
     isError,
     refetch,
   } = useApproverRequestsByStatus(approverDashboardTypeToStatuses[activeView]);
+  const { data: allRequests = [] } = useApproverRequestsByStatus([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
+
+  const counts: Record<ApproverDashboardType, number> = {
+    all: allRequests.length,
+    pending: allRequests.filter((r) =>
+      approverDashboardTypeToStatuses.pending.includes(r.status),
+    ).length,
+    history: allRequests.filter((r) =>
+      approverDashboardTypeToStatuses.history.includes(r.status),
+    ).length,
+  };
+
+  const sidebarItemsWithBadges = approverSidebarItems.map((item) => ({
+    ...item,
+    badge: counts[item.key as ApproverDashboardType],
+  }));
 
   const handleRowClick = (request: TableRequest) => {
     setSearchParams({ requestId: String(request.id) });
@@ -36,7 +52,7 @@ export function ApproverDashboard() {
   };
 
   return (
-    <PageLayout sidebarItems={approverSidebarItems} activeKey={activeView}>
+    <PageLayout sidebarItems={sidebarItemsWithBadges} activeKey={activeView}>
       <div>
         <div className="flex items-center justify-between p-2">
           <span className="capitalize text-2xl font-bold">
