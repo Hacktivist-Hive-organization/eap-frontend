@@ -3,8 +3,7 @@ import type { RequestAllResponse } from '@/services/auth/types';
 import { formatUserName } from './formatters';
 
 function resolveAssignee(response: RequestAllResponse): string {
-  if (response.admin) return formatUserName(response.admin);
-  if (response.approver) return formatUserName(response.approver);
+  if (response.assignee) return formatUserName(response.assignee);
   return formatUserName(response.requester);
 }
 

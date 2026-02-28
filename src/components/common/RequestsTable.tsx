@@ -86,14 +86,13 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
                 </TableCell>
                 <TableCell>{formatLastUpdate(request.lastUpdate)}</TableCell>
                 <TableCell>
-                  {request.assignee !== undefined && (
+                  {request.assignee !== undefined ? (
                     <Avatar className="h-7 w-7">
                       <AvatarFallback className="text-xs">
                         {getInitials(request.assignee)}
                       </AvatarFallback>
                     </Avatar>
-                  )}
-                  {request.assignee === undefined && (
+                  ) : (
                     <MinusIcon className="text-gray-500/50" />
                   )}
                 </TableCell>

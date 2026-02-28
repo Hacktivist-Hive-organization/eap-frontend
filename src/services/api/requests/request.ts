@@ -46,6 +46,13 @@ export const requestService = {
     return response.data;
   },
 
+  getApproverRequestById: async (id: number): Promise<RequestDetailResponse> => {
+    const response = await api.get<RequestDetailResponse>(
+      `/api/v1/approver/requests/${id}`,
+    );
+    return response.data;
+  },
+
   getTrackingById: async (id: number): Promise<TrackingEntry[]> => {
     const response = await api.get<TrackingEntry[]>(`/api/v1/tracking/${id}`);
     return response.data;

@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/modal';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
+import { useApproverRequestById } from '@/features/dashboard/ApproverDashboard/hooks/useApproverRequestById';
 import { useProcessRequest } from '@/features/dashboard/RequesterDashboard/hooks/useProcessRequest';
 import { useRequestById } from '@/features/dashboard/RequesterDashboard/hooks/useRequestById';
 import { useRequestTracking } from '@/features/dashboard/RequesterDashboard/hooks/useRequestTracking';
@@ -213,14 +214,19 @@ export function RequestDetailModal({
   open,
   onOpenChange,
 }: RequestDetailModalProps) {
-  const { data: request, isLoading, isError } = useRequestById(requestId);
+  const role = useAppSelector((state) => state.userState.user?.role);
+  const isApprover = role === 'approver';
+  const { data: requesterData, isLoading: isLoadingRequester, isError: isErrorRequester } = useRequestById(isApprover ? 0 : requestId);
+  const { data: approverData, isLoading: isLoadingApprover, isError: isErrorApprover } = useApproverRequestById(isApprover ? requestId : 0);
+  const request = approverData ?? requesterData;
+  const isLoading = isApprover ? isLoadingApprover : isLoadingRequester;
+  const isError = isApprover ? isErrorApprover : isErrorRequester;
   const { data: tracking = [] } = useRequestTracking(requestId);
   const submitDraft = useSubmitDraft();
   const processRequest = useProcessRequest();
   const [isScrolled, setIsScrolled] = useState(false);
   const [pendingAction, setPendingAction] = useState<'approved' | 'rejected' | null>(null);
   const [comment, setComment] = useState('');
-  const role = useAppSelector((state) => state.userState.user?.role);
 
   const handleSubmitDraft = () => {
     submitDraft.mutate(requestId, {
@@ -379,8 +385,16 @@ export function RequestDetailModal({
                     {request.requester && (
                       <ParticipantInfo user={request.requester} />
                     )}
+                    {request.assignee &&
+                      request.assignee.id !== request.requester?.id && (
+                        <ParticipantInfo user={request.assignee} />
+                      )}
                     {participants
-                      .filter((u) => u.id !== request.requester?.id)
+                      .filter(
+                        (u) =>
+                          u.id !== request.assignee?.id &&
+                          u.id !== request.requester?.id,
+                      )
                       .map((user) => (
                         <ParticipantInfo key={user.id} user={user} />
                       ))}
@@ -401,7 +415,7 @@ export function RequestDetailModal({
                     ) : (
                       <StatusHistoryItem
                         status={request.current_status}
-                        userName={formatUserName(request.requester)}
+                        userName={formatUserName(request.assignee ?? request.requester)}
                       />
                     )}
                   </div>

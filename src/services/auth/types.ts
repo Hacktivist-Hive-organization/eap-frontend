@@ -41,9 +41,8 @@ export interface RequestAllResponse {
   subtype: RequestType;
   created_at: string;
   updated_at?: string;
-  admin?: UserResponse;
-  approver?: UserResponse;
   requester: UserResponse;
+  assignee?: UserResponse;
 }
 
 export interface UserResponse {
@@ -73,6 +72,7 @@ export interface RequestDetailResponse {
   type: RequestType;
   subtype: RequestType;
   requester: UserResponse;
+  assignee?: UserResponse;
   created_at: string;
   updated_at: string;
 }
