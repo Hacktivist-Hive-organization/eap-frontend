@@ -16,6 +16,7 @@ export function useProcessRequest() {
       requestService.processRequest(id, status, comment),
     onSuccess: (updatedRequest) => {
       queryClient.invalidateQueries({ queryKey: ['request', updatedRequest.id] });
+      queryClient.invalidateQueries({ queryKey: ['approver-request', updatedRequest.id] });
       queryClient.invalidateQueries({ queryKey: ['tracking', updatedRequest.id] });
       queryClient.invalidateQueries({ queryKey: ['requests'] });
       queryClient.invalidateQueries({ queryKey: ['approver-requests'] });
