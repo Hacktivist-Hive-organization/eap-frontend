@@ -1,3 +1,4 @@
+import deskXLogo from '@/assets/Desk-X_tr.svg';
 import { cn } from '@/lib/utils';
 
 interface LogoProps {
@@ -7,7 +8,7 @@ interface LogoProps {
 export function Logo({ className }: LogoProps) {
   return (
     <img
-      src="../src/assets/Desk-X_tr.svg"
+      src={deskXLogo}
       alt="Desk-X logo"
       className={cn('object-contain', className)}
     />
