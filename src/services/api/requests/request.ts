@@ -46,6 +46,13 @@ export const requestService = {
     return response.data;
   },
 
+  getAdminRequests: async (): Promise<RequestAllResponse[]> => {
+    const response = await api.get<RequestAllResponse[]>(
+      '/api/v1/admin/requests',
+    );
+    return response.data;
+  },
+
   getApproverRequestById: async (
     id: number,
   ): Promise<RequestDetailResponse> => {
