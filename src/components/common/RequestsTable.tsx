@@ -23,7 +23,7 @@ export interface Request {
   status: Status;
   lastUpdate?: string;
   priority: Priority;
-  assignee?: string;
+  actor?: string;
 }
 
 interface RequestsTableProps {
@@ -86,10 +86,10 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
                 </TableCell>
                 <TableCell>{formatLastUpdate(request.lastUpdate)}</TableCell>
                 <TableCell>
-                  {request.assignee !== undefined ? (
+                  {request.actor !== undefined ? (
                     <Avatar className="h-7 w-7">
                       <AvatarFallback className="text-xs">
-                        {getInitials(request.assignee)}
+                        {getInitials(request.actor)}
                       </AvatarFallback>
                     </Avatar>
                   ) : (
