@@ -10,7 +10,7 @@ export const approverDashboardTypeToStatuses: Record<
 > = {
   all: [],
   pending: ['submitted'],
-  history: ['approved', 'rejected', 'completed'],
+  history: ['approved', 'rejected', 'completed', 'cancelled'],
 };
 
 export const approverSidebarItems: SidebarItem[] = [

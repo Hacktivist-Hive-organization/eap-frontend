@@ -41,9 +41,8 @@ export interface RequestAllResponse {
   subtype: RequestType;
   created_at: string;
   updated_at?: string;
-  admin?: UserResponse;
-  approver?: UserResponse;
   requester: UserResponse;
+  assignee?: UserResponse;
 }
 
 export interface UserResponse {
@@ -73,8 +72,23 @@ export interface RequestDetailResponse {
   type: RequestType;
   subtype: RequestType;
   requester: UserResponse;
+  assignee?: UserResponse;
   created_at: string;
   updated_at: string;
+}
+
+export interface TrackingEntry {
+  id: number;
+  user: {
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+    is_out_of_office: boolean;
+  };
+  comment: string;
+  status: Status;
 }
 
 export interface CreateRequestPayload {
