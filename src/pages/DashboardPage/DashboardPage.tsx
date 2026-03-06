@@ -11,7 +11,7 @@ const ROLE_VIEWS: Record<Role, { views: string[]; default: string }> = {
   requester: { views: ['all', 'active', 'closed', 'draft'], default: 'all' },
   approver: { views: ['all', 'pending', 'history'], default: 'all' },
   admin: {
-    views: ['backlog', 'in-progress', 'closed'],
+    views: ['backlog', 'in-progress', 'closed', 'users'],
     default: 'in-progress',
   },
 };

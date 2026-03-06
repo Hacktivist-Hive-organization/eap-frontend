@@ -1,13 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Request } from '@/components/common/RequestsTable';
-import { mapRequestResponsesToRequests } from '@/features/dashboard/utils';
-import { requestService } from '@/services/api/requests/request';
-import type { Status } from '@/types/Status';
+import { userService } from '@/services/api/requests/user';
 
-export function useAdminRequestsByStatus(statuses: Status[]) {
+export function useAllUsers() {
   return useQuery({
-    queryKey: ['admin-requests', statuses],
-    queryFn: () => requestService.getRequestsByStatus(statuses),
-    select: (data): Request[] => mapRequestResponsesToRequests(data),
+    queryKey: ['admin-users'],
+    queryFn: () => userService.getAll(),
   });
 }

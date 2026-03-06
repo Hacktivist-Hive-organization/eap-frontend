@@ -19,17 +19,20 @@ export const approverSidebarItems: SidebarItem[] = [
     label: 'All',
     icon: <InboxIcon className="h-5 w-5" />,
     path: '/dashboard/all',
+    group: 'Requests',
   },
   {
     key: 'pending',
     label: 'Pending',
     icon: <ClockIcon className="h-5 w-5" />,
     path: '/dashboard/pending',
+    group: 'Requests',
   },
   {
     key: 'history',
     label: 'History',
     icon: <HistoryIcon className="h-5 w-5" />,
     path: '/dashboard/history',
+    group: 'Requests',
   },
 ];
