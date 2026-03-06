@@ -105,7 +105,11 @@ export function UsersTable({ users }: UsersTableProps) {
                 </TableCell>
                 <TableCell>
                   <StatusBadge
-                    config={availabilityConfig[user.is_out_of_office ? 'true' : 'false']}
+                    config={
+                      availabilityConfig[
+                        user.is_out_of_office ? 'true' : 'false'
+                      ]
+                    }
                   />
                 </TableCell>
               </TableRow>
