@@ -2,9 +2,9 @@ import type { Request } from '@/components/common/RequestsTable';
 import type { RequestAllResponse } from '@/services/auth/types';
 import { formatUserName } from './formatters';
 
-function resolveActor(response: RequestAllResponse): string {
-  if (response.assignee) return formatUserName(response.assignee);
-  return formatUserName(response.requester);
+function resolveAssignee(response: RequestAllResponse): string | undefined {
+  if (!response.assignee) return undefined;
+  return formatUserName(response.assignee);
 }
 
 export function mapRequestResponseToRequest(
@@ -18,7 +18,7 @@ export function mapRequestResponseToRequest(
     status: response.current_status,
     lastUpdate: response.updated_at || response.created_at,
     priority: response.priority,
-    actor: resolveActor(response),
+    assignee: resolveAssignee(response),
   };
 }
 
