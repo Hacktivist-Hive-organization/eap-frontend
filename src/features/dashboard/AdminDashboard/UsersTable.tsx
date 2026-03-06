@@ -79,11 +79,11 @@ export function UsersTable({ users }: UsersTableProps) {
         <Table>
           <TableHeader className="bg-secondary">
             <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>#</TableHead>
+              <TableHead>Full Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Active</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Availability</TableHead>
             </TableRow>
           </TableHeader>
@@ -100,18 +100,12 @@ export function UsersTable({ users }: UsersTableProps) {
                 </TableCell>
                 <TableCell>
                   <StatusBadge
-                    config={
-                      activeConfig[String(user.is_active) as 'true' | 'false']
-                    }
+                    config={activeConfig[user.is_active ? 'true' : 'false']}
                   />
                 </TableCell>
                 <TableCell>
                   <StatusBadge
-                    config={
-                      availabilityConfig[
-                        String(user.is_out_of_office) as 'true' | 'false'
-                      ]
-                    }
+                    config={availabilityConfig[user.is_out_of_office ? 'true' : 'false']}
                   />
                 </TableCell>
               </TableRow>
