@@ -86,7 +86,9 @@ function NavGroup({
 }) {
   return (
     <SidebarGroup>
-      {index > 0 && <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />}
+      {index > 0 && (
+        <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />
+      )}
       {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
       <SidebarGroupContent>
         <SidebarMenu>

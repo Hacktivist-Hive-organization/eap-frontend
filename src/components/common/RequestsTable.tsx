@@ -221,7 +221,10 @@ const columns: ColumnDef<Request>[] = [
       const truncated = title.length > 70 ? `${title.slice(0, 70)}…` : title;
       return (
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="shrink-0 font-mono text-xs text-muted-foreground">
+          <Badge
+            variant="outline"
+            className="shrink-0 font-mono text-xs text-muted-foreground"
+          >
             #{row.original.id}
           </Badge>
           <span title={title}>{truncated}</span>
@@ -346,8 +349,10 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
 
   const statusOptions = useMemo(
     () =>
-      [...new Set(requests.map((r) => r.status))]
-        .map((s) => ({ value: s, label: statusMap[s].label })),
+      [...new Set(requests.map((r) => r.status))].map((s) => ({
+        value: s,
+        label: statusMap[s].label,
+      })),
     [requests],
   );
 
