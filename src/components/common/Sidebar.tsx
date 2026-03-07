@@ -86,10 +86,10 @@ function NavGroup({
 }) {
   return (
     <SidebarGroup>
-      {index > 0 && <SidebarSeparator />}
+      {index > 0 && <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />}
       {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
       <SidebarGroupContent>
-        <SidebarMenu className="p-2">
+        <SidebarMenu>
           {group.items.map((item) => (
             <NavItem key={item.key} item={item} activeKey={activeKey} />
           ))}

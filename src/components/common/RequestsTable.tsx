@@ -1,7 +1,10 @@
 import {
   type ColumnDef,
+  type ColumnFiltersState,
+  type FilterFn,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   type SortingState,
   useReactTable,
@@ -11,10 +14,12 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
+  Filter,
   MinusIcon,
   SlidersHorizontal,
+  X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { EmptyState } from '@/components/common/StateMessage';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -23,8 +28,11 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
 import {
   Table,
   TableBody,
@@ -55,14 +63,24 @@ interface RequestsTableProps {
 }
 
 const COLUMN_LABELS: Record<string, string> = {
-  id: 'ID',
   title: 'Title',
+  type: 'Category',
   subtype: 'Type',
   status: 'Status',
   lastUpdate: 'Last Update',
   assignee: 'Assignee',
-  priority: 'Priority',
+  priority: 'P',
 };
+
+const multiSelectFilter: FilterFn<Request> = (
+  row,
+  columnId,
+  filterValue: string[],
+) => {
+  if (!filterValue?.length) return true;
+  return filterValue.includes(String(row.getValue(columnId)));
+};
+multiSelectFilter.autoRemove = (val: string[]) => !val?.length;
 
 function SortableHeader({
   label,
@@ -87,13 +105,95 @@ function SortableHeader({
   );
 }
 
+interface FacetFilterProps {
+  label: string;
+  options: { label: string; value: string }[];
+  selected: Set<string>;
+  onChange: (values: string[]) => void;
+}
+
+function FacetFilter({ label, options, selected, onChange }: FacetFilterProps) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="h-8 border-dashed">
+          <Filter className="mr-2 h-4 w-4" />
+          {label}
+          {selected.size > 0 && (
+            <>
+              <Separator orientation="vertical" className="mx-2 h-4" />
+              {selected.size > 2 ? (
+                <Badge
+                  variant="secondary"
+                  className="rounded-sm px-1 font-normal"
+                >
+                  {selected.size} selected
+                </Badge>
+              ) : (
+                <div className="flex gap-1">
+                  {[...selected].map((val) => (
+                    <Badge
+                      key={val}
+                      variant="secondary"
+                      className="rounded-sm px-1 font-normal"
+                    >
+                      {options.find((o) => o.value === val)?.label ?? val}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-48">
+        {options.map((option) => (
+          <DropdownMenuCheckboxItem
+            key={option.value}
+            checked={selected.has(option.value)}
+            onCheckedChange={(checked) => {
+              const next = new Set(selected);
+              if (checked) next.add(option.value);
+              else next.delete(option.value);
+              onChange([...next]);
+            }}
+          >
+            {option.label}
+          </DropdownMenuCheckboxItem>
+        ))}
+        {selected.size > 0 && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="justify-center text-center"
+              onSelect={() => onChange([])}
+            >
+              Clear filter
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+const statusOptions = Object.entries(statusMap).map(([value, config]) => ({
+  value,
+  label: config.label,
+}));
+
+const priorityOptions = Object.entries(priorityMap).map(([value, config]) => ({
+  value,
+  label: config.label,
+}));
+
 const columns: ColumnDef<Request>[] = [
   {
     accessorKey: 'priority',
-    enableHiding: false,
+    filterFn: multiSelectFilter,
     header: ({ column }) => (
       <SortableHeader
-        label="Priority"
+        label="P"
         isSorted={column.getIsSorted()}
         onToggle={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       />
@@ -111,18 +211,8 @@ const columns: ColumnDef<Request>[] = [
     },
   },
   {
-    accessorKey: 'id',
-    header: ({ column }) => (
-      <SortableHeader
-        label="ID"
-        isSorted={column.getIsSorted()}
-        onToggle={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-      />
-    ),
-    cell: ({ row }) => `#${row.getValue('id')}`,
-  },
-  {
     accessorKey: 'title',
+    enableHiding: false,
     header: ({ column }) => (
       <SortableHeader
         label="Title"
@@ -132,12 +222,27 @@ const columns: ColumnDef<Request>[] = [
     ),
     cell: ({ row }) => {
       const title = row.getValue<string>('title');
+      const truncated = title.length > 70 ? `${title.slice(0, 70)}…` : title;
       return (
-        <span className="block max-w-lg truncate" title={title}>
-          {title}
-        </span>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="shrink-0 font-mono text-xs text-muted-foreground">
+            #{row.original.id}
+          </Badge>
+          <span title={title}>{truncated}</span>
+        </div>
       );
     },
+  },
+  {
+    accessorKey: 'type',
+    filterFn: multiSelectFilter,
+    header: ({ column }) => (
+      <SortableHeader
+        label="Category"
+        isSorted={column.getIsSorted()}
+        onToggle={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      />
+    ),
   },
   {
     accessorKey: 'subtype',
@@ -151,6 +256,7 @@ const columns: ColumnDef<Request>[] = [
   },
   {
     accessorKey: 'status',
+    filterFn: multiSelectFilter,
     header: ({ column }) => (
       <SortableHeader
         label="Status"
@@ -202,19 +308,54 @@ const columns: ColumnDef<Request>[] = [
   },
 ];
 
+function getFilterSet(
+  columnFilters: ColumnFiltersState,
+  columnId: string,
+): Set<string> {
+  const filter = columnFilters.find((f) => f.id === columnId);
+  return new Set((filter?.value as string[]) ?? []);
+}
+
+function setFilterValues(
+  setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>,
+  columnId: string,
+  values: string[],
+) {
+  setColumnFilters((prev) => {
+    const rest = prev.filter((f) => f.id !== columnId);
+    if (!values.length) return rest;
+    return [...rest, { id: columnId, value: values }];
+  });
+}
+
 export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    type: false,
+  });
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const typeOptions = useMemo(
+    () =>
+      [...new Set(requests.map((r) => r.type))]
+        .sort()
+        .map((t) => ({ label: t, value: t })),
+    [requests],
+  );
 
   const table = useReactTable({
     data: requests,
     columns,
-    state: { sorting, columnVisibility },
+    state: { sorting, columnVisibility, columnFilters },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
+
+  const hasActiveFilters = columnFilters.length > 0;
 
   if (requests.length === 0) {
     return <EmptyState message="No created requests yet" />;
@@ -222,10 +363,41 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
 
   return (
     <div className="p-4">
-      <div className="flex justify-end pb-2">
+      <div className="flex items-center justify-between gap-2 pb-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <FacetFilter
+            label="Status"
+            options={statusOptions}
+            selected={getFilterSet(columnFilters, 'status')}
+            onChange={(v) => setFilterValues(setColumnFilters, 'status', v)}
+          />
+          <FacetFilter
+            label="Priority"
+            options={priorityOptions}
+            selected={getFilterSet(columnFilters, 'priority')}
+            onChange={(v) => setFilterValues(setColumnFilters, 'priority', v)}
+          />
+          <FacetFilter
+            label="Category"
+            options={typeOptions}
+            selected={getFilterSet(columnFilters, 'type')}
+            onChange={(v) => setFilterValues(setColumnFilters, 'type', v)}
+          />
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 text-muted-foreground"
+              onClick={() => setColumnFilters([])}
+            >
+              Reset
+              <X className="ml-1 h-4 w-4" />
+            </Button>
+          )}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="h-8">
               <SlidersHorizontal className="mr-2 h-4 w-4" />
               Columns
             </Button>
@@ -266,19 +438,33 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className={onRowClick ? 'cursor-pointer' : undefined}
-                onClick={() => onRowClick?.(row.original)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className={onRowClick ? 'cursor-pointer' : undefined}
+                  onClick={() => onRowClick?.(row.original)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No results match the current filters.
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
