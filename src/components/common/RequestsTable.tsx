@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { EmptyState } from '@/components/common/StateMessage';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -177,11 +178,6 @@ function FacetFilter({ label, options, selected, onChange }: FacetFilterProps) {
   );
 }
 
-const statusOptions = Object.entries(statusMap).map(([value, config]) => ({
-  value,
-  label: config.label,
-}));
-
 const priorityOptions = Object.entries(priorityMap).map(([value, config]) => ({
   value,
   label: config.label,
@@ -335,6 +331,26 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
   });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
+  const [searchParams] = useSearchParams();
+  const rawQuery = searchParams.get('q') ?? '';
+  const searchQuery = rawQuery.toLowerCase().trim();
+
+  const filteredRequests = useMemo(() => {
+    if (!searchQuery) return requests;
+    return requests.filter(
+      (r) =>
+        String(r.id).includes(searchQuery) ||
+        r.title.toLowerCase().includes(searchQuery),
+    );
+  }, [requests, searchQuery]);
+
+  const statusOptions = useMemo(
+    () =>
+      [...new Set(requests.map((r) => r.status))]
+        .map((s) => ({ value: s, label: statusMap[s].label })),
+    [requests],
+  );
+
   const typeOptions = useMemo(
     () =>
       [...new Set(requests.map((r) => r.type))]
@@ -344,7 +360,7 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
   );
 
   const table = useReactTable({
-    data: requests,
+    data: filteredRequests,
     columns,
     state: { sorting, columnVisibility, columnFilters },
     onSortingChange: setSorting,
@@ -359,6 +375,10 @@ export function RequestsTable({ requests, onRowClick }: RequestsTableProps) {
 
   if (requests.length === 0) {
     return <EmptyState message="No created requests yet" />;
+  }
+
+  if (filteredRequests.length === 0) {
+    return <EmptyState message={`No requests match "${rawQuery}"`} />;
   }
 
   return (
