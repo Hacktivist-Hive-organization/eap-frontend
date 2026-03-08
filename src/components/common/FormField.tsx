@@ -13,7 +13,7 @@ interface FormFieldProps<TFormData extends FieldValues> {
   form: UseFormReturn<TFormData>;
   name: Path<TFormData>;
   label: string;
-  id: string;
+  id?: string;
   icon?: LucideIcon;
   placeholder?: string;
   type?: 'text' | 'password' | 'email';
@@ -28,6 +28,7 @@ export function FormField<TFormData extends FieldValues>({
   placeholder,
   type = 'text',
 }: FormFieldProps<TFormData>) {
+  const fieldId = id ?? String(name);
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === 'password';
   const inputType = isPassword && showPassword ? 'text' : type;
@@ -38,14 +39,14 @@ export function FormField<TFormData extends FieldValues>({
       control={form.control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          <FieldLabel htmlFor={id}>{label}</FieldLabel>
+          <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
           <div className="relative">
             {Icon && (
               <Icon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             )}
             <Input
               {...field}
-              id={id}
+              id={fieldId}
               type={inputType}
               aria-invalid={fieldState.invalid}
               placeholder={placeholder}
