@@ -10,7 +10,8 @@ import {
   ErrorState,
   LoadingState,
 } from '@/components/common/StateMessage';
-import { useAdminRequests } from './hooks';
+import { useAdminRequests, useAllUsers } from './hooks';
+import { UsersTable } from './UsersTable';
 import {
   type AdminDashboardType,
   adminDashboardTypeToStatuses,
@@ -19,7 +20,8 @@ import {
 
 export function AdminDashboard() {
   const { view = 'all' } = useParams<{ view: AdminDashboardType }>();
-  const activeView = view in adminDashboardTypeToStatuses ? view : 'all';
+  const activeView =
+    view === 'users' || view in adminDashboardTypeToStatuses ? view : 'all';
 
   const {
     data: allRequests = [],
@@ -27,6 +29,14 @@ export function AdminDashboard() {
     isError,
     refetch,
   } = useAdminRequests();
+
+  const {
+    data: users = [],
+    isLoading: usersLoading,
+    isError: usersError,
+    refetch: refetchUsers,
+  } = useAllUsers();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
 
@@ -42,22 +52,37 @@ export function AdminDashboard() {
 
   return (
     <PageLayout sidebarItems={adminSidebarItems} activeKey={activeView}>
-      <div>
-        <div className="flex items-center justify-between p-2">
-          <span className="capitalize text-2xl font-bold">
-            {activeView} Requests Dashboard
-          </span>
+      {activeView === 'users' ? (
+        <div>
+          <div className="flex items-center justify-between p-2">
+            <span className="capitalize text-2xl font-bold">All Users</span>
+          </div>
+          {usersLoading ? (
+            <LoadingState />
+          ) : usersError ? (
+            <ErrorState onRetry={() => refetchUsers()} />
+          ) : (
+            <UsersTable users={users} />
+          )}
         </div>
-        {activeView !== 'all' ? (
-          <ComingSoonState />
-        ) : isLoading ? (
-          <LoadingState />
-        ) : isError ? (
-          <ErrorState onRetry={() => refetch()} />
-        ) : (
-          <RequestsTable requests={allRequests} onRowClick={handleRowClick} />
-        )}
-      </div>
+      ) : activeView === 'all' ? (
+        <div>
+          <div className="flex items-center justify-between p-2">
+            <span className="capitalize text-2xl font-bold">
+              All Requests Dashboard
+            </span>
+          </div>
+          {isLoading ? (
+            <LoadingState />
+          ) : isError ? (
+            <ErrorState onRetry={() => refetch()} />
+          ) : (
+            <RequestsTable requests={allRequests} onRowClick={handleRowClick} />
+          )}
+        </div>
+      ) : (
+        <ComingSoonState />
+      )}
       {selectedRequestId && (
         <RequestDetailModal
           requestId={Number(selectedRequestId)}

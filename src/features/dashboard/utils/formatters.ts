@@ -1,11 +1,6 @@
-import { formatDistanceToNow } from 'date-fns';
+export { formatUserName } from '@/utils';
 
-export function formatUserName(user: {
-  first_name: string;
-  last_name: string;
-}): string {
-  return `${user.first_name} ${user.last_name}`;
-}
+import { formatDistanceToNow } from 'date-fns';
 
 export function formatLastUpdate(
   dateString: string | null | undefined,

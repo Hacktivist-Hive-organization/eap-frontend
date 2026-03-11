@@ -37,8 +37,18 @@ const userSlice = createSlice({
         state.user.is_out_of_office = action.payload;
       }
     },
+    updateUserProfile: (
+      state,
+      action: PayloadAction<{ first_name: string; last_name: string }>,
+    ) => {
+      if (state.user) {
+        state.user.first_name = action.payload.first_name;
+        state.user.last_name = action.payload.last_name;
+      }
+    },
   },
 });
 
-export const { setUser, clearUser, setOutOfOffice } = userSlice.actions;
+export const { setUser, clearUser, setOutOfOffice, updateUserProfile } =
+  userSlice.actions;
 export default userSlice.reducer;
