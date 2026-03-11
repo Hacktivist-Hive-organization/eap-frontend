@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { PageLayout } from '@/components/common/PageLayout';
 import { RequestDetailModal } from '@/components/common/RequestDetailModal';
@@ -6,17 +7,23 @@ import {
   type Request as TableRequest,
 } from '@/components/common/RequestsTable';
 import {
-  ComingSoonState,
   ErrorState,
   LoadingState,
 } from '@/components/common/StateMessage';
-import { useAdminRequests, useAllUsers } from './hooks';
+import { useAdminRequestsByStatus, useAllUsers } from './hooks';
 import { UsersTable } from './UsersTable';
 import {
   type AdminDashboardType,
   adminDashboardTypeToStatuses,
   adminSidebarItems,
 } from './utils/types';
+
+const viewLabels: Record<Exclude<AdminDashboardType, 'users'>, string> = {
+  'all-system-requests': 'All Requests Dashboard',
+  backlog: 'Backlog',
+  'in-progress': 'In Progress',
+  closed: 'Closed',
+};
 
 export function AdminDashboard() {
   const { view = 'all-system-requests' } = useParams<{
@@ -32,7 +39,14 @@ export function AdminDashboard() {
     isLoading,
     isError,
     refetch,
-  } = useAdminRequests();
+  } = useAdminRequestsByStatus([]);
+
+  const requests = useMemo(() => {
+    if (activeView === 'users') return [];
+    const statuses = adminDashboardTypeToStatuses[activeView];
+    if (statuses.length === 0) return allRequests;
+    return allRequests.filter((r) => statuses.includes(r.status));
+  }, [allRequests, activeView]);
 
   const {
     data: users = [],
@@ -43,6 +57,39 @@ export function AdminDashboard() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
+
+  const counts = useMemo<Record<Exclude<AdminDashboardType, 'users'>, number>>(
+    () => {
+      const result = {
+        'all-system-requests': allRequests.length,
+        backlog: 0,
+        'in-progress': 0,
+        closed: 0,
+      };
+      for (const r of allRequests) {
+        if (adminDashboardTypeToStatuses.backlog.includes(r.status))
+          result.backlog++;
+        else if (adminDashboardTypeToStatuses['in-progress'].includes(r.status))
+          result['in-progress']++;
+        else if (adminDashboardTypeToStatuses.closed.includes(r.status))
+          result.closed++;
+      }
+      return result;
+    },
+    [allRequests],
+  );
+
+  const sidebarItemsWithBadges = useMemo(
+    () =>
+      adminSidebarItems.map((item) => ({
+        ...item,
+        badge:
+          item.key in counts
+            ? counts[item.key as Exclude<AdminDashboardType, 'users'>]
+            : undefined,
+      })),
+    [counts],
+  );
 
   const handleRowClick = (request: TableRequest) => {
     setSearchParams({ requestId: String(request.id) });
@@ -55,7 +102,7 @@ export function AdminDashboard() {
   };
 
   return (
-    <PageLayout sidebarItems={adminSidebarItems} activeKey={activeView}>
+    <PageLayout sidebarItems={sidebarItemsWithBadges} activeKey={activeView}>
       {activeView === 'users' ? (
         <div>
           <div className="flex items-center justify-between p-2">
@@ -69,11 +116,11 @@ export function AdminDashboard() {
             <UsersTable users={users} />
           )}
         </div>
-      ) : activeView === 'all-system-requests' ? (
+      ) : (
         <div>
           <div className="flex items-center justify-between p-2">
             <span className="capitalize text-2xl font-bold">
-              All Requests Dashboard
+              {viewLabels[activeView]}
             </span>
           </div>
           {isLoading ? (
@@ -81,11 +128,9 @@ export function AdminDashboard() {
           ) : isError ? (
             <ErrorState onRetry={() => refetch()} />
           ) : (
-            <RequestsTable requests={allRequests} onRowClick={handleRowClick} />
+            <RequestsTable requests={requests} onRowClick={handleRowClick} />
           )}
         </div>
-      ) : (
-        <ComingSoonState />
       )}
       {selectedRequestId && (
         <RequestDetailModal

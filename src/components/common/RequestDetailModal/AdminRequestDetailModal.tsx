@@ -1,5 +1,5 @@
 import { Modal, ModalContent } from '@/components/ui/modal';
-import { useRequestById } from '@/features/dashboard/RequesterDashboard/hooks/useRequestById';
+import { useAdminRequestById } from '@/features/dashboard/AdminDashboard/hooks';
 import { useRequestTracking } from '@/features/dashboard/RequesterDashboard/hooks/useRequestTracking';
 import { ErrorState, LoadingState, RequestDetailLayout } from './shared';
 
@@ -14,7 +14,7 @@ export function AdminRequestDetailModal({
   open,
   onOpenChange,
 }: AdminRequestDetailModalProps) {
-  const { data: request, isLoading, isError } = useRequestById(requestId);
+  const { data: request, isLoading, isError } = useAdminRequestById(requestId);
   const { data: tracking = [] } = useRequestTracking(requestId);
 
   return (

@@ -20,7 +20,7 @@ ReactDOM.createRoot(root).render(
           <GlobalErrorBoundary>
             <App />
           </GlobalErrorBoundary>
-          <Toaster richColors position="top-right" />
+          <Toaster richColors position="bottom-right" />
         </BrowserRouter>
       </Provider>
     </QueryProvider>

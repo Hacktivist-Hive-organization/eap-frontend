@@ -46,9 +46,19 @@ export const requestService = {
     return response.data;
   },
 
-  getAdminRequests: async (): Promise<RequestAllResponse[]> => {
+  getAdminRequests: async (
+    statuses?: Status[],
+    assigneeId?: number,
+  ): Promise<RequestAllResponse[]> => {
     const response = await api.get<RequestAllResponse[]>(
       '/api/v1/admin/requests',
+      {
+        params: {
+          ...(statuses?.length ? { statuses } : {}),
+          ...(assigneeId ? { assignee_id: assigneeId } : {}),
+        },
+        paramsSerializer: { indexes: null },
+      },
     );
     return response.data;
   },
