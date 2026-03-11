@@ -5,7 +5,10 @@ import { requestService } from '@/services/api/requests/request';
 import { userService } from '@/services/api/requests/user';
 import type { Status } from '@/types/Status';
 
-export function useAdminRequestsByStatus(statuses: Status[], assigneeId?: number) {
+export function useAdminRequestsByStatus(
+  statuses: Status[],
+  assigneeId?: number,
+) {
   return useQuery({
     queryKey: ['admin-requests', statuses, assigneeId],
     queryFn: () => requestService.getAdminRequests(statuses, assigneeId),

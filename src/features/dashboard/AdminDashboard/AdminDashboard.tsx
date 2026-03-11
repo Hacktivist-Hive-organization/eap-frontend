@@ -6,10 +6,7 @@ import {
   RequestsTable,
   type Request as TableRequest,
 } from '@/components/common/RequestsTable';
-import {
-  ErrorState,
-  LoadingState,
-} from '@/components/common/StateMessage';
+import { ErrorState, LoadingState } from '@/components/common/StateMessage';
 import { useAdminRequestsByStatus, useAllUsers } from './hooks';
 import { UsersTable } from './UsersTable';
 import {
@@ -58,26 +55,25 @@ export function AdminDashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
 
-  const counts = useMemo<Record<Exclude<AdminDashboardType, 'users'>, number>>(
-    () => {
-      const result = {
-        'all-system-requests': allRequests.length,
-        backlog: 0,
-        'in-progress': 0,
-        closed: 0,
-      };
-      for (const r of allRequests) {
-        if (adminDashboardTypeToStatuses.backlog.includes(r.status))
-          result.backlog++;
-        else if (adminDashboardTypeToStatuses['in-progress'].includes(r.status))
-          result['in-progress']++;
-        else if (adminDashboardTypeToStatuses.closed.includes(r.status))
-          result.closed++;
-      }
-      return result;
-    },
-    [allRequests],
-  );
+  const counts = useMemo<
+    Record<Exclude<AdminDashboardType, 'users'>, number>
+  >(() => {
+    const result = {
+      'all-system-requests': allRequests.length,
+      backlog: 0,
+      'in-progress': 0,
+      closed: 0,
+    };
+    for (const r of allRequests) {
+      if (adminDashboardTypeToStatuses.backlog.includes(r.status))
+        result.backlog++;
+      else if (adminDashboardTypeToStatuses['in-progress'].includes(r.status))
+        result['in-progress']++;
+      else if (adminDashboardTypeToStatuses.closed.includes(r.status))
+        result.closed++;
+    }
+    return result;
+  }, [allRequests]);
 
   const sidebarItemsWithBadges = useMemo(
     () =>
