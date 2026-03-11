@@ -2,6 +2,8 @@ import type { LucideIcon } from 'lucide-react';
 import {
   AlertCircleIcon,
   BriefcaseIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   CircleIcon,
   FileTextIcon,
   HistoryIcon,
@@ -202,6 +204,8 @@ export function ErrorState() {
   );
 }
 
+const STATUS_HISTORY_LIMIT = 2;
+
 export function RequestDetailLayout({
   request,
   tracking,
@@ -212,6 +216,7 @@ export function RequestDetailLayout({
   actions?: React.ReactNode;
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
 
   const participants = tracking.reduce(
     (acc, entry) => {
@@ -318,26 +323,49 @@ export function RequestDetailLayout({
               </SidebarCard>
 
               <SidebarCard icon={HistoryIcon} title="Status History">
-                <div className="space-y-3">
-                  {tracking.length > 0 ? (
-                    tracking.map((entry) => (
-                      <StatusHistoryItem
-                        key={entry.id}
-                        status={entry.status}
-                        userName={formatUserName(entry.user)}
-                        comment={entry.comment}
-                        date={entry.created_at}
-                      />
-                    ))
-                  ) : (
-                    <StatusHistoryItem
-                      status={request.current_status}
-                      userName={formatUserName(
-                        request.assignee ?? request.requester,
-                      )}
-                    />
-                  )}
-                </div>
+                {tracking.length > 0 ? (
+                  <>
+                    <div className="space-y-3">
+                      {(isHistoryExpanded
+                        ? tracking
+                        : tracking.slice(0, STATUS_HISTORY_LIMIT)
+                      ).map((entry) => (
+                        <StatusHistoryItem
+                          key={entry.id}
+                          status={entry.status}
+                          userName={formatUserName(entry.user)}
+                          comment={entry.comment}
+                          date={entry.created_at}
+                        />
+                      ))}
+                    </div>
+                    {tracking.length > STATUS_HISTORY_LIMIT && (
+                      <button
+                        type="button"
+                        onClick={() => setIsHistoryExpanded((v) => !v)}
+                        className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {isHistoryExpanded ? (
+                          <>
+                            <ChevronUpIcon className="h-3 w-3" /> Show less
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDownIcon className="h-3 w-3" />
+                            {tracking.length - STATUS_HISTORY_LIMIT} more
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <StatusHistoryItem
+                    status={request.current_status}
+                    userName={formatUserName(
+                      request.assignee ?? request.requester,
+                    )}
+                  />
+                )}
               </SidebarCard>
             </div>
           </div>
