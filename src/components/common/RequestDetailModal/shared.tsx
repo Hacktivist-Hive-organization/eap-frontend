@@ -9,6 +9,7 @@ import {
   HistoryIcon,
   LayersIcon,
   LoaderIcon,
+  MessageSquareIcon,
   TagIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -28,6 +29,19 @@ import { priorityMap } from '@/types/Priority';
 import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';
 import { getInitials } from '@/utils';
+
+const COMMENT_CHAR_LIMIT = 100;
+const STATUS_HISTORY_LIMIT = 2;
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
 export function SectionLabel({
   icon: Icon,
@@ -64,11 +78,7 @@ export function InfoField({
         className={`text-sm text-foreground/80 ${isBlock ? 'leading-relaxed text-justify max-h-40 overflow-y-auto' : 'font-semibold'}`}
         style={
           isBlock
-            ? {
-                overflowWrap: 'break-word',
-                hyphens: 'auto',
-                wordBreak: 'break-word',
-              }
+            ? { overflowWrap: 'break-word', hyphens: 'auto', wordBreak: 'break-word' }
             : undefined
         }
       >
@@ -103,9 +113,7 @@ export function ParticipantInfo({
         )}
         <p className="text-sm font-medium text-foreground">{name}</p>
         {user.email && (
-          <p className="text-xs text-muted-foreground lowercase">
-            {user.email}
-          </p>
+          <p className="text-xs text-muted-foreground lowercase">{user.email}</p>
         )}
       </div>
     </div>
@@ -115,22 +123,12 @@ export function ParticipantInfo({
 export function StatusHistoryItem({
   status,
   userName,
-  comment,
   date,
 }: {
   status: Status;
   userName: string;
-  comment?: string;
   date?: string;
 }) {
-  const formattedDate = date
-    ? new Date(date).toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
-    : undefined;
-
   return (
     <div className="flex gap-3">
       <div className="flex flex-col items-center">
@@ -141,18 +139,67 @@ export function StatusHistoryItem({
           <p className="text-sm font-semibold text-foreground">
             {statusMap[status].label}
           </p>
-          {formattedDate && (
+          {date && (
             <span className="text-[11px] text-muted-foreground/60">
-              {formattedDate}
+              {formatDate(date)}
             </span>
           )}
         </div>
         <p className="text-xs text-muted-foreground">To {userName}</p>
-        {comment && (
-          <p className="text-xs text-muted-foreground/70 mt-0.5 italic">
-            {comment}
-          </p>
-        )}
+      </div>
+    </div>
+  );
+}
+
+export function TrackingCommentItem({
+  userName,
+  comment,
+  date,
+  status,
+}: {
+  userName: string;
+  comment: string;
+  date?: string;
+  status: Status;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const isLong = comment.length > COMMENT_CHAR_LIMIT;
+  const displayed =
+    isLong && !isExpanded ? `${comment.slice(0, COMMENT_CHAR_LIMIT)}…` : comment;
+
+  return (
+    <div className="flex gap-3">
+      <Avatar className="h-7 w-7 shrink-0">
+        <AvatarFallback className="text-xs">{getInitials(userName)}</AvatarFallback>
+      </Avatar>
+      <div className="min-w-0">
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <p className="text-xs font-medium text-foreground">{userName}</p>
+          <Badge
+            variant="outline"
+            className={`${statusMap[status].className} text-[10px] px-1.5 py-0`}
+          >
+            {statusMap[status].label}
+          </Badge>
+          {date && (
+            <span className="text-[11px] text-muted-foreground/60">
+              {formatDate(date)}
+            </span>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground/80 mt-0.5 italic leading-relaxed">
+          {displayed}
+          {isLong && (
+            <button
+              type="button"
+              onClick={() => setIsExpanded((v) => !v)}
+              className="ml-1 not-italic text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {isExpanded ? 'less' : 'more'}
+            </button>
+          )}
+        </p>
       </div>
     </div>
   );
@@ -170,7 +217,7 @@ export function SidebarCard({
   return (
     <Card size="sm">
       <CardContent>
-        <div className="flex items-center gap-2 mb-4">
+        <div className="mb-4">
           <SectionLabel icon={icon} label={title} />
         </div>
         {children}
@@ -197,14 +244,10 @@ export function ErrorState() {
         <ModalTitle>Error loading request</ModalTitle>
       </VisuallyHidden.Root>
       <AlertCircleIcon className="h-8 w-8 text-destructive" />
-      <p className="text-sm text-muted-foreground">
-        Failed to load request details
-      </p>
+      <p className="text-sm text-muted-foreground">Failed to load request details</p>
     </div>
   );
 }
-
-const STATUS_HISTORY_LIMIT = 2;
 
 export function RequestDetailLayout({
   request,
@@ -227,6 +270,8 @@ export function RequestDetailLayout({
     },
     [] as TrackingEntry['user'][],
   );
+
+  const trackingWithComments = tracking.filter((e) => e.comment);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setIsScrolled(e.currentTarget.scrollTop > 0);
@@ -268,20 +313,12 @@ export function RequestDetailLayout({
         >
           <div className="flex">
             {/* Main Content */}
-            <div className="flex-1 min-w-0 p-6">
+            <div className="flex-1 min-w-0 p-6 space-y-4">
               <Card size="sm">
                 <CardContent className="space-y-6 mx-3">
                   <div className="grid grid-cols-2 gap-8">
-                    <InfoField
-                      icon={TagIcon}
-                      label="Type"
-                      value={request.type.name}
-                    />
-                    <InfoField
-                      icon={LayersIcon}
-                      label="Subtype"
-                      value={request.subtype.name}
-                    />
+                    <InfoField icon={TagIcon} label="Type" value={request.type.name} />
+                    <InfoField icon={LayersIcon} label="Subtype" value={request.subtype.name} />
                   </div>
                   <InfoField
                     icon={FileTextIcon}
@@ -297,6 +334,22 @@ export function RequestDetailLayout({
                   />
                 </CardContent>
               </Card>
+
+              {trackingWithComments.length > 0 && (
+                <SidebarCard icon={MessageSquareIcon} title="Comments">
+                  <div className="space-y-4">
+                    {trackingWithComments.map((entry) => (
+                      <TrackingCommentItem
+                        key={entry.id}
+                        userName={formatUserName(entry.user)}
+                        comment={entry.comment}
+                        date={entry.created_at}
+                        status={entry.status}
+                      />
+                    ))}
+                  </div>
+                </SidebarCard>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -334,7 +387,6 @@ export function RequestDetailLayout({
                           key={entry.id}
                           status={entry.status}
                           userName={formatUserName(entry.user)}
-                          comment={entry.comment}
                           date={entry.created_at}
                         />
                       ))}
