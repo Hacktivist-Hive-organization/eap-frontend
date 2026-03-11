@@ -26,7 +26,11 @@ export function AdminDashboard() {
   } = useAllUsers();
 
   return (
-    <PageLayout sidebarItems={adminSidebarItems} activeKey={activeView}>
+    <PageLayout
+      sidebarItems={adminSidebarItems}
+      activeKey={activeView}
+      showSearch={false}
+    >
       {activeView === 'users' ? (
         <div>
           <div className="flex items-center justify-between p-2">
