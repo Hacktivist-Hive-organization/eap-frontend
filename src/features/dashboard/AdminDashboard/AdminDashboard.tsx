@@ -19,9 +19,9 @@ import {
 } from './utils/types';
 
 export function AdminDashboard() {
-  const { view = 'all' } = useParams<{ view: AdminDashboardType }>();
+  const { view = 'all-system-requests' } = useParams<{ view: AdminDashboardType }>();
   const activeView =
-    view === 'users' || view in adminDashboardTypeToStatuses ? view : 'all';
+    view === 'users' || view in adminDashboardTypeToStatuses ? view : 'all-system-requests';
 
   const {
     data: allRequests = [],
@@ -65,7 +65,7 @@ export function AdminDashboard() {
             <UsersTable users={users} />
           )}
         </div>
-      ) : activeView === 'all' ? (
+      ) : activeView === 'all-system-requests' ? (
         <div>
           <div className="flex items-center justify-between p-2">
             <span className="capitalize text-2xl font-bold">

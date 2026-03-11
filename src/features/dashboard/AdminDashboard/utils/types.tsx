@@ -8,13 +8,13 @@ import {
 import type { SidebarItem } from '@/components/common/Sidebar';
 import type { Status } from '@/types/Status';
 
-export type AdminDashboardType = 'backlog' | 'in-progress' | 'closed' | 'all' | 'users';
+export type AdminDashboardType = 'backlog' | 'in-progress' | 'closed' | 'all-system-requests' | 'users';
 
 export const adminDashboardTypeToStatuses: Record<
   Exclude<AdminDashboardType, 'users'>,
   Status[]
 > = {
-  all: [],
+  'all-system-requests': [],
   backlog: ['approved'],
   'in-progress': ['in_progress'],
   closed: ['completed', 'rejected'],
@@ -22,10 +22,10 @@ export const adminDashboardTypeToStatuses: Record<
 
 export const adminSidebarItems: SidebarItem[] = [
   {
-    key: 'all',
-    label: 'All',
+    key: 'all-system-requests',
+    label: 'All System Requests',
     icon: <ListIcon className="h-5 w-5" />,
-    path: '/dashboard/all-requests',
+    path: '/dashboard/all-system-requests',
   },
   {
     key: 'backlog',
