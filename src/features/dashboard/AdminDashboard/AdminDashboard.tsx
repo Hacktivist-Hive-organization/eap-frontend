@@ -7,6 +7,7 @@ import {
   type Request as TableRequest,
 } from '@/components/common/RequestsTable';
 import { ErrorState, LoadingState } from '@/components/common/StateMessage';
+import { useAppSelector } from '@/hooks/useRedux';
 import { useAdminRequestsByStatus, useAllUsers } from './hooks';
 import { UsersTable } from './UsersTable';
 import {
@@ -38,12 +39,18 @@ export function AdminDashboard() {
     refetch,
   } = useAdminRequestsByStatus([]);
 
+  const currentUserId = useAppSelector((state) => state.userState.user?.id);
+
   const requests = useMemo(() => {
     if (activeView === 'users') return [];
     const statuses = adminDashboardTypeToStatuses[activeView];
     if (statuses.length === 0) return allRequests;
-    return allRequests.filter((r) => statuses.includes(r.status));
-  }, [allRequests, activeView]);
+    const filtered = allRequests.filter((r) => statuses.includes(r.status));
+    if (activeView === 'closed') {
+      return filtered.filter((r) => r.assigneeId === currentUserId);
+    }
+    return filtered;
+  }, [allRequests, activeView, currentUserId]);
 
   const {
     data: users = [],
@@ -69,11 +76,14 @@ export function AdminDashboard() {
         result.backlog++;
       else if (adminDashboardTypeToStatuses['in-progress'].includes(r.status))
         result['in-progress']++;
-      else if (adminDashboardTypeToStatuses.closed.includes(r.status))
+      else if (
+        adminDashboardTypeToStatuses.closed.includes(r.status) &&
+        r.assigneeId === currentUserId
+      )
         result.closed++;
     }
     return result;
-  }, [allRequests]);
+  }, [allRequests, currentUserId]);
 
   const sidebarItemsWithBadges = useMemo(
     () =>

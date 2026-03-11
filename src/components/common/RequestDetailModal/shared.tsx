@@ -114,20 +114,37 @@ export function StatusHistoryItem({
   status,
   userName,
   comment,
+  date,
 }: {
   status: Status;
   userName: string;
   comment?: string;
+  date?: string;
 }) {
+  const formattedDate = date
+    ? new Date(date).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : undefined;
+
   return (
     <div className="flex gap-3">
       <div className="flex flex-col items-center">
         <CircleIcon className="h-4 w-4 text-gray-500" />
       </div>
       <div className="min-w-0 -mt-0.5">
-        <p className="text-sm font-semibold text-foreground">
-          {statusMap[status].label}
-        </p>
+        <div className="flex items-baseline gap-2">
+          <p className="text-sm font-semibold text-foreground">
+            {statusMap[status].label}
+          </p>
+          {formattedDate && (
+            <span className="text-[11px] text-muted-foreground/60">
+              {formattedDate}
+            </span>
+          )}
+        </div>
         <p className="text-xs text-muted-foreground">To {userName}</p>
         {comment && (
           <p className="text-xs text-muted-foreground/70 mt-0.5 italic">
@@ -309,6 +326,7 @@ export function RequestDetailLayout({
                         status={entry.status}
                         userName={formatUserName(entry.user)}
                         comment={entry.comment}
+                        date={entry.created_at}
                       />
                     ))
                   ) : (

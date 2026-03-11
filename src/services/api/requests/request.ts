@@ -96,6 +96,19 @@ export const requestService = {
     );
     return response.data;
   },
+
+  processAdminRequest: async (
+    id: number,
+    status: Status,
+    comment?: string,
+  ): Promise<RequestAllResponse> => {
+    const response = await api.patch<RequestAllResponse>(
+      `/api/v1/admin/requests/${id}`,
+      null,
+      { params: { status, ...(comment ? { comment } : {}) } },
+    );
+    return response.data;
+  },
 };
 
 export const createRequestService = {

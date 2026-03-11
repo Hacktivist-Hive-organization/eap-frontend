@@ -19,6 +19,7 @@ export function mapRequestResponseToRequest(
     lastUpdate: response.updated_at || response.created_at,
     priority: response.priority,
     assignee: resolveAssignee(response),
+    assigneeId: response.assignee?.id,
   };
 }
 
