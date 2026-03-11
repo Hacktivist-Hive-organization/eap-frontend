@@ -19,9 +19,13 @@ import {
 } from './utils/types';
 
 export function AdminDashboard() {
-  const { view = 'all-system-requests' } = useParams<{ view: AdminDashboardType }>();
+  const { view = 'all-system-requests' } = useParams<{
+    view: AdminDashboardType;
+  }>();
   const activeView =
-    view === 'users' || view in adminDashboardTypeToStatuses ? view : 'all-system-requests';
+    view === 'users' || view in adminDashboardTypeToStatuses
+      ? view
+      : 'all-system-requests';
 
   const {
     data: allRequests = [],

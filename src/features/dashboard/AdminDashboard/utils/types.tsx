@@ -8,7 +8,12 @@ import {
 import type { SidebarItem } from '@/components/common/Sidebar';
 import type { Status } from '@/types/Status';
 
-export type AdminDashboardType = 'backlog' | 'in-progress' | 'closed' | 'all-system-requests' | 'users';
+export type AdminDashboardType =
+  | 'backlog'
+  | 'in-progress'
+  | 'closed'
+  | 'all-system-requests'
+  | 'users';
 
 export const adminDashboardTypeToStatuses: Record<
   Exclude<AdminDashboardType, 'users'>,
