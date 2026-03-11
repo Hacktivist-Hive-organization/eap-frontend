@@ -4,7 +4,6 @@ import {
   BriefcaseIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  CircleIcon,
   FileTextIcon,
   HistoryIcon,
   LayersIcon,
@@ -30,8 +29,18 @@ import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';
 import { getInitials } from '@/utils';
 
-const COMMENT_CHAR_LIMIT = 100;
+const COMMENT_CHAR_LIMIT = 170;
 const STATUS_HISTORY_LIMIT = 2;
+
+const statusDotClass: Record<Status, string> = {
+  draft: 'bg-gray-400 ring-gray-200',
+  submitted: 'bg-sky-400 ring-sky-200',
+  cancelled: 'bg-gray-400 ring-gray-200',
+  in_progress: 'bg-indigo-400 ring-indigo-200',
+  approved: 'bg-green-400 ring-green-200',
+  rejected: 'bg-red-400 ring-red-200',
+  completed: 'bg-teal-400 ring-teal-200',
+};
 
 function formatDate(date: string) {
   return new Date(date).toLocaleString(undefined, {
@@ -78,7 +87,11 @@ export function InfoField({
         className={`text-sm text-foreground/80 ${isBlock ? 'leading-relaxed text-justify max-h-40 overflow-y-auto' : 'font-semibold'}`}
         style={
           isBlock
-            ? { overflowWrap: 'break-word', hyphens: 'auto', wordBreak: 'break-word' }
+            ? {
+                overflowWrap: 'break-word',
+                hyphens: 'auto',
+                wordBreak: 'break-word',
+              }
             : undefined
         }
       >
@@ -113,7 +126,9 @@ export function ParticipantInfo({
         )}
         <p className="text-sm font-medium text-foreground">{name}</p>
         {user.email && (
-          <p className="text-xs text-muted-foreground lowercase">{user.email}</p>
+          <p className="text-xs text-muted-foreground lowercase">
+            {user.email}
+          </p>
         )}
       </div>
     </div>
@@ -124,17 +139,22 @@ export function StatusHistoryItem({
   status,
   userName,
   date,
+  isLast = false,
 }: {
   status: Status;
   userName: string;
   date?: string;
+  isLast?: boolean;
 }) {
   return (
     <div className="flex gap-3">
       <div className="flex flex-col items-center">
-        <CircleIcon className="h-4 w-4 text-gray-500" />
+        <div
+          className={`w-2.5 h-2.5 rounded-full ring-2 shrink-0 mt-1 ${statusDotClass[status]}`}
+        />
+        {!isLast && <div className="w-px flex-1 bg-border mt-1.5" />}
       </div>
-      <div className="min-w-0 -mt-0.5">
+      <div className={`min-w-0 -mt-0.5 ${!isLast ? 'pb-4' : ''}`}>
         <div className="flex items-baseline gap-2">
           <p className="text-sm font-semibold text-foreground">
             {statusMap[status].label}
@@ -145,7 +165,7 @@ export function StatusHistoryItem({
             </span>
           )}
         </div>
-        <p className="text-xs text-muted-foreground">To {userName}</p>
+        <p className="text-xs text-muted-foreground">{userName}</p>
       </div>
     </div>
   );
@@ -166,12 +186,16 @@ export function TrackingCommentItem({
 
   const isLong = comment.length > COMMENT_CHAR_LIMIT;
   const displayed =
-    isLong && !isExpanded ? `${comment.slice(0, COMMENT_CHAR_LIMIT)}…` : comment;
+    isLong && !isExpanded
+      ? `${comment.slice(0, COMMENT_CHAR_LIMIT)}…`
+      : comment;
 
   return (
     <div className="flex gap-3">
       <Avatar className="h-7 w-7 shrink-0">
-        <AvatarFallback className="text-xs">{getInitials(userName)}</AvatarFallback>
+        <AvatarFallback className="text-xs">
+          {getInitials(userName)}
+        </AvatarFallback>
       </Avatar>
       <div className="min-w-0">
         <div className="flex items-baseline gap-2 flex-wrap">
@@ -244,7 +268,9 @@ export function ErrorState() {
         <ModalTitle>Error loading request</ModalTitle>
       </VisuallyHidden.Root>
       <AlertCircleIcon className="h-8 w-8 text-destructive" />
-      <p className="text-sm text-muted-foreground">Failed to load request details</p>
+      <p className="text-sm text-muted-foreground">
+        Failed to load request details
+      </p>
     </div>
   );
 }
@@ -317,8 +343,16 @@ export function RequestDetailLayout({
               <Card size="sm">
                 <CardContent className="space-y-6 mx-3">
                   <div className="grid grid-cols-2 gap-8">
-                    <InfoField icon={TagIcon} label="Type" value={request.type.name} />
-                    <InfoField icon={LayersIcon} label="Subtype" value={request.subtype.name} />
+                    <InfoField
+                      icon={TagIcon}
+                      label="Type"
+                      value={request.type.name}
+                    />
+                    <InfoField
+                      icon={LayersIcon}
+                      label="Subtype"
+                      value={request.subtype.name}
+                    />
                   </div>
                   <InfoField
                     icon={FileTextIcon}
@@ -378,16 +412,17 @@ export function RequestDetailLayout({
               <SidebarCard icon={HistoryIcon} title="Status History">
                 {tracking.length > 0 ? (
                   <>
-                    <div className="space-y-3">
+                    <div>
                       {(isHistoryExpanded
                         ? tracking
                         : tracking.slice(0, STATUS_HISTORY_LIMIT)
-                      ).map((entry) => (
+                      ).map((entry, i, arr) => (
                         <StatusHistoryItem
                           key={entry.id}
                           status={entry.status}
                           userName={formatUserName(entry.user)}
                           date={entry.created_at}
+                          isLast={i === arr.length - 1}
                         />
                       ))}
                     </div>
