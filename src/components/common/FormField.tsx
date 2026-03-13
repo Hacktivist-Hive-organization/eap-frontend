@@ -40,10 +40,12 @@ export function FormField<TFormData extends FieldValues>({
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
           <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
+
           <div className="relative">
             {Icon && (
               <Icon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             )}
+
             <Input
               {...field}
               id={fieldId}

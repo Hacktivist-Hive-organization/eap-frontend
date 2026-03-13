@@ -10,9 +10,11 @@ import { queryClient } from '@/context/query-context';
 import { useAuthInit } from '@/hooks/useAuthInit';
 import { DashboardPage } from '@/pages/DashboardPage/DashboardPage';
 import { ErrorPage } from '@/pages/ErrorPage/ErrorPage';
+import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage/ForgotPasswordPage';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
 import { NotFoundPage } from '@/pages/NotFoundPage/NotFoundPage';
 import { RegistrationPage } from '@/pages/RegistrationPage/RegistrationPage';
+import { ResetPasswordPage } from '@/pages/ResetPasswordPage/ResetPasswordPage';
 import { UnauthorizedPage } from '@/pages/UnauthorizedPage/UnauthorizedPage';
 
 function withRouteErrorBoundary(component: ReactNode) {
@@ -63,6 +65,14 @@ function App() {
       <Route
         path="/register"
         element={withRouteErrorBoundary(<RegistrationPage />)}
+      />
+      <Route
+        path="/forgot-password"
+        element={withRouteErrorBoundary(<ForgotPasswordPage />)}
+      />
+      <Route
+        path="/reset-password"
+        element={withRouteErrorBoundary(<ResetPasswordPage />)}
       />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="/error" element={<ErrorPage />} />
