@@ -17,7 +17,7 @@ import {
 } from './utils/types';
 
 const viewLabels: Record<Exclude<AdminDashboardType, 'users'>, string> = {
-  'all': 'All Requests Dashboard',
+  all: 'All Requests Dashboard',
   backlog: 'Backlog',
   'in-progress': 'In Progress',
   closed: 'Closed',
@@ -28,9 +28,7 @@ export function AdminDashboard() {
     view: AdminDashboardType;
   }>();
   const activeView =
-    view === 'users' || view in adminDashboardTypeToStatuses
-      ? view
-      : 'all';
+    view === 'users' || view in adminDashboardTypeToStatuses ? view : 'all';
 
   const {
     data: allRequests = [],
@@ -66,7 +64,7 @@ export function AdminDashboard() {
     Record<Exclude<AdminDashboardType, 'users'>, number>
   >(() => {
     const result = {
-      'all': allRequests.length,
+      all: allRequests.length,
       backlog: 0,
       'in-progress': 0,
       closed: 0,

@@ -19,7 +19,7 @@ export const adminDashboardTypeToStatuses: Record<
   Exclude<AdminDashboardType, 'users'>,
   Status[]
 > = {
-  'all': [],
+  all: [],
   backlog: ['approved'],
   'in-progress': ['in_progress'],
   closed: ['completed', 'rejected'],
