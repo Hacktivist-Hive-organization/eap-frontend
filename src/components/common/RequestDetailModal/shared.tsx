@@ -69,6 +69,27 @@ export function SectionLabel({
   );
 }
 
+function renderTextWithLinks(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part) =>
+    /^https?:\/\/[^\s]+$/.test(part) ? (
+      <a
+        key={part}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline break-all"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    ),
+  );
+}
+
 export function InfoField({
   icon,
   label,
@@ -95,7 +116,7 @@ export function InfoField({
             : undefined
         }
       >
-        {value || '-'}
+        {value ? (isBlock ? renderTextWithLinks(value) : value) : '-'}
       </p>
     </div>
   );
