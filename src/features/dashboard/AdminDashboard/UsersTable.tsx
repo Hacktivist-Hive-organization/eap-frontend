@@ -19,6 +19,7 @@ import {
   CircleXIcon,
   Filter,
   PlaneIcon,
+  Search,
   SlidersHorizontal,
   X,
 } from 'lucide-react';
@@ -35,6 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
   Table,
@@ -361,14 +363,24 @@ export function UsersTable({ users, onRowClick }: UsersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
     data: users,
     columns,
-    state: { sorting, columnVisibility, columnFilters },
+    state: { sorting, columnVisibility, columnFilters, globalFilter },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, _columnId, filterValue: string) => {
+      const search = filterValue.trim().toLowerCase();
+      if (!search) return true;
+      const fullName =
+        `${row.original.first_name} ${row.original.last_name}`.toLowerCase();
+      const id = String(row.original.id);
+      return fullName.includes(search) || id.includes(search);
+    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -418,6 +430,16 @@ export function UsersTable({ users, onRowClick }: UsersTableProps) {
             </Button>
           )}
         </div>
+        <div className="flex items-center gap-2">
+          <div className="relative w-64">
+            <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search by name or ID..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="h-8 pl-8"
+            />
+          </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="h-8">
@@ -441,6 +463,7 @@ export function UsersTable({ users, onRowClick }: UsersTableProps) {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
       <div className="rounded-md border bg-white">
         <Table>
