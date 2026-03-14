@@ -47,7 +47,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { UserResponse } from '@/services/api/requests/user';
-import { getInitials } from '@/utils';
+import { formatUserName, getInitials } from '@/utils';
 
 interface UsersTableProps {
   users: UserResponse[];
@@ -206,6 +206,20 @@ const multiSelectFilter: FilterFn<UserResponse> = (
 };
 multiSelectFilter.autoRemove = (val: string[]) => !val?.length;
 
+const nameOrIdFilter: FilterFn<UserResponse> = (
+  row,
+  _columnId,
+  filterValue: string,
+) => {
+  if (!filterValue) return true;
+  const fullName = formatUserName(row.original).toLowerCase();
+  return (
+    fullName.includes(filterValue) ||
+    String(row.original.id).includes(filterValue)
+  );
+};
+nameOrIdFilter.autoRemove = (val: string) => !val;
+
 const roleOptions = [
   { value: 'admin', label: 'Admin' },
   { value: 'approver', label: 'Approver' },
@@ -262,7 +276,7 @@ const columns: ColumnDef<UserResponse>[] = [
       />
     ),
     cell: ({ row }) => {
-      const name = `${row.original.first_name} ${row.original.last_name}`;
+      const name = formatUserName(row.original);
       return (
         <div className="flex items-center gap-2">
           <Avatar className="h-7 w-7">
@@ -364,23 +378,22 @@ export function UsersTable({ users, onRowClick }: UsersTableProps) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const normalizedFilter = globalFilter.trim().toLowerCase();
 
   const table = useReactTable({
     data: users,
     columns,
-    state: { sorting, columnVisibility, columnFilters, globalFilter },
+    state: {
+      sorting,
+      columnVisibility,
+      columnFilters,
+      globalFilter: normalizedFilter,
+    },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, _columnId, filterValue: string) => {
-      const search = filterValue.trim().toLowerCase();
-      if (!search) return true;
-      const fullName =
-        `${row.original.first_name} ${row.original.last_name}`.toLowerCase();
-      const id = String(row.original.id);
-      return fullName.includes(search) || id.includes(search);
-    },
+    globalFilterFn: nameOrIdFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -440,29 +453,29 @@ export function UsersTable({ users, onRowClick }: UsersTableProps) {
               className="h-8 pl-8"
             />
           </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-8">
-              <SlidersHorizontal className="mr-2 h-4 w-4" />
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((col) => col.getCanHide())
-              .map((col) => (
-                <DropdownMenuCheckboxItem
-                  key={col.id}
-                  className="capitalize"
-                  checked={col.getIsVisible()}
-                  onCheckedChange={(value) => col.toggleVisibility(!!value)}
-                >
-                  {COLUMN_LABELS[col.id] ?? col.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8">
+                <SlidersHorizontal className="mr-2 h-4 w-4" />
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((col) => col.getCanHide())
+                .map((col) => (
+                  <DropdownMenuCheckboxItem
+                    key={col.id}
+                    className="capitalize"
+                    checked={col.getIsVisible()}
+                    onCheckedChange={(value) => col.toggleVisibility(!!value)}
+                  >
+                    {COLUMN_LABELS[col.id] ?? col.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="rounded-md border bg-white">
