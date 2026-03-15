@@ -12,14 +12,14 @@ export type AdminDashboardType =
   | 'backlog'
   | 'in-progress'
   | 'closed'
-  | 'all-system-requests'
+  | 'all'
   | 'users';
 
 export const adminDashboardTypeToStatuses: Record<
   Exclude<AdminDashboardType, 'users'>,
   Status[]
 > = {
-  'all-system-requests': [],
+  all: [],
   backlog: ['approved'],
   'in-progress': ['in_progress'],
   closed: ['completed', 'rejected'],
@@ -27,10 +27,10 @@ export const adminDashboardTypeToStatuses: Record<
 
 export const adminSidebarItems: SidebarItem[] = [
   {
-    key: 'all-system-requests',
+    key: 'all',
     label: 'All System Requests',
     icon: <ListIcon className="h-5 w-5" />,
-    path: '/dashboard/all-system-requests',
+    path: '/dashboard/all',
   },
   {
     key: 'backlog',
