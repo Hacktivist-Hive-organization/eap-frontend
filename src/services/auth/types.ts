@@ -89,6 +89,7 @@ export interface TrackingEntry {
   };
   comment: string;
   status: Status;
+  created_at?: string;
 }
 
 export interface CreateRequestPayload {

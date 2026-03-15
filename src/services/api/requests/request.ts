@@ -46,6 +46,23 @@ export const requestService = {
     return response.data;
   },
 
+  getAdminRequests: async (
+    statuses?: Status[],
+    assigneeId?: number,
+  ): Promise<RequestAllResponse[]> => {
+    const response = await api.get<RequestAllResponse[]>(
+      '/api/v1/admin/requests',
+      {
+        params: {
+          ...(statuses?.length ? { statuses } : {}),
+          ...(assigneeId ? { assignee_id: assigneeId } : {}),
+        },
+        paramsSerializer: { indexes: null },
+      },
+    );
+    return response.data;
+  },
+
   getApproverRequestById: async (
     id: number,
   ): Promise<RequestDetailResponse> => {
@@ -74,6 +91,19 @@ export const requestService = {
   ): Promise<RequestAllResponse> => {
     const response = await api.post<RequestAllResponse>(
       `/api/v1/requests/${id}/process`,
+      null,
+      { params: { status, ...(comment ? { comment } : {}) } },
+    );
+    return response.data;
+  },
+
+  processAdminRequest: async (
+    id: number,
+    status: Status,
+    comment?: string,
+  ): Promise<RequestAllResponse> => {
+    const response = await api.patch<RequestAllResponse>(
+      `/api/v1/admin/requests/${id}`,
       null,
       { params: { status, ...(comment ? { comment } : {}) } },
     );

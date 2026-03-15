@@ -56,6 +56,7 @@ export interface Request {
   lastUpdate?: string;
   priority: Priority;
   assignee?: string;
+  assigneeId?: number;
 }
 
 interface RequestsTableProps {
