@@ -38,15 +38,15 @@ export function LoginPage() {
               type="password"
               icon={LockKeyholeIcon}
               placeholder="••••••••"
+              labelRight={
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              }
             />
-            <div className="flex justify-end -mt-2">
-              <Link
-                to="/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
             <Field orientation="horizontal">
               <Button
                 type="submit"
