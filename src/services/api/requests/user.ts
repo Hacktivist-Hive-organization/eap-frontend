@@ -29,7 +29,7 @@ export const userService = {
     await api.patch('/api/v1/users/me', payload);
   },
   updateProfile: async (payload: UpdateProfilePayload): Promise<void> => {
-    await api.put('/api/v1/users/me', payload);
+    await api.patch('/api/v1/users/me', payload);
   },
   getAll: async (): Promise<UserResponse[]> => {
     const response = await api.get<UserResponse[]>('/api/v1/users/');
