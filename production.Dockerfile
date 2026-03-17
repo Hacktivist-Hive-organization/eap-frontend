@@ -19,16 +19,14 @@ RUN npm run build
 FROM nginx:stable-alpine
 
 # 4. Copy the static 'dist' folder from the builder stage
-# to Nginx's default public folder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 5. Copy your custom Nginx config to the correct location
-# inside the container to handle the /api proxying
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 5. REPLACE the main Nginx config with our custom one
+# This avoids the "directive is not allowed here" error
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# 6. Nginx inside the container listens on port 80 by default.
-# We will map this to 8080 on your Mac when we 'docker run'.
-EXPOSE 80
+# 6. Open ports for both HTTP and HTTPS
+EXPOSE 80 443
 
 # 7. Start Nginx in the foreground so the container stays alive
 CMD ["nginx", "-g", "daemon off;"]
