@@ -23,7 +23,10 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { useAdminUpdateUser } from '@/features/dashboard/AdminDashboard/hooks';
 import { useAppSelector } from '@/hooks/useRedux';
-import type { AdminUpdateUserPayload, UserResponse } from '@/services/api/requests/user';
+import type {
+  AdminUpdateUserPayload,
+  UserResponse,
+} from '@/services/api/requests/user';
 import type { Role } from '@/types/Role';
 
 interface AdminEditUserModalProps {
@@ -95,11 +98,12 @@ export function AdminEditUserModal({
       <ModalContent className="max-w-md">
         <ModalHeader>
           <ModalTitle>Edit User</ModalTitle>
-          {user && (
-            <ModalDescription>{user.email}</ModalDescription>
-          )}
+          {user && <ModalDescription>{user.email}</ModalDescription>}
         </ModalHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-2">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 mt-2"
+        >
           <FormField
             form={form}
             name="first_name"

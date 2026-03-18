@@ -126,7 +126,10 @@ export function AdminDashboard() {
           ) : usersError ? (
             <ErrorState onRetry={() => refetchUsers()} />
           ) : (
-            <UsersTable users={users} onRowClick={(user) => setSelectedUser(user)} />
+            <UsersTable
+              users={users}
+              onRowClick={(user) => setSelectedUser(user)}
+            />
           )}
         </div>
       ) : (
