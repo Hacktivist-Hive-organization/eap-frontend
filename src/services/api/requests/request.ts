@@ -50,16 +50,13 @@ export const requestService = {
     statuses?: Status[],
     assigneeId?: number,
   ): Promise<RequestAllResponse[]> => {
-    const response = await api.get<RequestAllResponse[]>(
-      '/api/v1/requests',
-      {
-        params: {
-          ...(statuses?.length ? { statuses } : {}),
-          ...(assigneeId ? { assignee_id: assigneeId } : {}),
-        },
-        paramsSerializer: { indexes: null },
+    const response = await api.get<RequestAllResponse[]>('/api/v1/requests', {
+      params: {
+        ...(statuses?.length ? { statuses } : {}),
+        ...(assigneeId ? { assignee_id: assigneeId } : {}),
       },
-    );
+      paramsSerializer: { indexes: null },
+    });
     return response.data;
   },
 
@@ -87,7 +84,6 @@ export const requestService = {
     );
     return response.data;
   },
-
 };
 
 export const createRequestService = {
