@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { AdminEditUserModal } from '@/components/common/AdminEditUserModal';
 import { PageLayout } from '@/components/common/PageLayout';
 import { RequestDetailModal } from '@/components/common/RequestDetailModal';
 import {
@@ -8,6 +9,7 @@ import {
 } from '@/components/common/RequestsTable';
 import { ErrorState, LoadingState } from '@/components/common/StateMessage';
 import { useAppSelector } from '@/hooks/useRedux';
+import type { UserResponse } from '@/services/api/requests/user';
 import { useAdminRequestsByStatus, useAllUsers } from './hooks';
 import { UsersTable } from './UsersTable';
 import {
@@ -51,11 +53,18 @@ export function AdminDashboard() {
   }, [allRequests, activeView, currentUserId]);
 
   const {
-    data: users = [],
+    data: allUsers = [],
     isLoading: usersLoading,
     isError: usersError,
     refetch: refetchUsers,
   } = useAllUsers();
+
+  const users = useMemo(
+    () => allUsers.filter((u) => u.id !== currentUserId),
+    [allUsers, currentUserId],
+  );
+
+  const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
@@ -117,7 +126,7 @@ export function AdminDashboard() {
           ) : usersError ? (
             <ErrorState onRetry={() => refetchUsers()} />
           ) : (
-            <UsersTable users={users} />
+            <UsersTable users={users} onRowClick={(user) => setSelectedUser(user)} />
           )}
         </div>
       ) : (
@@ -143,6 +152,13 @@ export function AdminDashboard() {
           onOpenChange={handleModalClose}
         />
       )}
+      <AdminEditUserModal
+        open={selectedUser !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedUser(null);
+        }}
+        user={selectedUser}
+      />
     </PageLayout>
   );
 }
