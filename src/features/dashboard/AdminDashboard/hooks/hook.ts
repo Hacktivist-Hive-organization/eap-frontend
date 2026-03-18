@@ -64,7 +64,7 @@ export function useAdminProcessRequest() {
       id: number;
       status: Status;
       comment?: string;
-    }) => requestService.processAdminRequest(id, status, comment),
+    }) => requestService.processRequest(id, status, comment),
     onSuccess: (updatedRequest) => {
       queryClient.invalidateQueries({
         queryKey: ['admin-request', updatedRequest.id],
