@@ -30,7 +30,6 @@ export function RequesterRequestDetailModal({
     submitDraft.mutate(requestId, {
       onSuccess: () => {
         toast.success('Request submitted successfully');
-        onOpenChange(false);
       },
       onError: () => {
         toast.error('Failed to submit request');
@@ -44,7 +43,6 @@ export function RequesterRequestDetailModal({
       {
         onSuccess: () => {
           toast.success('Request cancelled');
-          onOpenChange(false);
         },
         onError: () => {
           toast.error('Failed to cancel request');
@@ -57,7 +55,6 @@ export function RequesterRequestDetailModal({
     reopenRequest.mutate(requestId, {
       onSuccess: () => {
         toast.success('Request reopened as draft');
-        onOpenChange(false);
       },
       onError: () => {
         toast.error('Failed to reopen request');

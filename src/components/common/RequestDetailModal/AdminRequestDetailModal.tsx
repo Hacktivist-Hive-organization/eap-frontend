@@ -36,7 +36,6 @@ export function AdminRequestDetailModal({
       {
         onSuccess: () => {
           toast.success('Request taken into progress');
-          onOpenChange(false);
         },
         onError: () => {
           toast.error('Failed to take request into progress');
@@ -60,7 +59,6 @@ export function AdminRequestDetailModal({
               ? 'Request completed'
               : 'Request rejected',
           );
-          onOpenChange(false);
         },
         onError: () => {
           toast.error(

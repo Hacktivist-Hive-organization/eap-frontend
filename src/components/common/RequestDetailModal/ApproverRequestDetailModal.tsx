@@ -47,7 +47,6 @@ export function ApproverRequestDetailModal({
               ? 'Request approved'
               : 'Request rejected',
           );
-          onOpenChange(false);
         },
         onError: () => {
           toast.error(
