@@ -48,7 +48,7 @@ export function UserSettingsSheet({
 
   const onSubmit = async (values: UpdateProfilePayload) => {
     try {
-      await userService.updateProfile(values);
+      await userService.updateMe(values);
       dispatch(updateUserProfile(values));
       onOpenChange(false);
     } catch {
