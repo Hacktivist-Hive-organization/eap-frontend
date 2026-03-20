@@ -13,7 +13,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import { VisuallyHidden } from 'radix-ui';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -311,22 +311,29 @@ export function RequestDetailLayout({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
 
-
-  const participants = tracking.reduce(
-    (acc, entry) => {
-      if (!acc.some((u) => u.id === entry.user.id)) {
-        acc.push(entry.user);
-      }
-      return acc;
-    },
-    [] as TrackingEntry['user'][],
+  const participants = useMemo(
+    () =>
+      tracking.reduce(
+        (acc, entry) => {
+          if (!acc.some((u) => u.id === entry.user.id)) {
+            acc.push(entry.user);
+          }
+          return acc;
+        },
+        [] as TrackingEntry['user'][],
+      ),
+    [tracking],
   );
 
-  const trackingWithComments = tracking.filter((e) => e.comment);
+  const trackingWithComments = useMemo(
+    () => tracking.filter((e) => e.comment),
+    [tracking],
+  );
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    setIsScrolled(e.currentTarget.scrollTop > 0);
-  };
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const scrolled = e.currentTarget.scrollTop > 0;
+    setIsScrolled((prev) => (prev === scrolled ? prev : scrolled));
+  }, []);
 
   return (
     <div className="flex flex-col h-[calc(100dvh-2rem)] overflow-hidden">
