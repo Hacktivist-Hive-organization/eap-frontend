@@ -47,7 +47,6 @@ export function ApproverRequestDetailModal({
               ? 'Request approved'
               : 'Request rejected',
           );
-          onOpenChange(false);
         },
         onError: () => {
           toast.error(
@@ -67,7 +66,7 @@ export function ApproverRequestDetailModal({
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent className="max-w-5xl p-0">
+      <ModalContent className="max-w-5xl p-0 overflow-hidden">
         {isLoading ? (
           <LoadingState />
         ) : isError || !request ? (

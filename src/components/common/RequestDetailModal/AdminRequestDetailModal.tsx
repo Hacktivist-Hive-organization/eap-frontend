@@ -36,7 +36,6 @@ export function AdminRequestDetailModal({
       {
         onSuccess: () => {
           toast.success('Request taken into progress');
-          onOpenChange(false);
         },
         onError: () => {
           toast.error('Failed to take request into progress');
@@ -60,7 +59,6 @@ export function AdminRequestDetailModal({
               ? 'Request completed'
               : 'Request rejected',
           );
-          onOpenChange(false);
         },
         onError: () => {
           toast.error(
@@ -80,7 +78,7 @@ export function AdminRequestDetailModal({
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent className="max-w-5xl p-0">
+      <ModalContent className="max-w-5xl p-0 overflow-hidden">
         {isLoading ? (
           <LoadingState />
         ) : isError || !request ? (

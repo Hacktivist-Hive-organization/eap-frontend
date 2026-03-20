@@ -13,7 +13,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import { VisuallyHidden } from 'radix-ui';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -102,10 +102,10 @@ export function InfoField({
   isBlock?: boolean;
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <SectionLabel icon={icon} label={label} />
       <p
-        className={`text-sm text-foreground/80 ${isBlock ? 'leading-relaxed text-justify max-h-40 overflow-y-auto' : 'font-semibold'}`}
+        className={`text-sm text-foreground/80 ${isBlock ? 'leading-relaxed text-justify' : 'font-semibold wrap-break-word'}`}
         style={
           isBlock
             ? {
@@ -147,7 +147,10 @@ export function ParticipantInfo({
         )}
         <p className="text-sm font-medium text-foreground">{name}</p>
         {user.email && (
-          <p className="text-xs text-muted-foreground lowercase">
+          <p
+            className="text-xs text-muted-foreground lowercase truncate"
+            title={user.email}
+          >
             {user.email}
           </p>
         )}
@@ -233,7 +236,7 @@ export function TrackingCommentItem({
             </span>
           )}
         </div>
-        <p className="text-xs text-muted-foreground/80 mt-0.5 italic leading-relaxed">
+        <p className="text-xs text-muted-foreground/80 mt-0.5 italic leading-relaxed wrap-break-word">
           {displayed}
           {isLong && (
             <button
@@ -308,25 +311,33 @@ export function RequestDetailLayout({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
 
-  const participants = tracking.reduce(
-    (acc, entry) => {
-      if (!acc.some((u) => u.id === entry.user.id)) {
-        acc.push(entry.user);
-      }
-      return acc;
-    },
-    [] as TrackingEntry['user'][],
+  const participants = useMemo(
+    () =>
+      tracking.reduce(
+        (acc, entry) => {
+          if (!acc.some((u) => u.id === entry.user.id)) {
+            acc.push(entry.user);
+          }
+          return acc;
+        },
+        [] as TrackingEntry['user'][],
+      ),
+    [tracking],
   );
 
-  const trackingWithComments = tracking.filter((e) => e.comment);
+  const trackingWithComments = useMemo(
+    () => tracking.filter((e) => e.comment),
+    [tracking],
+  );
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    setIsScrolled(e.currentTarget.scrollTop > 0);
-  };
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const scrolled = e.currentTarget.scrollTop > 0;
+    setIsScrolled((prev) => (prev === scrolled ? prev : scrolled));
+  }, []);
 
   return (
-    <>
-      <ModalHeader className="flex-row items-center gap-2 p-6 pb-0">
+    <div className="flex flex-col h-[calc(100dvh-2rem)] overflow-hidden">
+      <ModalHeader className="flex-row items-center gap-2 p-6 pb-0 shrink-0">
         <div className="px-3">
           <span
             className={priorityMap[request.priority].className}
@@ -335,7 +346,7 @@ export function RequestDetailLayout({
             {priorityMap[request.priority].icon}
           </span>
         </div>
-        <ModalTitle className="text-xl">
+        <ModalTitle className="text-xl min-w-0 wrap-break-word">
           <span className="rounded-sm">#{request.id} </span>
           {request.title}
         </ModalTitle>
@@ -349,21 +360,21 @@ export function RequestDetailLayout({
         </div>
       </ModalHeader>
 
-      <div className="relative">
+      <div className="relative flex-1 min-h-0">
         {isScrolled && (
           <div className="pointer-events-none absolute top-0 left-0 right-0 z-10 h-12 bg-linear-to-b from-background to-transparent" />
         )}
 
         <ScrollArea
-          className="max-h-[90vh] overflow-y-auto"
-          onScroll={handleScroll}
+          className="h-full overflow-hidden"
+          onScrollCapture={handleScroll}
         >
           <div className="flex">
             {/* Main Content */}
             <div className="flex-1 min-w-0 p-6 space-y-4">
               <Card size="sm">
                 <CardContent className="space-y-6 mx-3">
-                  <div className="grid grid-cols-2 gap-8">
+                  <div className="grid grid-cols-2 gap-8 *:min-w-0">
                     <InfoField
                       icon={TagIcon}
                       label="Type"
@@ -392,17 +403,19 @@ export function RequestDetailLayout({
 
               {trackingWithComments.length > 0 && (
                 <SidebarCard icon={MessageSquareIcon} title="Comments">
-                  <div className="space-y-4">
-                    {trackingWithComments.map((entry) => (
-                      <TrackingCommentItem
-                        key={entry.id}
-                        userName={formatUserName(entry.user)}
-                        comment={entry.comment}
-                        date={entry.created_at}
-                        status={entry.status}
-                      />
-                    ))}
-                  </div>
+                  <ScrollArea className="max-h-96 overflow-hidden">
+                    <div className="space-y-4 pr-3">
+                      {trackingWithComments.map((entry) => (
+                        <TrackingCommentItem
+                          key={entry.id}
+                          userName={formatUserName(entry.user)}
+                          comment={entry.comment}
+                          date={entry.created_at}
+                          status={entry.status}
+                        />
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </SidebarCard>
               )}
             </div>
@@ -482,7 +495,7 @@ export function RequestDetailLayout({
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent" />
       </div>
 
-      {actions && <div className="border-t">{actions}</div>}
-    </>
+      {actions && <div className="border-t shrink-0">{actions}</div>}
+    </div>
   );
 }
