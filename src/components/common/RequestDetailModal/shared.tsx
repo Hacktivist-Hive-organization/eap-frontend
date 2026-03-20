@@ -346,7 +346,7 @@ export function RequestDetailLayout({
             {priorityMap[request.priority].icon}
           </span>
         </div>
-        <ModalTitle className="text-xl min-w-0 flex-1 wrap-break-word">
+        <ModalTitle className="text-xl min-w-0 wrap-break-word">
           <span className="rounded-sm">#{request.id} </span>
           {request.title}
         </ModalTitle>
