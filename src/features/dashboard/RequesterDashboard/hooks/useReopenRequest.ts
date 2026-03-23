@@ -5,7 +5,7 @@ export function useReopenRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) => requestService.reopenRequest(id),
+    mutationFn: (id: number) => requestService.processRequest(id, 'draft'),
     onSuccess: (updatedRequest) => {
       queryClient.invalidateQueries({
         queryKey: ['request', updatedRequest.id],
