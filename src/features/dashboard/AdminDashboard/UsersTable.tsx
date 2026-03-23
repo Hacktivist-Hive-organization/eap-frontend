@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { EmptyState } from '@/components/common/StateMessage';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/common/UserAvatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,7 +47,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { UserResponse } from '@/services/api/requests/user';
-import { formatUserName, getInitials } from '@/utils';
+import { formatUserName } from '@/utils';
 
 interface UsersTableProps {
   users: UserResponse[];
@@ -279,11 +279,11 @@ const columns: ColumnDef<UserResponse>[] = [
       const name = formatUserName(row.original);
       return (
         <div className="flex items-center gap-2">
-          <Avatar className="h-7 w-7">
-            <AvatarFallback className="text-xs">
-              {getInitials(name)}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            avatarUrl={row.original.avatar_url}
+            name={name}
+            className="h-7 w-7"
+          />
           <span>{name}</span>
         </div>
       );

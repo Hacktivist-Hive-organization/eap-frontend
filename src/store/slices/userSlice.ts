@@ -8,6 +8,7 @@ interface User {
   last_name: string;
   role: Role;
   is_out_of_office: boolean;
+  avatar_url: string | null;
 }
 
 interface UserState {
@@ -46,9 +47,19 @@ const userSlice = createSlice({
         state.user.last_name = action.payload.last_name;
       }
     },
+    setAvatarUrl: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.avatar_url = action.payload;
+      }
+    },
   },
 });
 
-export const { setUser, clearUser, setOutOfOffice, updateUserProfile } =
-  userSlice.actions;
+export const {
+  setUser,
+  clearUser,
+  setOutOfOffice,
+  updateUserProfile,
+  setAvatarUrl,
+} = userSlice.actions;
 export default userSlice.reducer;

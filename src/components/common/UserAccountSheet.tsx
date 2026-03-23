@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/common/UserAvatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -8,7 +8,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { useAppSelector } from '@/hooks/useRedux';
-import { formatUserName, getInitials } from '@/utils';
+import { formatUserName } from '@/utils';
 
 interface UserAccountSheetProps {
   open: boolean;
@@ -24,7 +24,6 @@ export function UserAccountSheet({
   if (!user) return null;
 
   const fullName = formatUserName(user);
-  const initials = getInitials(fullName);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -34,11 +33,13 @@ export function UserAccountSheet({
         </SheetHeader>
         <div className="flex flex-col gap-6 px-4">
           <div className="flex items-center gap-4">
-            <Avatar className="h-14 w-14 rounded-xl">
-              <AvatarFallback className="rounded-xl text-lg font-semibold">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              avatarUrl={user.avatar_url}
+              name={fullName}
+              className="h-14 w-14"
+              rounded="rounded-xl"
+              fallbackClassName="text-lg font-semibold"
+            />
             <div>
               <p className="text-base font-semibold">{fullName}</p>
               <p className="text-sm text-muted-foreground">{user.email}</p>

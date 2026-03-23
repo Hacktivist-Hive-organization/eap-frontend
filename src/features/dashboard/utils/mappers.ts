@@ -20,6 +20,7 @@ export function mapRequestResponseToRequest(
     priority: response.priority,
     assignee: resolveAssignee(response),
     assigneeId: response.assignee?.id,
+    assigneeAvatarUrl: response.assignee?.avatar_url,
   };
 }
 
