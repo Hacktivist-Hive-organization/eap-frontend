@@ -184,10 +184,25 @@ const priorityOptions = Object.entries(priorityMap).map(([value, config]) => ({
   label: config.label,
 }));
 
+const PRIORITY_ORDER: Record<Priority, number> = { high: 0, medium: 1, low: 2 };
+
+const STATUS_ORDER: Record<Status, number> = {
+  draft: 0,
+  submitted: 1,
+  approved: 2,
+  in_progress: 3,
+  completed: 4,
+  rejected: 5,
+  cancelled: 6,
+};
+
 const columns: ColumnDef<Request>[] = [
   {
     accessorKey: 'priority',
     filterFn: multiSelectFilter,
+    sortingFn: (rowA, rowB) =>
+      PRIORITY_ORDER[rowA.getValue<Priority>('priority')] -
+      PRIORITY_ORDER[rowB.getValue<Priority>('priority')],
     header: ({ column }) => (
       <SortableHeader
         label="P"
@@ -257,6 +272,9 @@ const columns: ColumnDef<Request>[] = [
   {
     accessorKey: 'status',
     filterFn: multiSelectFilter,
+    sortingFn: (rowA, rowB) =>
+      STATUS_ORDER[rowA.getValue<Status>('status')] -
+      STATUS_ORDER[rowB.getValue<Status>('status')],
     header: ({ column }) => (
       <SortableHeader
         label="Status"
