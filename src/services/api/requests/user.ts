@@ -14,6 +14,7 @@ export interface UserResponse {
   last_name: string;
   role: Role;
   is_out_of_office: boolean;
+  avatar_url: string | null;
   created: string;
   updated: string;
   is_active: boolean;
@@ -33,6 +34,16 @@ export const userService = {
   },
   getAll: async (): Promise<UserResponse[]> => {
     const response = await api.get<UserResponse[]>('/api/v1/users/');
+    return response.data;
+  },
+  uploadAvatar: async (file: File): Promise<{ avatar_url: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post<{ avatar_url: string }>(
+      '/api/v1/users/me/avatar',
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
     return response.data;
   },
 };

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { VisuallyHidden } from 'radix-ui';
 import { useState } from 'react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/common/UserAvatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ModalHeader, ModalTitle } from '@/components/ui/modal';
@@ -27,7 +27,6 @@ import type {
 import { priorityMap } from '@/types/Priority';
 import type { Status } from '@/types/Status';
 import { statusMap } from '@/types/Status';
-import { getInitials } from '@/utils';
 
 const COMMENT_CHAR_LIMIT = 170;
 const STATUS_HISTORY_LIMIT = 2;
@@ -130,15 +129,18 @@ export function ParticipantInfo({
     last_name: string;
     email?: string;
     role?: string;
+    avatar_url?: string | null;
   };
 }) {
   const name = formatUserName(user);
 
   return (
     <div className="flex items-center gap-3">
-      <Avatar className="h-7 w-7">
-        <AvatarFallback className="text-xs">{getInitials(name)}</AvatarFallback>
-      </Avatar>
+      <UserAvatar
+        avatarUrl={user.avatar_url}
+        name={name}
+        className="h-12 w-12"
+      />
       <div className="min-w-0">
         {user.role && (
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground py-1">
@@ -194,11 +196,13 @@ export function StatusHistoryItem({
 
 export function TrackingCommentItem({
   userName,
+  avatarUrl,
   comment,
   date,
   status,
 }: {
   userName: string;
+  avatarUrl?: string | null;
   comment: string;
   date?: string;
   status: Status;
@@ -213,11 +217,11 @@ export function TrackingCommentItem({
 
   return (
     <div className="flex gap-3">
-      <Avatar className="h-7 w-7 shrink-0">
-        <AvatarFallback className="text-xs">
-          {getInitials(userName)}
-        </AvatarFallback>
-      </Avatar>
+      <UserAvatar
+        avatarUrl={avatarUrl}
+        name={userName}
+        className="h-7 w-7 shrink-0"
+      />
       <div className="min-w-0">
         <div className="flex items-baseline gap-2 flex-wrap">
           <p className="text-xs font-medium text-foreground">{userName}</p>
@@ -397,6 +401,7 @@ export function RequestDetailLayout({
                       <TrackingCommentItem
                         key={entry.id}
                         userName={formatUserName(entry.user)}
+                        avatarUrl={entry.user.avatar_url}
                         comment={entry.comment}
                         date={entry.created_at}
                         status={entry.status}

@@ -33,6 +33,7 @@ export interface AuthResponse {
     last_name: string;
     role: Role;
     is_out_of_office: boolean;
+    avatar_url: string | null;
   };
 }
 
@@ -60,6 +61,7 @@ export interface UserResponse {
   last_name: string;
   email?: string;
   role?: string;
+  avatar_url?: string | null;
 }
 
 export interface MeResponse {
@@ -69,6 +71,7 @@ export interface MeResponse {
   email: string;
   role: Role;
   is_out_of_office: boolean;
+  avatar_url: string | null;
 }
 
 export interface RequestDetailResponse {
@@ -95,6 +98,7 @@ export interface TrackingEntry {
     last_name: string;
     role: string;
     is_out_of_office: boolean;
+    avatar_url?: string | null;
   };
   comment: string;
   status: Status;

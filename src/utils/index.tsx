@@ -1,3 +1,10 @@
+export function getAvatarUrl(
+  avatarPath: string | null | undefined,
+): string | undefined {
+  if (!avatarPath) return undefined;
+  return `${import.meta.env.VITE_API_URL}${avatarPath}`;
+}
+
 export function formatUserName(user: {
   first_name: string;
   last_name: string;

@@ -22,7 +22,7 @@ import {
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EmptyState } from '@/components/common/StateMessage';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/common/UserAvatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,7 +45,6 @@ import {
 import { formatLastUpdate } from '@/features/dashboard/utils';
 import { type Priority, priorityMap } from '@/types/Priority';
 import { type Status, statusMap } from '@/types/Status';
-import { getInitials } from '@/utils';
 
 export interface Request {
   id: number;
@@ -57,6 +56,7 @@ export interface Request {
   priority: Priority;
   assignee?: string;
   assigneeId?: number;
+  assigneeAvatarUrl?: string | null;
 }
 
 interface RequestsTableProps {
@@ -296,11 +296,11 @@ const columns: ColumnDef<Request>[] = [
     cell: ({ row }) => {
       const assignee = row.getValue<string | undefined>('assignee');
       return assignee !== undefined ? (
-        <Avatar className="h-7 w-7">
-          <AvatarFallback className="text-xs">
-            {getInitials(assignee)}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          avatarUrl={row.original.assigneeAvatarUrl}
+          name={assignee}
+          className="h-7 w-7"
+        />
       ) : (
         <MinusIcon className="text-gray-500/50" />
       );

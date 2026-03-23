@@ -7,8 +7,8 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { UserAccountSheet } from '@/components/common/UserAccountSheet';
+import { UserAvatar } from '@/components/common/UserAvatar';
 import { UserSettingsSheet } from '@/components/common/UserSettingsSheet';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,7 @@ import { useLogout } from '@/hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { userService } from '@/services/api/requests/user';
 import { setOutOfOffice } from '@/store/slices/userSlice';
-import { formatUserName, getInitials } from '@/utils';
+import { formatUserName } from '@/utils';
 
 export function NavUser() {
   const user = useAppSelector((state) => state.userState.user);
@@ -35,7 +35,6 @@ export function NavUser() {
   if (!user) return null;
 
   const fullName = formatUserName(user);
-  const initials = getInitials(fullName);
 
   const handleOutOfOfficeToggle = async (checked: boolean) => {
     dispatch(setOutOfOffice(checked));
@@ -61,11 +60,13 @@ export function NavUser() {
             className="flex items-center gap-2 rounded-md px-2 py-1 text-left text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <div className="relative">
-              <Avatar className="h-7 w-7 rounded-md">
-                <AvatarFallback className="rounded-md text-xs">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                avatarUrl={user.avatar_url}
+                name={fullName}
+                className="h-9 w-9"
+                rounded="rounded-md"
+                fallbackClassName="text-xs"
+              />
               {user.is_out_of_office && (
                 <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-primary ring-2 ring-background">
                   <XIcon className="h-2 w-2 text-white" />
