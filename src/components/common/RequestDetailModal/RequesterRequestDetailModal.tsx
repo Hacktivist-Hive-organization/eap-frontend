@@ -29,7 +29,7 @@ export function RequesterRequestDetailModal({
   const handleSubmitDraft = () => {
     submitDraft.mutate(requestId, {
       onSuccess: () => {
-        toast.success('Request is submitted');
+        toast.success('Request submitted successfully');
       },
       onError: () => {
         toast.error('Failed to submit request');
@@ -54,7 +54,7 @@ export function RequesterRequestDetailModal({
   const handleReopen = () => {
     reopenRequest.mutate(requestId, {
       onSuccess: () => {
-        toast.success('Request is reopened as draft');
+        toast.success('Request reopened as draft');
       },
       onError: () => {
         toast.error('Failed to reopen request');
