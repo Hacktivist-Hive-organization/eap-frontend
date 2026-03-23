@@ -27,14 +27,17 @@ export function RequesterRequestDetailModal({
   const reopenRequest = useReopenRequest();
 
   const handleSubmitDraft = () => {
-    submitDraft.mutate(requestId, {
-      onSuccess: () => {
-        toast.success('Request submitted successfully');
+    processRequest.mutate(
+      { id: requestId, status: 'submitted' },
+      {
+        onSuccess: () => {
+          toast.success('Request is submitted');
+        },
+        onError: () => {
+          toast.error('Failed to submit request');
+        },
       },
-      onError: () => {
-        toast.error('Failed to submit request');
-      },
-    });
+    );
   };
 
   const handleCancel = () => {
@@ -52,14 +55,17 @@ export function RequesterRequestDetailModal({
   };
 
   const handleReopen = () => {
-    reopenRequest.mutate(requestId, {
-      onSuccess: () => {
-        toast.success('Request reopened as draft');
+    processRequest.mutate(
+      { id: requestId, status: 'draft' },
+      {
+        onSuccess: () => {
+          toast.success('Request is reopened as draft');
+        },
+        onError: () => {
+          toast.error('Failed to reopen request');
+        },
       },
-      onError: () => {
-        toast.error('Failed to reopen request');
-      },
-    });
+    );
   };
 
   return (
