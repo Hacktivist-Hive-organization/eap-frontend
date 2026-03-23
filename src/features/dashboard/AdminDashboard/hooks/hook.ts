@@ -2,7 +2,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Request } from '@/components/common/RequestsTable';
 import { mapRequestResponsesToRequests } from '@/features/dashboard/utils';
 import { requestService } from '@/services/api/requests/request';
-import { userService } from '@/services/api/requests/user';
+import {
+  type AdminUpdateUserPayload,
+  userService,
+} from '@/services/api/requests/user';
 import type { Status } from '@/types/Status';
 
 export function useAdminRequestsByStatus(
@@ -30,6 +33,22 @@ export function useAllUsers() {
   return useQuery({
     queryKey: ['admin-users'],
     queryFn: () => userService.getAll(),
+  });
+}
+
+export function useAdminUpdateUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      userId,
+      payload,
+    }: {
+      userId: number;
+      payload: AdminUpdateUserPayload;
+    }) => userService.adminUpdateUser(userId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    },
   });
 }
 

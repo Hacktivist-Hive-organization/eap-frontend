@@ -75,7 +75,7 @@ export function UserSettingsSheet({
         const result = await userService.uploadAvatar(pendingFile);
         dispatch(setAvatarUrl(result.avatar_url));
       }
-      await userService.updateProfile(values);
+      await userService.updateMe(values);
       dispatch(updateUserProfile(values));
       onOpenChange(false);
     } catch {

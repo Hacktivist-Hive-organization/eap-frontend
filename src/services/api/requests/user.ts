@@ -25,11 +25,16 @@ export interface UpdateProfilePayload {
   last_name: string;
 }
 
+export interface AdminUpdateUserPayload {
+  first_name?: string;
+  last_name?: string;
+  is_out_of_office?: boolean;
+  role?: Role;
+  is_active?: boolean;
+}
+
 export const userService = {
   updateMe: async (payload: UpdateUserPayload): Promise<void> => {
-    await api.patch('/api/v1/users/me', payload);
-  },
-  updateProfile: async (payload: UpdateProfilePayload): Promise<void> => {
     await api.patch('/api/v1/users/me', payload);
   },
   getAll: async (): Promise<UserResponse[]> => {
@@ -43,6 +48,16 @@ export const userService = {
       '/api/v1/users/me/avatar',
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+    return response.data;
+  },
+  adminUpdateUser: async (
+    userId: number,
+    payload: AdminUpdateUserPayload,
+  ): Promise<UserResponse> => {
+    const response = await api.patch<UserResponse>(
+      `/api/v1/users/${userId}`,
+      payload,
     );
     return response.data;
   },

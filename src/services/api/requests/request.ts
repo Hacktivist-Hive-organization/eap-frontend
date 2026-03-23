@@ -84,6 +84,13 @@ export const requestService = {
     );
     return response.data;
   },
+
+  reopenRequest: async (id: number): Promise<RequestAllResponse> => {
+    const response = await api.patch<RequestAllResponse>(
+      `/api/v1/requests/${id}/reopen`,
+    );
+    return response.data;
+  },
 };
 
 export const createRequestService = {

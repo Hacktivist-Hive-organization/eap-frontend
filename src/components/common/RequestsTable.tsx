@@ -219,7 +219,7 @@ const columns: ColumnDef<Request>[] = [
     ),
     cell: ({ row }) => {
       const title = row.getValue<string>('title');
-      const truncated = title.length > 70 ? `${title.slice(0, 70)}…` : title;
+      const truncated = title.length > 50 ? `${title.slice(0, 50)}…` : title;
       return (
         <div className="flex items-center gap-2">
           <Badge
