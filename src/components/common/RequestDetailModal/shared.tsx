@@ -490,6 +490,7 @@ export function RequestDetailLayout({
                     userName={formatUserName(
                       request.assignee ?? request.requester,
                     )}
+                    isLast
                   />
                 )}
               </SidebarCard>
