@@ -14,7 +14,7 @@ export const RequestModal = ({ open, onOpenChange }: Props) => {
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent className="max-w-5xl">
+      <ModalContent className="max-w-5xl overflow-y-auto max-h-[calc(100dvh-4rem)]">
         <RequestForm onSuccess={() => onOpenChange(false)} />
       </ModalContent>
     </Modal>
