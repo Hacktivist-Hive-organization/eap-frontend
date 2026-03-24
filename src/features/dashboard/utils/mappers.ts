@@ -2,10 +2,9 @@ import type { Request } from '@/components/common/RequestsTable';
 import type { RequestAllResponse } from '@/services/auth/types';
 import { formatUserName } from './formatters';
 
-function resolveAssignee(response: RequestAllResponse): string {
-  if (response.admin) return formatUserName(response.admin);
-  if (response.approver) return formatUserName(response.approver);
-  return formatUserName(response.requester);
+function resolveAssignee(response: RequestAllResponse): string | undefined {
+  if (!response.assignee) return undefined;
+  return formatUserName(response.assignee);
 }
 
 export function mapRequestResponseToRequest(
@@ -16,10 +15,12 @@ export function mapRequestResponseToRequest(
     title: response.title,
     type: response.type.name,
     subtype: response.subtype.name,
-    status: response.status,
+    status: response.current_status,
     lastUpdate: response.updated_at || response.created_at,
     priority: response.priority,
     assignee: resolveAssignee(response),
+    assigneeId: response.assignee?.id,
+    assigneeAvatarUrl: response.assignee?.avatar_url,
   };
 }
 

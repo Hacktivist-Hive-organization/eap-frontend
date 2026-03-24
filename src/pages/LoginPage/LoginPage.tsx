@@ -1,6 +1,7 @@
 'use client';
 
 import { LockKeyholeIcon, MailIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { AuthFormCard } from '@/components/common/AuthFormCard';
 import { Background } from '@/components/common/Background';
 import { FormField } from '@/components/common/FormField';
@@ -37,6 +38,14 @@ export function LoginPage() {
               type="password"
               icon={LockKeyholeIcon}
               placeholder="••••••••"
+              labelRight={
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              }
             />
             <Field orientation="horizontal">
               <Button

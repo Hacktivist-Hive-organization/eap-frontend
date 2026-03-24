@@ -1,1 +1,7 @@
-export { useAdminRequestsByStatus } from '@/features/dashboard/AdminDashboard/hooks/hook';
+export {
+  useAdminProcessRequest,
+  useAdminRequestById,
+  useAdminRequestsByStatus,
+  useAdminUpdateUser,
+  useAllUsers,
+} from '@/features/dashboard/AdminDashboard/hooks/hook';

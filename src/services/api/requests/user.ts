@@ -1,0 +1,64 @@
+import { api } from '@/services/api';
+import type { Role } from '@/types/Role';
+
+interface UpdateUserPayload {
+  first_name?: string;
+  last_name?: string;
+  is_out_of_office?: boolean;
+}
+
+export interface UserResponse {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: Role;
+  is_out_of_office: boolean;
+  avatar_url: string | null;
+  created: string;
+  updated: string;
+  is_active: boolean;
+}
+
+export interface UpdateProfilePayload {
+  first_name: string;
+  last_name: string;
+}
+
+export interface AdminUpdateUserPayload {
+  first_name?: string;
+  last_name?: string;
+  is_out_of_office?: boolean;
+  role?: Role;
+  is_active?: boolean;
+}
+
+export const userService = {
+  updateMe: async (payload: UpdateUserPayload): Promise<void> => {
+    await api.patch('/api/v1/users/me', payload);
+  },
+  getAll: async (): Promise<UserResponse[]> => {
+    const response = await api.get<UserResponse[]>('/api/v1/users/');
+    return response.data;
+  },
+  uploadAvatar: async (file: File): Promise<{ avatar_url: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post<{ avatar_url: string }>(
+      '/api/v1/users/me/avatar',
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+    return response.data;
+  },
+  adminUpdateUser: async (
+    userId: number,
+    payload: AdminUpdateUserPayload,
+  ): Promise<UserResponse> => {
+    const response = await api.patch<UserResponse>(
+      `/api/v1/users/${userId}`,
+      payload,
+    );
+    return response.data;
+  },
+};

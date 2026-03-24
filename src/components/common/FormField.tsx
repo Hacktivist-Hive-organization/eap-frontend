@@ -1,5 +1,5 @@
 import { EyeIcon, EyeOffIcon, type LucideIcon } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import {
   Controller,
   type FieldValues,
@@ -13,10 +13,11 @@ interface FormFieldProps<TFormData extends FieldValues> {
   form: UseFormReturn<TFormData>;
   name: Path<TFormData>;
   label: string;
-  id: string;
+  id?: string;
   icon?: LucideIcon;
   placeholder?: string;
   type?: 'text' | 'password' | 'email';
+  labelRight?: ReactNode;
 }
 
 export function FormField<TFormData extends FieldValues>({
@@ -27,7 +28,9 @@ export function FormField<TFormData extends FieldValues>({
   icon: Icon,
   placeholder,
   type = 'text',
+  labelRight,
 }: FormFieldProps<TFormData>) {
+  const fieldId = id ?? String(name);
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === 'password';
   const inputType = isPassword && showPassword ? 'text' : type;
@@ -38,14 +41,19 @@ export function FormField<TFormData extends FieldValues>({
       control={form.control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          <FieldLabel htmlFor={id}>{label}</FieldLabel>
+          <div className="flex items-center justify-between">
+            <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
+            {labelRight}
+          </div>
+
           <div className="relative">
             {Icon && (
               <Icon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             )}
+
             <Input
               {...field}
-              id={id}
+              id={fieldId}
               type={inputType}
               aria-invalid={fieldState.invalid}
               placeholder={placeholder}

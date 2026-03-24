@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import App from '@/App';
+import { GlobalErrorBoundary } from '@/components/common/GlobalErrorBoundary';
 import { QueryProvider } from '@/context/query-context';
 import { store } from '@/store';
 
@@ -16,8 +17,10 @@ ReactDOM.createRoot(root).render(
     <QueryProvider>
       <Provider store={store}>
         <BrowserRouter>
-          <App />
-          <Toaster richColors position="top-right" />
+          <GlobalErrorBoundary>
+            <App />
+          </GlobalErrorBoundary>
+          <Toaster richColors position="bottom-right" />
         </BrowserRouter>
       </Provider>
     </QueryProvider>

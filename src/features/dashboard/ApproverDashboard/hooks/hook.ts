@@ -7,7 +7,7 @@ import type { Status } from '@/types/Status';
 export function useApproverRequestsByStatus(statuses: Status[]) {
   return useQuery({
     queryKey: ['approver-requests', statuses],
-    queryFn: () => requestService.getRequestsByStatus(statuses),
+    queryFn: () => requestService.getApproverRequests(statuses),
     select: (data): Request[] => mapRequestResponsesToRequests(data),
   });
 }

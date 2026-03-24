@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { type Resolver, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
@@ -7,13 +8,15 @@ import {
 } from '@/features/dashboard/RequesterDashboard/RequestForm/utils';
 import { getErrorMessage } from '@/lib/errors';
 import { useCreateRequest } from './useCreateRequest';
+import { useSubmitRequest } from './useSubmitRequest';
 
 interface UseRequestFormOptions {
   onSuccess?: () => void;
 }
 
 export function useRequestForm({ onSuccess }: UseRequestFormOptions = {}) {
-  const mutation = useCreateRequest();
+  const draftMutation = useCreateRequest();
+  const submitMutation = useSubmitRequest();
 
   const form = useForm<RequestFormData>({
     // TODO: Remove casts when @hookform/resolvers supports Zod v4 natively
@@ -30,35 +33,58 @@ export function useRequestForm({ onSuccess }: UseRequestFormOptions = {}) {
     },
   });
 
-  function onSubmit(data: RequestFormData) {
-    mutation.mutate(
-      {
-        type_id: data.type_id,
-        subtype_id: data.subtype_id,
-        title: data.title,
-        description: data.description,
-        business_justification: data.justification,
-        priority: data.priority,
+  function buildPayload(data: RequestFormData) {
+    return {
+      type_id: data.type_id,
+      subtype_id: data.subtype_id,
+      title: data.title,
+      description: data.description,
+      business_justification: data.justification,
+      priority: data.priority,
+    };
+  }
+
+  function onSaveAsDraft(data: RequestFormData) {
+    draftMutation.mutate(buildPayload(data), {
+      onSuccess: () => {
+        form.reset();
+        toast.success('Request saved as draft');
+        onSuccess?.();
       },
-      {
-        onSuccess: () => {
-          form.reset();
-          toast.success('Request created successfully');
-          onSuccess?.();
-        },
-        onError: (error) => {
-          toast.error('Failed to create request', {
+      onError: (error) => {
+        if (axios.isAxiosError(error) && error.response) {
+          toast.error('Failed to save draft', {
             id: 'create-request-error',
             description: getErrorMessage(error),
           });
-        },
+        }
       },
-    );
+    });
+  }
+
+  function onSubmitRequest(data: RequestFormData) {
+    submitMutation.mutate(buildPayload(data), {
+      onSuccess: () => {
+        form.reset();
+        toast.success('Request submitted successfully');
+        onSuccess?.();
+      },
+      onError: (error) => {
+        if (axios.isAxiosError(error) && error.response) {
+          toast.error('Failed to submit request', {
+            id: 'submit-request-error',
+            description: getErrorMessage(error),
+          });
+        }
+      },
+    });
   }
 
   return {
     form,
-    onSubmit,
-    isPending: mutation.isPending,
+    onSaveAsDraft,
+    onSubmitRequest,
+    isSavingDraft: draftMutation.isPending,
+    isSubmitting: submitMutation.isPending,
   };
 }

@@ -12,11 +12,6 @@ Communication:
 - Communication between React and FastAPI containers is done with a port mapping of localhost.
 - Communication between FastAPI and Postgres containers is done with a docker network
 
-## Running in container
-
-The following instructions are for running the frontend in a container while
-fastapi runs directly on the same host without a container.
-
 ### 1. Change Vite to run on 0.0.0.0 instead of on localhost
 
 In the "dev" script in package.JSON, add the --host flag to the vite command:
@@ -26,7 +21,7 @@ In the "dev" script in package.JSON, add the --host flag to the vite command:
 ```
 
 This way, later when Vite will run inside a container, it'll make vite listen not only
-to the container's localhost, but to all interfaces. Thus, Vite will listen to messages coming from the host.
+to the container's localhost, but to all interfaces (0.0.0.0). Thus, Vite will listen to messages coming from the host.
 
 ---
 
@@ -42,7 +37,7 @@ VITE_API_URL=http://127.0.0.1:8000/
 
 ### 3. Configure CORS in FastAPI
 
-In FastAPI, make sure localhost:5173 is in the allowed CORS origins. This works for both running Vite in a
+In FastAPI (different repo), make sure localhost:5173 is in the allowed CORS origins. This works for both running Vite in a
 container and running Vite directly on the machine.
 
 ```python
@@ -63,7 +58,7 @@ origin http://localhost:5173.
 ### 4. Create the image
 
 ```bash
-docker build --no-cache -t my_frontend_image .
+docker build --no-cache -t eap-frontend-image .
 ```
 
 ---
@@ -71,7 +66,7 @@ docker build --no-cache -t my_frontend_image .
 ### 5. Run a container
 
 ```bash
-docker run -p 5173:5173 --name frontend_container my_frontend_image
+docker run -p 5173:5173 --name eap-frontend-container eap-frontend-image
 ```
 
 Explanation:

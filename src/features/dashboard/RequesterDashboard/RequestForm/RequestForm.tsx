@@ -36,7 +36,10 @@ const PRIORITIES = Object.keys(priorityMap) as Priority[];
 
 export const RequestForm = ({ onSuccess }: Props) => {
   const { data: types = [], isLoading, isError } = useRequestTypes();
-  const { form, onSubmit, isPending } = useRequestForm({ onSuccess });
+  const { form, onSaveAsDraft, onSubmitRequest, isSavingDraft, isSubmitting } =
+    useRequestForm({ onSuccess });
+
+  const isAnyPending = isSavingDraft || isSubmitting;
 
   // Watch selected type (stored as string)
   const selectedTypeId = useWatch({
@@ -68,7 +71,7 @@ export const RequestForm = ({ onSuccess }: Props) => {
   if (isLoading) return <p>Loading form...</p>;
 
   return (
-    <Form onSubmit={form.handleSubmit(onSubmit)}>
+    <Form onSubmit={form.handleSubmit(onSaveAsDraft)}>
       {/* Header */}
       <div className="space-y-1">
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
@@ -258,14 +261,18 @@ export const RequestForm = ({ onSuccess }: Props) => {
       {/* Footer */}
       <div className="flex justify-end mt-4">
         <div className="flex gap-3">
-          <Button disabled={isPending} type="submit" variant="secondary">
+          <Button disabled={isAnyPending} type="submit" variant="secondary">
             <FileIcon />
-            {isPending ? 'Saving...' : 'Save as Draft'}
+            {isSavingDraft ? 'Saving...' : 'Save as Draft'}
           </Button>
 
-          <Button disabled={true} type="button">
+          <Button
+            disabled={isAnyPending}
+            type="button"
+            onClick={form.handleSubmit(onSubmitRequest)}
+          >
             <SendHorizonalIcon />
-            Submit Request
+            {isSubmitting ? 'Submitting...' : 'Submit Request'}
           </Button>
         </div>
       </div>

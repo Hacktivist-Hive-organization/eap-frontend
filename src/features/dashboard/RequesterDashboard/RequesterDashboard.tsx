@@ -7,10 +7,7 @@ import {
   RequestsTable,
   type Request as TableRequest,
 } from '@/components/common/RequestsTable';
-import {
-  ComingSoonState,
-  LoadingState,
-} from '@/components/common/StateMessage';
+import { ErrorState, LoadingState } from '@/components/common/StateMessage';
 import { RequestModal } from '@/features/dashboard/RequesterDashboard/RequestForm/RequestModal';
 import { useRequestsByStatus } from './hooks';
 import {
@@ -22,14 +19,34 @@ import {
 export function RequesterDashboard() {
   const { view = 'all' } = useParams<{ view: DashboardType }>();
   const activeView = view in dashboardTypeToStatuses ? view : 'all';
-  const { data: requests = [], isLoading } = useRequestsByStatus(
-    dashboardTypeToStatuses[activeView],
-  );
+  const {
+    data: requests = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useRequestsByStatus(dashboardTypeToStatuses[activeView]);
+  const { data: allRequests = [] } = useRequestsByStatus([]);
   const [newRequestOpen, setNewRequestOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedRequestId = searchParams.get('requestId');
 
-  const isImplemented = activeView === 'all' || activeView === 'draft';
+  const counts: Record<DashboardType, number> = {
+    all: allRequests.length,
+    active: allRequests.filter((r) =>
+      dashboardTypeToStatuses.active.includes(r.status),
+    ).length,
+    closed: allRequests.filter((r) =>
+      dashboardTypeToStatuses.closed.includes(r.status),
+    ).length,
+    draft: allRequests.filter((r) =>
+      dashboardTypeToStatuses.draft.includes(r.status),
+    ).length,
+  };
+
+  const sidebarItemsWithBadges = sidebarItems.map((item) => ({
+    ...item,
+    badge: counts[item.key as DashboardType],
+  }));
 
   const handleRowClick = (request: TableRequest) => {
     setSearchParams({ requestId: String(request.id) });
@@ -42,24 +59,22 @@ export function RequesterDashboard() {
   };
 
   return (
-    <PageLayout sidebarItems={sidebarItems} activeKey={activeView}>
-      {!isImplemented ? (
-        <ComingSoonState />
-      ) : (
-        <div>
-          <div className="flex items-center justify-between p-2">
-            <span className="capitalize text-2xl font-bold">
-              {activeView} Requests Dashboard
-            </span>
-            <NewRequestButton onClick={() => setNewRequestOpen(true)} />
-          </div>
-          {isLoading ? (
-            <LoadingState />
-          ) : (
-            <RequestsTable requests={requests} onRowClick={handleRowClick} />
-          )}
+    <PageLayout sidebarItems={sidebarItemsWithBadges} activeKey={activeView}>
+      <div>
+        <div className="flex items-center justify-between p-2">
+          <span className="capitalize text-2xl font-bold">
+            {activeView} Requests Dashboard
+          </span>
+          <NewRequestButton onClick={() => setNewRequestOpen(true)} />
         </div>
-      )}
+        {isLoading ? (
+          <LoadingState />
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
+        ) : (
+          <RequestsTable requests={requests} onRowClick={handleRowClick} />
+        )}
+      </div>
       <RequestModal open={newRequestOpen} onOpenChange={setNewRequestOpen} />
       {selectedRequestId && (
         <RequestDetailModal

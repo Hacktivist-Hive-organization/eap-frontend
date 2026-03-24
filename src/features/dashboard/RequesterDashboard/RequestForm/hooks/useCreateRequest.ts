@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createRequestService } from '@/services/api/requests/request';
-import type {
-  CreateRequestPayload,
-  RequestAllResponse,
-} from '@/services/auth/types';
+import type { CreateRequestPayload } from '@/services/auth/types';
 
 export function useCreateRequest() {
   const queryClient = useQueryClient();
@@ -11,11 +8,8 @@ export function useCreateRequest() {
   return useMutation({
     mutationFn: (payload: CreateRequestPayload) =>
       createRequestService.createRequest(payload),
-    onSuccess: (newRequest) => {
-      queryClient.setQueriesData<RequestAllResponse[]>(
-        { queryKey: ['requests'] },
-        (old) => (old ? [newRequest, ...old] : [newRequest]),
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['requests'] });
     },
   });
 }
