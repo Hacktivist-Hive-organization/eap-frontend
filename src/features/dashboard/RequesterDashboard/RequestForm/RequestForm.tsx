@@ -1,10 +1,11 @@
 import {
   FileIcon,
   FileTextIcon,
+  SaveIcon,
   SendHorizonalIcon,
   Settings,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,45 +26,68 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { type Priority, priorityMap } from '@/types/Priority';
+import { useEditRequestForm } from './hooks/useEditRequestForm';
 import { useRequestForm } from './hooks/useRequestForm';
 import { useRequestTypes } from './hooks/useRequestTypes';
+import type { RequestFormData } from './utils';
 
 type Props = {
   onSuccess?: () => void;
+  requestId?: number;
+  initialValues?: RequestFormData;
 };
 
 const PRIORITIES = Object.keys(priorityMap) as Priority[];
 
-export const RequestForm = ({ onSuccess }: Props) => {
+export const RequestForm = ({ onSuccess, requestId, initialValues }: Props) => {
   const { data: types = [], isLoading, isError } = useRequestTypes();
-  const { form, onSaveAsDraft, onSubmitRequest, isSavingDraft, isSubmitting } =
-    useRequestForm({ onSuccess });
 
-  const isAnyPending = isSavingDraft || isSubmitting;
+  const isEditMode = requestId !== undefined && initialValues !== undefined;
 
-  // Watch selected type (stored as string)
+  const createForm = useRequestForm({ onSuccess });
+  const editForm = useEditRequestForm(
+    isEditMode
+      ? { requestId, initialValues, onSuccess }
+      : { requestId: 0, initialValues: {} as RequestFormData, onSuccess },
+  );
+
+  const { form, onSubmitRequest, isSubmitting } = isEditMode
+    ? editForm
+    : createForm;
+
+  const saveLabel = isEditMode ? 'Save Changes' : 'Save as Draft';
+  const savingLabel = isEditMode ? 'Saving...' : 'Saving...';
+  const SaveButtonIcon = isEditMode ? SaveIcon : FileIcon;
+
+  const isSaving = isEditMode ? editForm.isSaving : createForm.isSavingDraft;
+
+  const onSave = isEditMode
+    ? form.handleSubmit(editForm.onSaveChanges)
+    : form.handleSubmit(createForm.onSaveAsDraft);
+
+  const isAnyPending = isSaving || isSubmitting;
+
   const selectedTypeId = useWatch({
     control: form.control,
     name: 'type_id',
   });
 
   const selectedType = types.find((t) => t.id === selectedTypeId);
-
   const subtypes = selectedType?.subtypes ?? [];
 
-  // When type changes, auto-select first subtype
+  const initialTypeId = useRef(initialValues?.type_id);
+
   useEffect(() => {
+    if (isEditMode && selectedTypeId === initialTypeId.current) return;
     const type = types.find((t) => t.id === selectedTypeId);
     if (!type) return;
-
     const firstSubtype = type.subtypes?.[0];
-
     if (firstSubtype) {
       form.setValue('subtype_id', firstSubtype.id, { shouldValidate: true });
     } else {
       form.resetField('subtype_id');
     }
-  }, [selectedTypeId, types, form]);
+  }, [selectedTypeId, types, form, isEditMode]);
 
   if (isError)
     return <p className="text-red-500">Failed to load request types</p>;
@@ -71,14 +95,16 @@ export const RequestForm = ({ onSuccess }: Props) => {
   if (isLoading) return <p>Loading form...</p>;
 
   return (
-    <Form onSubmit={form.handleSubmit(onSaveAsDraft)}>
+    <Form onSubmit={onSave}>
       {/* Header */}
       <div className="space-y-1">
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-          Create New Request
+          {isEditMode ? 'Edit Request' : 'Create New Request'}
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Submit a detailed administrative ticket.
+          {isEditMode
+            ? 'Update the details of your draft request.'
+            : 'Submit a detailed administrative ticket.'}
         </p>
       </div>
 
@@ -262,18 +288,20 @@ export const RequestForm = ({ onSuccess }: Props) => {
       <div className="flex justify-end mt-4">
         <div className="flex gap-3">
           <Button disabled={isAnyPending} type="submit" variant="secondary">
-            <FileIcon />
-            {isSavingDraft ? 'Saving...' : 'Save as Draft'}
+            <SaveButtonIcon />
+            {isSaving ? savingLabel : saveLabel}
           </Button>
 
-          <Button
-            disabled={isAnyPending}
-            type="button"
-            onClick={form.handleSubmit(onSubmitRequest)}
-          >
-            <SendHorizonalIcon />
-            {isSubmitting ? 'Submitting...' : 'Submit Request'}
-          </Button>
+          {!isEditMode && (
+            <Button
+              disabled={isAnyPending}
+              type="button"
+              onClick={form.handleSubmit(onSubmitRequest)}
+            >
+              <SendHorizonalIcon />
+              {isSubmitting ? 'Submitting...' : 'Submit Request'}
+            </Button>
+          )}
         </div>
       </div>
     </Form>

@@ -91,6 +91,21 @@ export const requestService = {
     );
     return response.data;
   },
+
+  updateDraft: async (
+    id: number,
+    payload: CreateRequestPayload,
+  ): Promise<RequestDetailResponse> => {
+    const { data } = await api.patch<RequestDetailResponse>(
+      `/api/v1/requests/${id}/edit`,
+      payload,
+    );
+    return data;
+  },
+
+  deleteDraft: async (id: number): Promise<void> => {
+    await api.delete(`/api/v1/requests/${id}`);
+  },
 };
 
 export const createRequestService = {
