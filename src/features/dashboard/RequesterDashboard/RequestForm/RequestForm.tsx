@@ -290,14 +290,16 @@ export const RequestForm = ({ onSuccess, requestId, initialValues }: Props) => {
             {isSaving ? savingLabel : saveLabel}
           </Button>
 
-          <Button
-            disabled={isAnyPending}
-            type="button"
-            onClick={form.handleSubmit(onSubmitRequest)}
-          >
-            <SendHorizonalIcon />
-            {isSubmitting ? 'Submitting...' : 'Submit Request'}
-          </Button>
+          {!isEditMode && (
+            <Button
+              disabled={isAnyPending}
+              type="button"
+              onClick={form.handleSubmit(onSubmitRequest)}
+            >
+              <SendHorizonalIcon />
+              {isSubmitting ? 'Submitting...' : 'Submit Request'}
+            </Button>
+          )}
         </div>
       </div>
     </Form>

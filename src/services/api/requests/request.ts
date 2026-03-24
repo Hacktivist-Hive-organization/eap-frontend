@@ -96,8 +96,8 @@ export const requestService = {
     id: number,
     payload: CreateRequestPayload,
   ): Promise<RequestDetailResponse> => {
-    const { data } = await api.put<RequestDetailResponse>(
-      `/api/v1/requests/${id}`,
+    const { data } = await api.patch<RequestDetailResponse>(
+      `/api/v1/requests/${id}/edit`,
       payload,
     );
     return data;
