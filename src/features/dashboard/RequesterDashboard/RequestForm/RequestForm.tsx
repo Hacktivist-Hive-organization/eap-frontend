@@ -5,7 +5,7 @@ import {
   SendHorizonalIcon,
   Settings,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
@@ -75,8 +75,10 @@ export const RequestForm = ({ onSuccess, requestId, initialValues }: Props) => {
   const selectedType = types.find((t) => t.id === selectedTypeId);
   const subtypes = selectedType?.subtypes ?? [];
 
+  const initialTypeId = useRef(initialValues?.type_id);
+
   useEffect(() => {
-    if (isEditMode) return;
+    if (isEditMode && selectedTypeId === initialTypeId.current) return;
     const type = types.find((t) => t.id === selectedTypeId);
     if (!type) return;
     const firstSubtype = type.subtypes?.[0];
