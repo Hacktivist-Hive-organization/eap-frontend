@@ -50,7 +50,7 @@ export const requestService = {
     statuses?: Status[],
     assigneeId?: number,
   ): Promise<RequestAllResponse[]> => {
-    const response = await api.get<RequestAllResponse[]>('/api/v1/requests', {
+    const response = await api.get<RequestAllResponse[]>('/api/v1/requests/', {
       params: {
         ...(statuses?.length ? { statuses } : {}),
         ...(assigneeId ? { assignee_id: assigneeId } : {}),
@@ -110,7 +110,7 @@ export const createRequestService = {
     payload: CreateRequestPayload,
   ): Promise<RequestAllResponse> => {
     const { data } = await api.post<RequestAllResponse>(
-      '/api/v1/requests',
+      '/api/v1/requests/',
       payload,
     );
     return data;
