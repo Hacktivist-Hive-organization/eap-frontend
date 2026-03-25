@@ -107,8 +107,8 @@ export function AdminRequestDetailModal({
                       <Textarea
                         placeholder={
                           pendingAction === 'rejected'
-                            ? 'Comment is required'
-                            : 'Add a comment (optional)'
+                            ? 'Comment is required (min. 5 characters)'
+                            : 'Add a comment (optional, min. 5 characters)'
                         }
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
@@ -132,7 +132,11 @@ export function AdminRequestDetailModal({
                           onClick={handleConfirmAction}
                           disabled={
                             processAdminRequest.isPending ||
-                            (pendingAction === 'rejected' && !comment.trim())
+                            (pendingAction === 'rejected' &&
+                              comment.trim().length < 5) ||
+                            (pendingAction === 'completed' &&
+                              comment.trim().length > 0 &&
+                              comment.trim().length < 5)
                           }
                         >
                           {pendingAction === 'rejected' ? (
