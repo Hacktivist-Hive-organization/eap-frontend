@@ -77,6 +77,28 @@ export const requestService = {
     );
     return response.data;
   },
+
+  reopenRequest: async (id: number): Promise<RequestAllResponse> => {
+    const response = await api.patch<RequestAllResponse>(
+      `/api/v1/requests/${id}/reopen`,
+    );
+    return response.data;
+  },
+
+  updateDraft: async (
+    id: number,
+    payload: CreateRequestPayload,
+  ): Promise<RequestDetailResponse> => {
+    const { data } = await api.patch<RequestDetailResponse>(
+      `/api/v1/requests/${id}/edit`,
+      payload,
+    );
+    return data;
+  },
+
+  deleteDraft: async (id: number): Promise<void> => {
+    await api.delete(`/api/v1/requests/${id}`);
+  },
 };
 
 export const createRequestService = {
