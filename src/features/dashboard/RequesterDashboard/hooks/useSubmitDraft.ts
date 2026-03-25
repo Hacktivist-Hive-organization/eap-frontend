@@ -5,7 +5,7 @@ export function useSubmitDraft() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) => requestService.submitDraft(id),
+    mutationFn: (id: number) => requestService.processRequest(id, 'submitted'),
     onSuccess: (updatedRequest) => {
       queryClient.invalidateQueries({
         queryKey: ['request', updatedRequest.id],
