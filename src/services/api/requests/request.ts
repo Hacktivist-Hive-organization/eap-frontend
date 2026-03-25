@@ -65,13 +65,6 @@ export const requestService = {
     return response.data;
   },
 
-  submitDraft: async (id: number): Promise<RequestAllResponse> => {
-    const response = await api.patch<RequestAllResponse>(
-      `/api/v1/requests/${id}/submit`,
-    );
-    return response.data;
-  },
-
   processRequest: async (
     id: number,
     status: Status,
